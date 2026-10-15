@@ -9,7 +9,11 @@ import { useTheme, type ThemePref } from "../lib/theme";
 import { friendlyError, isConfigured, supabase } from "../lib/supabase";
 import { QUESTIONS } from "../data/questions";
 
-const OTP_LENGTH = 6;
+// Supabase "Email OTP length" (Auth → Providers → Email). This project uses 8.
+// Codes of 6–10 digits are accepted; we auto-submit once OTP_LENGTH digits are typed or pasted.
+const OTP_LENGTH = Number(import.meta.env.VITE_OTP_LENGTH ?? 8);
+const OTP_MIN = 6;
+const OTP_MAX = 10;
 const NAME_RE = /^[A-Za-z0-9_. -]{3,20}$/;
 
 export default function Account() {
@@ -65,7 +69,7 @@ function Head({ title, sub }: { title: string; sub?: string }) {
   );
 }
 
-/* ---------------- email → 6-digit code ---------------- */
+/* ---------------- email → one-time code ---------------- */
 function SignIn() {
   const [step, setStep] = useState<"email" | "code">("email");
   const [email, setEmail] = useState("");
@@ -108,7 +112,7 @@ function SignIn() {
   };
 
   const onCode = (v: string) => {
-    const digits = v.replace(/\D/g, "").slice(0, OTP_LENGTH);
+    const digits = v.replace(/\D/g, "").slice(0, OTP_MAX);
     setCode(digits);
     if (digits.length === OTP_LENGTH && !busy) verify(digits);
   };
@@ -116,11 +120,11 @@ function SignIn() {
   return (
     <div>
       <div className="auth-hero">
-        <motion.img src="/brand/badge-hex.png" alt="Coffee aur Code" initial={{ y: 20, opacity: 0, rotate: -6 }} animate={{ y: 0, opacity: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 200, damping: 16 }} />
+        <motion.img src="/brand/badge-hex.webp" width={128} height={180} alt="Coffee aur Code" initial={{ y: 20, opacity: 0, rotate: -6 }} animate={{ y: 0, opacity: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 200, damping: 16 }} />
       </div>
       <AnimatePresence mode="wait">
         {step === "email" ? (
-          <motion.form key="email" onSubmit={send} initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -30, opacity: 0 }} className="stack">
+          <motion.form key="email" onSubmit={send} noValidate initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -30, opacity: 0 }} className="stack">
             <div style={{ textAlign: "center" }}>
               <h1 className="display" style={{ fontSize: "1.8rem", margin: "8px 0 6px" }}>
                 Pull up a chair
@@ -140,6 +144,7 @@ function SignIn() {
             <p className="muted" style={{ fontSize: ".8rem", textAlign: "center", margin: 0 }}>
               No password needed. New here? This creates your account.
             </p>
+            <PrivacyNote />
           </motion.form>
         ) : (
           <motion.div key="code" initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -30, opacity: 0 }} className="stack">
@@ -164,11 +169,11 @@ function SignIn() {
                 placeholder={"•".repeat(OTP_LENGTH)}
                 value={code}
                 onChange={(e) => onCode(e.target.value)}
-                maxLength={OTP_LENGTH}
+                maxLength={OTP_MAX}
               />
             </div>
             {err && <div className="err">{err}</div>}
-            <button className="btn primary block" disabled={busy || code.length !== OTP_LENGTH} onClick={() => verify(code)}>
+            <button className="btn primary block" disabled={busy || code.length < OTP_MIN} onClick={() => verify(code)}>
               {busy ? "Checking…" : "Verify & sign in"}
             </button>
             <div className="row between">
@@ -239,7 +244,7 @@ function ChooseName() {
   return (
     <div>
       <div className="auth-hero">
-        <motion.img src="/brand/mascot.png" alt="" style={{ width: 120 }} initial={{ scale: 0, rotate: -20 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 240, damping: 14 }} />
+        <motion.img src="/brand/mascot.webp" width={120} height={131} alt="" style={{ width: 120 }} initial={{ scale: 0, rotate: -20 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 240, damping: 14 }} />
       </div>
       <div style={{ textAlign: "center", marginBottom: 16 }}>
         <h1 className="display" style={{ fontSize: "1.8rem", margin: "8px 0 6px" }}>
@@ -264,7 +269,9 @@ function Me() {
   const [editOpen, setEditOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [toast, setToast] = useToast();
-  const name = profile!.display_name;
+  // can briefly render during the sign-out transition, after the profile is cleared
+  if (!session || !profile) return null;
+  const name = profile.display_name;
 
   return (
     <div>
@@ -281,7 +288,7 @@ function Me() {
         <div style={{ minWidth: 0, flex: 1 }}>
           <div style={{ fontWeight: 800, fontSize: "1.15rem", fontStretch: "112%" }}>{name}</div>
           <div className="muted" style={{ fontSize: ".85rem", overflow: "hidden", textOverflow: "ellipsis" }}>
-            {session!.user.email}
+            {session.user.email}
           </div>
           <div className="muted" style={{ fontSize: ".8rem", marginTop: 2 }}>
             {knownCount}/{QUESTIONS.length} cards mastered · synced
@@ -305,6 +312,15 @@ function Me() {
             <small>Clears “Got it / Again” marks on all devices</small>
           </span>
         </button>
+        <div className="list-row">
+          <Icon name="lock" />
+          <span className="grow">
+            What we store
+            <small>
+              Your email, leaderboard name, test scores &amp; times, and which flashcards you marked. No password, no phone, no location.
+            </small>
+          </span>
+        </div>
         <button className="list-row" onClick={signOut}>
           <Icon name="logout" />
           <span className="grow">Sign out</span>
@@ -345,6 +361,14 @@ function Me() {
       </Sheet>
       <Toast msg={toast} />
     </div>
+  );
+}
+
+function PrivacyNote() {
+  return (
+    <p className="muted" style={{ fontSize: ".75rem", textAlign: "center", margin: 0 }}>
+      We store only your email, leaderboard name, test scores and flashcard progress. Your email is never shown to others.
+    </p>
   );
 }
 

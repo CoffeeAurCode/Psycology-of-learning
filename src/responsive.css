@@ -211,16 +211,16 @@
     height: 36px;
   }
   .otp {
-    font-size: 1.4rem;
-    letter-spacing: 0.35em;
+    font-size: 1.3rem;
+    letter-spacing: 0.22em;
   }
 }
 
 /* ---------- short phones (iPhone SE/8, small Androids): keep card buttons above the tab bar ---------- */
 @media (max-width: 639px) and (max-height: 760px) {
   .deck {
-    height: max(250px, calc(100vh - 400px));
-    height: max(250px, calc(100dvh - 400px - env(safe-area-inset-bottom)));
+    height: max(236px, calc(100vh - 424px));
+    height: max(236px, calc(100dvh - 424px - env(safe-area-inset-bottom)));
   }
   .page-head.compact {
     margin: 4px 2px 8px;
@@ -627,5 +627,48 @@
   }
   .hero h1 {
     font-size: 1.4rem;
+  }
+}
+
+/* ---------- very short phones (iPhone SE 1st gen, small Androids: ≤ 620px tall) ---------- */
+@media (max-width: 639px) and (max-height: 620px) {
+  .topbar {
+    padding-top: calc(6px + env(safe-area-inset-top));
+    padding-bottom: 6px;
+  }
+  .topbar .brand img {
+    width: 28px;
+    height: 28px;
+  }
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+  .page-head.compact {
+    display: none; /* the selected week chip already says which deck this is */
+  }
+  .chips {
+    padding-top: 6px;
+  }
+  .seg button {
+    height: 34px;
+  }
+  .deck {
+    margin: 10px 0 6px;
+    height: max(220px, calc(100vh - 334px));
+    height: max(220px, calc(100dvh - 334px - env(safe-area-inset-bottom)));
+  }
+  .deck-foot {
+    margin: 2px 2px 6px;
+  }
+  .deck-controls .round {
+    width: 44px;
+    height: 44px;
+  }
+  .deck-controls .btn {
+    min-height: 44px;
+  }
+  .deck-controls {
+    grid-template-columns: 44px minmax(0, 1fr) minmax(0, 1fr) 44px;
   }
 }

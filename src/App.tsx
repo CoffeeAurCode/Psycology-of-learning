@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, NavLink, Route, Routes, useLocation } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import { AuthProvider, useAuth } from "./lib/auth";
 import { ProgressProvider } from "./lib/progress";
 import { ThemeProvider, useTheme } from "./lib/theme";
 import { Icon, type IconName } from "./components/Icon";
 import { Splash } from "./components/Ui";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import Home from "./pages/Home";
 import Study from "./pages/Study";
 import Test from "./pages/Test";
@@ -57,8 +59,8 @@ function TopBar() {
   }, []);
   return (
     <header className={`topbar ${scrolled ? "scrolled" : ""}`}>
-      <NavLink to="/" className="brand" aria-label="Home">
-        <motion.img src="/brand/badge-round.png" alt="" whileTap={{ rotate: -20, scale: 0.9 }} />
+      <NavLink to="/" className="brand">
+        <motion.img src="/brand/badge-round.webp" width={34} height={34} alt="" whileTap={{ rotate: -20, scale: 0.9 }} />
         <div>
           <div className="brand-title">Psychology of Learning</div>
           <div className="brand-sub">
@@ -79,8 +81,8 @@ function TabBar() {
   if (pathname.startsWith("/test/run")) return null;
   return (
     <nav className="tabbar" aria-label="Main">
-      <NavLink to="/" className="rail-brand" aria-label="Home">
-        <img src="/brand/badge-hex.png" alt="Coffee aur Code" />
+      <NavLink to="/" className="rail-brand">
+        <img src="/brand/badge-hex.webp" width={48} height={68} alt="Coffee aur Code" />
         <div>
           <div className="brand-title">Psychology of Learning</div>
           <div className="brand-sub">
@@ -187,7 +189,9 @@ function Shell() {
       {phase !== "gone" && <Splash fading={phase === "fade"} />}
       <div className={`shell ${running ? "no-rail" : ""}`}>
         <TopBar />
-        <AnimatedRoutes />
+        <ErrorBoundary key={pathname}>
+          <AnimatedRoutes />
+        </ErrorBoundary>
       </div>
       <TabBar />
     </>
@@ -203,6 +207,8 @@ export default function App() {
             <BrowserRouter>
               <Shell />
             </BrowserRouter>
+            {/* Vercel Web Analytics: cookieless page views (enabled in the Vercel dashboard) */}
+            <Analytics />
           </ProgressProvider>
         </AuthProvider>
       </ThemeProvider>

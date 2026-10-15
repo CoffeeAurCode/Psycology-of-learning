@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { AnimatePresence, motion, useMotionValue, useTransform, type PanInfo } from "motion/react";
+import { AnimatePresence, motion, useMotionValue, useSpring, useTransform, type PanInfo } from "motion/react";
 import { Icon } from "../components/Icon";
 import { CoffeeMug } from "../components/CoffeeMug";
 import { Segmented, Switch } from "../components/Ui";
@@ -150,7 +150,10 @@ function Cards({ pool }: { pool: Question[] }) {
         setFlipped((f) => !f);
       } else if (e.key === "ArrowRight") decide("known");
       else if (e.key === "ArrowLeft") decide("again");
-      else if (e.key === "Backspace") undo();
+      else if (e.key === "Backspace") {
+        e.preventDefault(); // Safari would otherwise navigate back
+        undo();
+      }
     };
     window.addEventListener("keydown", k);
     return () => window.removeEventListener("keydown", k);
@@ -265,6 +268,16 @@ function SwipeCard({
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-220, 220], [-14, 14]);
   const goodOpacity = useTransform(x, [30, 120], [0, 1]);
+  // Flip: show exactly one face based on the angle. Safari doesn't reliably honour
+  // backface-visibility here, so we never rely on it alone.
+  const rotateY = useSpring(flipped ? 180 : 0, { stiffness: 260, damping: 26 });
+  useEffect(() => {
+    rotateY.set(flipped ? 180 : 0);
+  }, [flipped, rotateY]);
+  const frontOpacity = useTransform(rotateY, (v) => (v < 90 ? 1 : 0));
+  const backOpacity = useTransform(rotateY, (v) => (v < 90 ? 0 : 1));
+  const frontEvents = useTransform(rotateY, (v) => (v < 90 ? "auto" : "none"));
+  const backEvents = useTransform(rotateY, (v) => (v < 90 ? "none" : "auto"));
   const badOpacity = useTransform(x, [-120, -30], [1, 0]);
 
   const onDragEnd = (_: unknown, info: PanInfo) => {
@@ -300,16 +313,16 @@ function SwipeCard({
       <motion.div className="fc-stamp bad" style={{ opacity: badOpacity }}>
         AGAIN
       </motion.div>
-      <motion.div className="fc-inner" animate={{ rotateY: flipped ? 180 : 0 }} transition={{ type: "spring", stiffness: 260, damping: 26 }}>
+      <motion.div className="fc-inner" style={{ rotateY }}>
         {/* front */}
-        <div className="fc-face">
+        <motion.div className="fc-face fc-front" style={{ opacity: frontOpacity, pointerEvents: frontEvents }} aria-hidden={flipped}>
           <div className="fc-meta">
             <span className="tag">
               W{q.week} · Q{numberInWeek(q)}
             </span>
             <span>{status === "known" ? "✓ mastered" : status === "again" ? "↻ reviewing" : `${index + 1} of ${total}`}</span>
           </div>
-          <div className="fc-scroll">
+          <div className="fc-scroll" tabIndex={flipped ? -1 : 0} aria-label="Question and options">
             <p className="fc-q">{q.q}</p>
             <ul className="fc-opts">
               {q.options.map((o, i) => (
@@ -323,16 +336,16 @@ function SwipeCard({
           <div className="fc-hint">
             <Icon name="flip" size={14} /> Tap to reveal · swipe → got it, ← again
           </div>
-        </div>
+        </motion.div>
         {/* back */}
-        <div className="fc-face fc-back">
+        <motion.div className="fc-face fc-back" style={{ opacity: backOpacity, pointerEvents: backEvents }} aria-hidden={!flipped}>
           <div className="fc-meta">
             <span className="tag">
               W{q.week} · Q{numberInWeek(q)}
             </span>
             <span>Answer</span>
           </div>
-          <div className="fc-scroll">
+          <div className="fc-scroll" tabIndex={flipped ? 0 : -1} aria-label="Answer">
             <p className="fc-small-q">{q.q}</p>
             <div className="fc-answer-label">Correct answer</div>
             <div className="fc-answer">
@@ -349,7 +362,7 @@ function SwipeCard({
             {q.note && <div className="fc-note">Note: {q.note}</div>}
           </div>
           <div className="fc-hint">Swipe → if you knew it · ← to see it again</div>
-        </div>
+        </motion.div>
       </motion.div>
     </motion.div>
   );
@@ -364,7 +377,7 @@ function DeckDone({ known, again, onRestart, onReviewAgain }: { known: number; a
       animate={{ scale: 1, opacity: 1 }}
       transition={{ type: "spring", stiffness: 260, damping: 22 }}
     >
-      <motion.img src="/brand/mascot.png" alt="" style={{ width: 120 }} initial={{ rotate: -10, y: 20 }} animate={{ rotate: [-10, 6, 0], y: 0 }} transition={{ duration: 0.8 }} />
+      <motion.img src="/brand/mascot.webp" width={120} height={131} alt="" style={{ width: 120 }} initial={{ rotate: -10, y: 20 }} animate={{ rotate: [-10, 6, 0], y: 0 }} transition={{ duration: 0.8 }} />
       <h2 className="display" style={{ margin: 0, fontSize: "1.6rem" }}>
         Deck done!
       </h2>
@@ -403,9 +416,13 @@ function Quiz({ pool }: { pool: Question[] }) {
     setScore(0);
     setMissed([]);
   };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // reshuffle only when the week changes (not on mount, which would swap the first question)
+  const lastPool = useRef(pool);
   useEffect(() => {
+    if (lastPool.current === pool) return;
+    lastPool.current = pool;
     restart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool]);
 
   const q = order[pos];

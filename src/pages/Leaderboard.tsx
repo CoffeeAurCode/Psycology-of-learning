@@ -104,7 +104,9 @@ export default function Leaderboard() {
                   {place === 1 && (
                     <motion.img
                       className="crown"
-                      src="/brand/badge-round.png"
+                      src="/brand/badge-round.webp"
+                      width={34}
+                      height={34}
                       alt=""
                       initial={{ y: -10, rotate: -20, opacity: 0 }}
                       animate={{ y: 0, rotate: 0, opacity: 1 }}

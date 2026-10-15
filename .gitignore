@@ -16,3 +16,7 @@ Thumbs.db
 *.tsbuildinfo
 
 .vercel
+
+# test output
+test-results/
+playwright-report/

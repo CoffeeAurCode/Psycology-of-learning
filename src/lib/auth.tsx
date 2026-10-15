@@ -58,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     refreshProfile: () => fetchProfile(session?.user.id),
     signOut: async () => {
       await supabase.auth.signOut();
+      setSession(null);
       setProfile(null);
     },
   };

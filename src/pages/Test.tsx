@@ -149,7 +149,7 @@ function Intro() {
               <Icon name="mail" size={19} /> Sign in with email to start
             </Link>
             <p className="muted" style={{ textAlign: "center", fontSize: ".85rem", margin: 0 }}>
-              No password. We'll email you a 6-digit code.
+              No password. We'll email you a sign-in code.
             </p>
           </>
         ) : !profile ? (
@@ -506,7 +506,9 @@ function ResultView() {
         {pct >= 0.8 && <BeanBurst />}
         <motion.img
           className="mascot"
-          src="/brand/mascot.png"
+          src="/brand/mascot.webp"
+          width={74}
+          height={81}
           alt=""
           initial={{ scale: 0, rotate: -30, y: 30 }}
           animate={{ scale: 1, rotate: 0, y: 0 }}

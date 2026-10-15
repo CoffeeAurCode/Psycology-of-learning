@@ -3,7 +3,7 @@
   (Authentication → Emails → Templates):
     1. "Magic link"      — subject: Your Coffee aur Code login code: {{ .Token }}
     2. "Confirm sign up" — subject: Your Coffee aur Code login code: {{ .Token }}
-  The app signs people in with the 6-digit {{ .Token }}, so the code must be in the email.
+  The app signs people in with the one-time code {{ .Token }}, so the code must be in the email.
 -->
 <div style="margin:0;padding:32px 16px;background:#f6f0e6;font-family:Arial,Helvetica,sans-serif;color:#17110e">
   <div style="max-width:440px;margin:0 auto;background:#ffffff;border:1px solid #e6dac8;border-radius:20px;overflow:hidden">

@@ -1,0 +1,631 @@
+/* =====================================================================
+   Responsive layer: every screen from 320px Androids to wide laptops.
+   Loaded after styles.css.
+   ===================================================================== */
+
+/* laptop-only pieces are hidden by default */
+.rail-brand,
+.rail-foot,
+.tab-label.long,
+.kbd-hint {
+  display: none;
+}
+.shell {
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+}
+
+/* keyboard hints + hover polish only where there is a mouse */
+@media (hover: hover) and (pointer: fine) {
+  .kbd-hint {
+    display: block;
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--faint);
+    margin: 14px 0 0;
+  }
+  kbd {
+    display: inline-block;
+    min-width: 22px;
+    padding: 1px 6px;
+    border-radius: 6px;
+    border: 1px solid var(--border-strong);
+    border-bottom-width: 2px;
+    background: var(--surface);
+    color: var(--muted);
+    font: 600 0.72rem/1.5 var(--font);
+    text-align: center;
+  }
+  .week-tile,
+  .quick a {
+    transition: transform 0.25s var(--ease-out), box-shadow 0.25s, border-color 0.25s;
+  }
+  .week-tile:hover,
+  .quick a:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-2);
+    border-color: var(--border-strong);
+  }
+  .opt:not(:disabled):not(.sel):hover {
+    border-color: var(--border-strong);
+  }
+  .chip:not(.on):hover {
+    color: var(--ink);
+    border-color: var(--border-strong);
+  }
+  .btn:not(.primary):not(.red):not(.again):not(.got):not(:disabled):hover {
+    border-color: var(--ink);
+  }
+  .btn.primary:not(:disabled):hover,
+  .btn.red:not(:disabled):hover {
+    filter: brightness(1.08);
+  }
+  .round:hover,
+  .icon-btn:hover,
+  .qgrid button:hover {
+    border-color: var(--border-strong);
+  }
+  .tab:not(.active):hover {
+    color: var(--ink);
+  }
+}
+
+/* ---------- small phones (≤ 360px: Galaxy A/J series, iPhone SE 1st gen, Moto E…) ---------- */
+@media (max-width: 360px) {
+  .shell {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+  .topbar,
+  .chips {
+    margin-left: -12px;
+    margin-right: -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .topbar .brand img {
+    width: 30px;
+    height: 30px;
+  }
+  .topbar .brand-title {
+    font-size: 0.9rem;
+  }
+  .topbar .brand-sub {
+    font-size: 0.56rem;
+  }
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+  }
+  .tabbar,
+  .test-nav {
+    width: calc(100% - 16px);
+    bottom: calc(8px + env(safe-area-inset-bottom));
+  }
+  .tabbar {
+    padding: 5px;
+  }
+  .tab {
+    font-size: 0.6rem;
+  }
+  .hero {
+    padding: 18px 16px;
+  }
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+  .hero .mug-slot {
+    transform: scale(0.64);
+  }
+  .stats {
+    gap: 8px;
+  }
+  .stat {
+    padding: 12px 10px;
+  }
+  .stat .v {
+    font-size: 1.12rem;
+  }
+  .stat .k {
+    font-size: 0.68rem;
+  }
+  .quick a {
+    min-height: 118px;
+    padding: 14px;
+  }
+  .weeks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .seg button {
+    font-size: 0.82rem;
+    gap: 4px;
+  }
+  .fc-face {
+    padding: 18px 14px 12px;
+  }
+  .fc-opts li {
+    font-size: 0.88rem;
+    padding: 9px 10px;
+  }
+  .deck-controls {
+    grid-template-columns: 46px minmax(0, 1fr) minmax(0, 1fr) 46px;
+    gap: 8px;
+  }
+  .deck-controls .round {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+  }
+  .deck-controls .btn {
+    min-height: 46px;
+    font-size: 0.9rem;
+    gap: 4px;
+    padding: 0 6px;
+  }
+  .deck-controls .btn svg {
+    display: none;
+  }
+  .q-card {
+    padding: 16px 14px;
+  }
+  .opt {
+    padding: 10px 12px;
+    font-size: 0.92rem;
+    min-height: 52px;
+  }
+  .test-nav {
+    grid-template-columns: 48px 48px minmax(0, 1fr) 48px;
+    gap: 6px;
+    padding: 6px;
+  }
+  .test-nav .round {
+    width: 48px;
+    height: 48px;
+  }
+  .test-nav .btn {
+    min-height: 48px;
+    padding: 0 10px;
+  }
+  .pod .avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 1.05rem;
+  }
+  .pod.first .avatar {
+    width: 60px;
+    height: 60px;
+  }
+  .result .ring-wrap {
+    transform: scale(0.88);
+  }
+  .result-stats b {
+    font-size: 1.02rem;
+  }
+  .lb-row {
+    grid-template-columns: 28px 36px minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 9px 10px;
+  }
+  .lb-row .av {
+    width: 36px;
+    height: 36px;
+  }
+  .otp {
+    font-size: 1.4rem;
+    letter-spacing: 0.35em;
+  }
+}
+
+/* ---------- short phones (iPhone SE/8, small Androids): keep card buttons above the tab bar ---------- */
+@media (max-width: 639px) and (max-height: 760px) {
+  .deck {
+    height: max(250px, calc(100vh - 400px));
+    height: max(250px, calc(100dvh - 400px - env(safe-area-inset-bottom)));
+  }
+  .page-head.compact {
+    margin: 4px 2px 8px;
+  }
+  .page-head.compact h1 {
+    font-size: 1.4rem;
+  }
+  .chip {
+    height: 34px;
+  }
+  .seg button {
+    height: 36px;
+  }
+  .deck-foot {
+    margin-bottom: 6px;
+  }
+  .fc-q {
+    font-size: 1.05rem;
+  }
+  .fc-opts {
+    margin-top: 10px;
+    gap: 6px;
+  }
+  .fc-opts li {
+    padding: 8px 10px;
+    font-size: 0.88rem;
+  }
+}
+
+/* ---------- phones held sideways / very short screens ---------- */
+@media (max-height: 520px) and (orientation: landscape) {
+  :root {
+    --tab-h: 54px;
+  }
+  .tab {
+    font-size: 0;
+    gap: 0;
+  }
+  .tab .tab-dot {
+    top: 6px;
+  }
+  .topbar {
+    position: relative;
+  }
+  .deck {
+    height: 330px;
+    min-height: 0;
+  }
+  .test-top {
+    top: 0;
+  }
+  .splash {
+    grid-auto-flow: column;
+    gap: 28px;
+  }
+}
+
+/* ---------- tablets, foldables & big phones in landscape (≥ 640px) ---------- */
+@media (min-width: 640px) {
+  .shell {
+    max-width: 840px;
+    padding-left: max(24px, env(safe-area-inset-left));
+    padding-right: max(24px, env(safe-area-inset-right));
+  }
+  .topbar,
+  .chips {
+    margin-left: -24px;
+    margin-right: -24px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .page-narrow {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .page-xs {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .hero {
+    padding: 30px 28px 28px;
+  }
+  .hero h1 {
+    font-size: 2.5rem;
+    max-width: 14ch;
+  }
+  .hero p {
+    max-width: 30ch;
+    font-size: 1rem;
+  }
+  .hero .mug-slot {
+    transform: scale(1.12);
+    transform-origin: bottom right;
+    right: 22px;
+    bottom: -4px;
+  }
+  .quick a {
+    min-height: 150px;
+    padding: 20px;
+  }
+  .weeks {
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  }
+  .deck {
+    height: clamp(420px, calc(100vh - 440px), 520px);
+    height: clamp(420px, calc(100dvh - 440px), 520px);
+  }
+  .sheet {
+    bottom: 16px;
+    border-radius: 28px;
+    width: min(560px, calc(100% - 32px));
+    padding-bottom: 22px;
+  }
+  .result .mascot {
+    width: 96px;
+    right: 18px;
+    top: 14px;
+  }
+}
+
+/* ---------- laptops & desktops (≥ 1024px): side rail instead of bottom bar ---------- */
+@media (min-width: 1024px) {
+  :root {
+    --rail-w: 252px;
+  }
+  .topbar {
+    display: none;
+  }
+  .shell {
+    max-width: none;
+    margin-left: var(--rail-w);
+    padding: 32px 48px 72px;
+  }
+  .shell.no-rail {
+    margin-left: 0;
+  }
+  .shell > main {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .shell > main.page-narrow {
+    max-width: 760px;
+  }
+  .shell > main.page-xs {
+    max-width: 520px;
+  }
+
+  .tabbar {
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transform: none;
+    width: var(--rail-w);
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 22px 14px 18px;
+    border-radius: 0;
+    border: 0;
+    border-right: 1px solid var(--border);
+    box-shadow: none;
+    background: var(--surface);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .tab {
+    flex: none;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 12px;
+    height: 48px;
+    padding: 0 14px;
+    font-size: 0.95rem;
+    border-radius: 14px;
+  }
+  .tab .tab-pill {
+    border-radius: 14px;
+  }
+  .tab .tab-dot {
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+  }
+  .tab-label.short {
+    display: none;
+  }
+  .tab-label.long {
+    display: inline;
+  }
+  .rail-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    padding: 2px 6px 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .rail-brand img {
+    width: 48px;
+    flex: none;
+  }
+  .rail-brand .brand-title {
+    font-weight: 800;
+    font-stretch: 110%;
+    font-size: 1rem;
+    line-height: 1.15;
+  }
+  .rail-brand .brand-sub {
+    margin-top: 4px;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .rail-brand .brand-sub b {
+    color: var(--red);
+  }
+  .rail-foot {
+    display: block;
+    margin-top: auto;
+    padding: 14px 4px 0;
+    border-top: 1px solid var(--border);
+  }
+  .rail-theme {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 12px;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .rail-theme:hover {
+    background: var(--surface-2);
+    color: var(--ink);
+  }
+  .rail-foot p {
+    margin: 10px 12px 0;
+    font-size: 0.72rem;
+    color: var(--faint);
+  }
+
+  .page-head {
+    margin: 4px 2px 22px;
+  }
+  .page-head h1 {
+    font-size: 2.6rem;
+  }
+  .page-head.compact h1 {
+    font-size: 2rem;
+  }
+  .chips {
+    margin: 0;
+    padding: 2px 0 6px;
+    flex-wrap: wrap;
+  }
+
+  .home-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+    gap: 16px;
+  }
+  .home-top .hero {
+    margin-top: 0 !important;
+    min-height: 340px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 40px 36px;
+  }
+  .home-top .hero h1 {
+    font-size: clamp(2.3rem, 3.3vw, 3.1rem);
+    max-width: 9.5ch;
+  }
+  .home-top .hero p {
+    max-width: 26ch;
+  }
+  .home-top .hero .mug-slot {
+    transform: scale(1.15);
+    right: 28px;
+    bottom: 6px;
+  }
+  .home-top .stats {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 1fr;
+    margin-top: 0;
+  }
+  .home-top .stat {
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .home-top .stat .v {
+    font-size: 1.7rem;
+  }
+  .quick a {
+    min-height: 168px;
+    padding: 24px;
+  }
+  .quick a b {
+    font-size: 1.2rem;
+  }
+  .weeks {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .week-tile {
+    padding: 16px 18px;
+  }
+
+  .deck {
+    height: 500px;
+  }
+  .test-top {
+    top: 0;
+    padding-top: 16px;
+  }
+  .week-head {
+    top: 0;
+  }
+  .me-pin {
+    bottom: 20px;
+  }
+  .toast {
+    bottom: 32px;
+  }
+  .splash .wordmark .w1,
+  .splash .wordmark .w3 {
+    font-size: 2rem;
+  }
+}
+
+/* small laptops: hero full width, stats in a row underneath */
+@media (min-width: 1024px) and (max-width: 1179px) {
+  .home-top {
+    display: block;
+  }
+  .home-top .stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: auto;
+    margin-top: 14px;
+  }
+  .home-top .hero {
+    min-height: 300px;
+  }
+}
+
+@media (min-width: 1300px) {
+  .home-top .hero .mug-slot {
+    transform: scale(1.45);
+    right: 48px;
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --rail-w: 272px;
+  }
+  .shell > main {
+    max-width: 1180px;
+  }
+}
+
+/* ---------- older browsers (Safari < 16.2, old Android WebView) ---------- */
+@supports not (background: color-mix(in srgb, red 50%, transparent)) {
+  .topbar,
+  .test-top,
+  .week-head {
+    background: var(--bg);
+  }
+  .tabbar,
+  .test-nav {
+    background: var(--surface);
+  }
+  .week-tile.done {
+    border-color: var(--good);
+  }
+}
+@supports not (height: 100dvh) {
+  body,
+  .shell {
+    min-height: 100vh;
+  }
+  .deck {
+    height: clamp(340px, calc(100vh - 440px), 540px);
+  }
+  .sheet {
+    max-height: 86vh;
+  }
+}
+
+/* Galaxy Fold (folded) and other ultra-narrow screens */
+@media (max-width: 300px) {
+  .hero .mug-slot {
+    transform: scale(0.55);
+  }
+  .hero h1 {
+    font-size: 1.4rem;
+  }
+}

@@ -1,0 +1,370 @@
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { AnimatePresence, motion } from "motion/react";
+import { Icon } from "../components/Icon";
+import { Segmented, Sheet, Toast, avatarColor, initials, useToast } from "../components/Ui";
+import { useAuth } from "../lib/auth";
+import { useProgress } from "../lib/progress";
+import { useTheme, type ThemePref } from "../lib/theme";
+import { friendlyError, isConfigured, supabase } from "../lib/supabase";
+import { QUESTIONS } from "../data/questions";
+
+const OTP_LENGTH = 6;
+const NAME_RE = /^[A-Za-z0-9_. -]{3,20}$/;
+
+export default function Account() {
+  const { session, profile, ready } = useAuth();
+  const [params] = useSearchParams();
+  const nav = useNavigate();
+  const next = params.get("next");
+
+  // once fully set up, send them back where they came from
+  useEffect(() => {
+    if (session && profile && next) nav(next, { replace: true });
+  }, [session, profile, next, nav]);
+
+  if (!isConfigured)
+    return (
+      <div>
+        <Head title="Account" sub="Sign-in is not configured" />
+        <div className="banner">
+          <Icon name="info" size={18} /> Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to enable sign-in.
+        </div>
+        <Preferences />
+      </div>
+    );
+
+  if (!ready) return null;
+
+  return (
+    <AnimatePresence mode="wait">
+      {!session ? (
+        <motion.div key="signin" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <SignIn />
+        </motion.div>
+      ) : !profile ? (
+        <motion.div key="name" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <ChooseName />
+        </motion.div>
+      ) : (
+        <motion.div key="me" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <Me />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function Head({ title, sub }: { title: string; sub?: string }) {
+  return (
+    <div className="page-head">
+      <span className="caps">Account</span>
+      <h1 className="display">{title}</h1>
+      {sub && <p>{sub}</p>}
+    </div>
+  );
+}
+
+/* ---------------- email → 6-digit code ---------------- */
+function SignIn() {
+  const [step, setStep] = useState<"email" | "code">("email");
+  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const [cooldown, setCooldown] = useState(0);
+  const codeRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
+
+  const send = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    const em = email.trim().toLowerCase();
+    if (!/^\S+@\S+\.\S+$/.test(em)) return setErr("Enter a valid email address.");
+    setBusy(true);
+    setErr(null);
+    const { error } = await supabase.auth.signInWithOtp({ email: em, options: { shouldCreateUser: true } });
+    setBusy(false);
+    if (error) return setErr(friendlyError(error));
+    setEmail(em);
+    setStep("code");
+    setCooldown(60);
+    setTimeout(() => codeRef.current?.focus(), 350);
+  };
+
+  const verify = async (token: string) => {
+    setBusy(true);
+    setErr(null);
+    const { error } = await supabase.auth.verifyOtp({ email, token, type: "email" });
+    setBusy(false);
+    if (error) {
+      setErr(friendlyError(error));
+      setCode("");
+    }
+  };
+
+  const onCode = (v: string) => {
+    const digits = v.replace(/\D/g, "").slice(0, OTP_LENGTH);
+    setCode(digits);
+    if (digits.length === OTP_LENGTH && !busy) verify(digits);
+  };
+
+  return (
+    <div>
+      <div className="auth-hero">
+        <motion.img src="/brand/badge-hex.png" alt="Coffee aur Code" initial={{ y: 20, opacity: 0, rotate: -6 }} animate={{ y: 0, opacity: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 200, damping: 16 }} />
+      </div>
+      <AnimatePresence mode="wait">
+        {step === "email" ? (
+          <motion.form key="email" onSubmit={send} initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -30, opacity: 0 }} className="stack">
+            <div style={{ textAlign: "center" }}>
+              <h1 className="display" style={{ fontSize: "1.8rem", margin: "8px 0 6px" }}>
+                Pull up a chair
+              </h1>
+              <p className="muted" style={{ margin: 0 }}>
+                Sign in to save progress, take ranked tests and get on the leaderboard.
+              </p>
+            </div>
+            <div className="field">
+              <label htmlFor="email">Email</label>
+              <input id="email" className="input" type="email" inputMode="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} autoFocus />
+            </div>
+            {err && <div className="err">{err}</div>}
+            <button className="btn primary block" disabled={busy}>
+              {busy ? "Sending…" : "Email me a code"} <Icon name="arrow" size={18} />
+            </button>
+            <p className="muted" style={{ fontSize: ".8rem", textAlign: "center", margin: 0 }}>
+              No password needed. New here? This creates your account.
+            </p>
+          </motion.form>
+        ) : (
+          <motion.div key="code" initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -30, opacity: 0 }} className="stack">
+            <div style={{ textAlign: "center" }}>
+              <h1 className="display" style={{ fontSize: "1.8rem", margin: "8px 0 6px" }}>
+                Check your inbox
+              </h1>
+              <p className="muted" style={{ margin: 0 }}>
+                We sent a {OTP_LENGTH}-digit code to <b style={{ color: "var(--ink)" }}>{email}</b>
+              </p>
+            </div>
+            <div className="field">
+              <label htmlFor="code" className="sr-only">
+                Code
+              </label>
+              <input
+                ref={codeRef}
+                id="code"
+                className="input otp"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                placeholder={"•".repeat(OTP_LENGTH)}
+                value={code}
+                onChange={(e) => onCode(e.target.value)}
+                maxLength={OTP_LENGTH}
+              />
+            </div>
+            {err && <div className="err">{err}</div>}
+            <button className="btn primary block" disabled={busy || code.length !== OTP_LENGTH} onClick={() => verify(code)}>
+              {busy ? "Checking…" : "Verify & sign in"}
+            </button>
+            <div className="row between">
+              <button
+                className="btn sm ghost"
+                onClick={() => {
+                  setStep("email");
+                  setCode("");
+                  setErr(null);
+                }}
+              >
+                <Icon name="left" size={16} /> Change email
+              </button>
+              <button className="btn sm ghost" disabled={cooldown > 0 || busy} onClick={() => send()}>
+                {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}
+              </button>
+            </div>
+            <p className="muted" style={{ fontSize: ".8rem", textAlign: "center", margin: 0 }}>
+              Can't find it? Check spam or promotions.
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <Preferences />
+    </div>
+  );
+}
+
+/* ---------------- display name ---------------- */
+function NameForm({ initial = "", onDone, cta }: { initial?: string; onDone: () => void; cta: string }) {
+  const { session, refreshProfile } = useAuth();
+  const [name, setName] = useState(initial);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const n = name.trim().replace(/\s+/g, " ");
+    if (!NAME_RE.test(n)) return setErr("3–20 characters: letters, numbers, spaces, . _ -");
+    setBusy(true);
+    setErr(null);
+    const { error } = await supabase.from("profiles").upsert({ id: session!.user.id, display_name: n });
+    setBusy(false);
+    if (error) return setErr(friendlyError(error));
+    await refreshProfile();
+    onDone();
+  };
+
+  return (
+    <form onSubmit={submit} className="stack">
+      <div className="field">
+        <label htmlFor="dn">Leaderboard name</label>
+        <input id="dn" className="input" value={name} onChange={(e) => setName(e.target.value)} maxLength={20} placeholder="e.g. Espresso Ananya" autoFocus autoComplete="nickname" />
+        <span className="muted" style={{ fontSize: ".8rem" }}>
+          Shown publicly on the leaderboard. Your email is never shown.
+        </span>
+      </div>
+      {err && <div className="err">{err}</div>}
+      <button className="btn primary block" disabled={busy}>
+        {busy ? "Saving…" : cta}
+      </button>
+    </form>
+  );
+}
+
+function ChooseName() {
+  const { signOut } = useAuth();
+  return (
+    <div>
+      <div className="auth-hero">
+        <motion.img src="/brand/mascot.png" alt="" style={{ width: 120 }} initial={{ scale: 0, rotate: -20 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 240, damping: 14 }} />
+      </div>
+      <div style={{ textAlign: "center", marginBottom: 16 }}>
+        <h1 className="display" style={{ fontSize: "1.8rem", margin: "8px 0 6px" }}>
+          You're in! ☕
+        </h1>
+        <p className="muted" style={{ margin: 0 }}>
+          Pick the name other students will see on the leaderboard.
+        </p>
+      </div>
+      <NameForm onDone={() => {}} cta="Let's go" />
+      <button className="btn ghost block" style={{ marginTop: 8 }} onClick={signOut}>
+        Use a different email
+      </button>
+    </div>
+  );
+}
+
+/* ---------------- signed-in profile ---------------- */
+function Me() {
+  const { session, profile, signOut } = useAuth();
+  const { knownCount, reset } = useProgress();
+  const [editOpen, setEditOpen] = useState(false);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [toast, setToast] = useToast();
+  const name = profile!.display_name;
+
+  return (
+    <div>
+      <Head title="Your account" />
+      <div className="card pad row" style={{ gap: 14 }}>
+        <motion.div
+          className="av"
+          style={{ width: 60, height: 60, borderRadius: "50%", display: "grid", placeItems: "center", fontWeight: 900, fontSize: "1.4rem", color: "#120f0e", background: avatarColor(name), flex: "none" }}
+          initial={{ scale: 0.6 }}
+          animate={{ scale: 1 }}
+        >
+          {initials(name)}
+        </motion.div>
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <div style={{ fontWeight: 800, fontSize: "1.15rem", fontStretch: "112%" }}>{name}</div>
+          <div className="muted" style={{ fontSize: ".85rem", overflow: "hidden", textOverflow: "ellipsis" }}>
+            {session!.user.email}
+          </div>
+          <div className="muted" style={{ fontSize: ".8rem", marginTop: 2 }}>
+            {knownCount}/{QUESTIONS.length} cards mastered · synced
+          </div>
+        </div>
+        <button className="icon-btn" onClick={() => setEditOpen(true)} aria-label="Edit name">
+          <Icon name="edit" size={19} />
+        </button>
+      </div>
+
+      <Preferences />
+
+      <div className="section-title">
+        <h2>Data</h2>
+      </div>
+      <div className="card">
+        <button className="list-row" onClick={() => setResetOpen(true)}>
+          <Icon name="trash" />
+          <span className="grow">
+            Reset flashcard progress
+            <small>Clears “Got it / Again” marks on all devices</small>
+          </span>
+        </button>
+        <button className="list-row" onClick={signOut}>
+          <Icon name="logout" />
+          <span className="grow">Sign out</span>
+        </button>
+      </div>
+
+      <Sheet open={editOpen} onClose={() => setEditOpen(false)}>
+        <h3>Change your name</h3>
+        <NameForm
+          initial={name}
+          cta="Save name"
+          onDone={() => {
+            setEditOpen(false);
+            setToast("Name updated");
+          }}
+        />
+      </Sheet>
+      <Sheet open={resetOpen} onClose={() => setResetOpen(false)}>
+        <h3>Reset all flashcard progress?</h3>
+        <p className="muted" style={{ marginTop: 0 }}>
+          Your {knownCount} mastered cards go back to unseen. Test scores and leaderboard stay.
+        </p>
+        <div className="stack">
+          <button
+            className="btn red block"
+            onClick={async () => {
+              await reset();
+              setResetOpen(false);
+              setToast("Progress reset");
+            }}
+          >
+            Reset progress
+          </button>
+          <button className="btn block" onClick={() => setResetOpen(false)}>
+            Cancel
+          </button>
+        </div>
+      </Sheet>
+      <Toast msg={toast} />
+    </div>
+  );
+}
+
+function Preferences() {
+  const { pref, setPref } = useTheme();
+  return (
+    <>
+      <div className="section-title">
+        <h2>Appearance</h2>
+      </div>
+      <Segmented<ThemePref>
+        id="theme"
+        value={pref}
+        onChange={setPref}
+        options={[
+          { value: "system", label: <><Icon name="monitor" size={17} /> Auto</> },
+          { value: "light", label: <><Icon name="sun" size={17} /> Light</> },
+          { value: "dark", label: <><Icon name="moon" size={17} /> Dark</> },
+        ]}
+      />
+    </>
+  );
+}

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://psychology-of-learning-nptel.vercel.app/sitemap.xml

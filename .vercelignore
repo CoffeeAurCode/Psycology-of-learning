@@ -1,0 +1,9 @@
+# never upload secrets or course files to Vercel
+Supabase.txt
+.env
+.env.*
+!.env.example
+*.pdf
+Psychology_of_Learning_Flashcards.html
+node_modules
+dist

@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Psychology of Learning Flashcards</title>
+<style>
+:root{
+  --bg:#f5f3ee; --surface:#ffffff; --surface2:#efece5; --text:#1f1d1a; --muted:#6b665d;
+  --border:#ddd8cd; --accent:#3b5bdb; --accent-soft:#e3e8fc; --good:#2b8a3e; --good-soft:#e1f3e4;
+  --bad:#c92a2a; --bad-soft:#fbe4e4; --shadow:0 6px 24px rgba(0,0,0,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16171b; --surface:#202228; --surface2:#2a2d35; --text:#ecebe7; --muted:#9c9a94;
+    --border:#363943; --accent:#7c94ff; --accent-soft:#2a3150; --good:#5fcf75; --good-soft:#1f3326;
+    --bad:#ff7b7b; --bad-soft:#3a2222; --shadow:0 6px 24px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16171b; --surface:#202228; --surface2:#2a2d35; --text:#ecebe7; --muted:#9c9a94;
+  --border:#363943; --accent:#7c94ff; --accent-soft:#2a3150; --good:#5fcf75; --good-soft:#1f3326;
+  --bad:#ff7b7b; --bad-soft:#3a2222; --shadow:0 6px 24px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-size:1.35rem;margin:0}
+.sub{color:var(--muted);font-size:.9rem;margin:2px 0 0}
+button{font:inherit;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text);
+  border-radius:10px;padding:8px 14px}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.tabs{display:flex;gap:6px;margin:18px 0 10px;flex-wrap:wrap}
+.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chips button{padding:4px 10px;border-radius:999px;font-size:.85rem}
+.chips button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px;font-size:.9rem;color:var(--muted)}
+.bar label{display:flex;gap:6px;align-items:center;cursor:pointer}
+.progress{height:6px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:16px}
+.progress>div{height:100%;background:var(--accent);transition:width .25s}
+/* card */
+.scene{perspective:1400px}
+.card{position:relative;min-height:340px;transform-style:preserve-3d;transition:transform .45s;cursor:pointer}
+.card.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--surface);
+  border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:22px;display:flex;flex-direction:column;overflow:auto}
+.back{transform:rotateY(180deg)}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:.8rem;margin-bottom:10px;gap:8px}
+.tag{background:var(--surface2);border-radius:6px;padding:1px 8px}
+.q{font-size:1.15rem;font-weight:600;margin:0 0 14px}
+.opts{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.opts li{border:1px solid var(--border);border-radius:10px;padding:8px 12px;background:var(--surface2)}
+.opts li b{color:var(--muted);margin-right:6px}
+.opts li.correct{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600}
+.opts li.correct b{color:var(--good)}
+.opts li.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.ans{font-size:1.35rem;font-weight:700;color:var(--good);margin:4px 0 14px}
+.qsmall{color:var(--muted);font-size:.95rem;margin:0 0 6px}
+.hint{margin-top:auto;padding-top:12px;color:var(--muted);font-size:.8rem;text-align:center}
+.note{font-size:.82rem;color:var(--muted);margin-top:10px;font-style:italic}
+.controls{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.controls .good{border-color:var(--good);color:var(--good)}
+.controls .bad{border-color:var(--bad);color:var(--bad)}
+/* quiz */
+.quiz{background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:22px}
+.quiz .opts li{cursor:pointer}
+.quiz .opts li:hover{border-color:var(--accent)}
+.quiz.done .opts li{cursor:default}
+.score{font-weight:600;color:var(--text)}
+/* list */
+.list .item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:8px}
+.list h2{font-size:1rem;margin:22px 0 8px;color:var(--accent)}
+.list .item .a{color:var(--good);font-weight:600;margin-top:4px}
+.list .item .q{font-size:1rem;margin:0}
+.search{width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit;margin-bottom:8px}
+.empty{text-align:center;color:var(--muted);padding:40px 0}
+.kbd{font-size:.78rem;color:var(--muted);text-align:center;margin-top:14px}
+kbd{border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--surface);font-size:.75rem}
+@media (max-width:560px){.card{min-height:420px}.face{padding:16px}.q{font-size:1.05rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Psychology of Learning: Flashcards</h1>
+      <p class="sub">NPTEL · IIT Kharagpur · all 130 assignment questions, weeks 0–12</p>
+    </div>
+    <button id="themeBtn" title="Toggle theme">◐ Theme</button>
+  </header>
+
+  <div class="tabs" id="tabs">
+    <button data-mode="cards" class="on">Flashcards</button>
+    <button data-mode="quiz">Quiz (MCQ)</button>
+    <button data-mode="list">All Q&amp;A list</button>
+  </div>
+
+  <div class="chips" id="chips"></div>
+
+  <div id="view"></div>
+</div>
+
+<script>
+// w = week, q = question, o = options, a = index of correct option, n = optional note
+const DATA = [
+// ---------- Week 0 ----------
+{w:0,q:"What is Psychology?",o:["Just a social media trend","An art of living","A subject about human body","A study of cognitive processes & behavior"],a:3},
+{w:0,q:"A broad field of study that explores a variety of questions about thoughts, feelings and actions is ___?",o:["Society","Globalization","Psychology","Social Science"],a:2},
+{w:0,q:"Learning has been a central topic of research in ___.",o:["Chemistry","Physics","Mathematics","Psychology"],a:3},
+{w:0,q:"The word Psyche means ___?",o:["Body or physique","Mind or soul","Spirituality","Hormones"],a:1},
+{w:0,q:"The ___ of learning focuses on how people learn.",o:["psychology","english","chemistry","none of the given"],a:0},
+{w:0,q:"\"To help people to function effectively and fulfill their own unique potential\" is the aim of ___?",o:["Humanistic psychology","Evolutionary biology","Computer science","Microbiology"],a:0},
+{w:0,q:"Psychology is not an independent science, but dependent on other fields.",o:["True","False"],a:1},
+{w:0,q:"The study of changes in an individual's behavior during his/her lifetime is called ___.",o:["Hormonal psychology","Gender psychology","Developmental Psychology","Genetics or Heredity"],a:2},
+{w:0,q:"The study of differences and similarities in the behavior of animals of different species is called ___.",o:["Developmental psychology","Cultural psychology","Personality psychology","Comparative Psychology"],a:3},
+{w:0,q:"Humans are incapable of learning.",o:["True","False"],a:1},
+// ---------- Week 1 ----------
+{w:1,q:"Learning is often seen as the contiguous causal effect of ___ on behavior.",o:["blood","bone density","trauma","experience"],a:3},
+{w:1,q:"In order to say that learning has occurred, a hidden change in behavior must occur.",o:["True","False"],a:1},
+{w:1,q:"Which of the following is not a mental construct?",o:["skeleton","knowledge","representations","associations"],a:0},
+{w:1,q:"Learning changes the ___ structure of the brain through the process of continuous interactions between the learner and the external environment.",o:["physical","social","biological","none of the given"],a:0},
+{w:1,q:"___ shapes the learning process.",o:["Only thoughts","Only emotions","Both thoughts and emotions","Neither thoughts nor emotions"],a:2},
+{w:1,q:"Watson's work included the famous Little Albert experiment in which he conditioned a small child to ___ a white rat.",o:["fear","love","hate","play with"],a:0},
+{w:1,q:"Behaviorism dominated psychology for much of the early ___ century.",o:["20th","19th","18th","17th"],a:0},
+{w:1,q:"The state of \"conscious incompetence\" may be valuable ___ of a learning experience.",o:["at the end","in the middle","2 years after the end","at the start"],a:3},
+{w:1,q:"Which of the following is not an outcome of effective e-learning?",o:["wider range of strategies","more reflective approach","more positive emotions towards learning","more disconnected knowledge"],a:3},
+{w:1,q:"Instrumental conditioning is an example of ___ learning.",o:["sensitization","habituation","associative","meaningful"],a:2},
+// ---------- Week 2 ----------
+{w:2,q:"The three major types of learning described by ___ psychology are classical conditioning, operant conditioning and observational learning.",o:["cognitive","behavioral","emotional","evolutionary"],a:1},
+{w:2,q:"According to the view of Watson, psychology is ___.",o:["subjective","only descriptive","experimental","about internal mental processes that cannot be measured and observed"],a:2},
+{w:2,q:"___ is given by Ivan Pavlov.",o:["Operant conditioning","Functional conditioning","Classical conditioning","Modern conditioning"],a:2},
+{w:2,q:"The process by which organisms learn to respond to certain stimuli but not to others is known as ___.",o:["stimulus generalization","stimulus appreciation","stimulus discrimination","stimulus differentiation"],a:2},
+{w:2,q:"Higher-order conditioning is intrinsically weaker than its first-order counterpart.",o:["True","False"],a:0},
+{w:2,q:"___ is the process of gradually changing the quality of a response.",o:["Shaping","Modeling","Cueing","Shifting"],a:0},
+{w:2,q:"The works of ___ were instrumental in engendering the dramatic shift from behaviorism to cognitive theories.",o:["Edward C. Tolman","Jean Piaget","German Gestalt","All of the given"],a:3},
+{w:2,q:"___ intelligence is the ability to perceive the visual-spatial world accurately and involves sensitivity to color, line, shape, form, space, and the potential for recognizing and manipulating the patterns of spaces.",o:["Interpersonal","Spatial","Bodily-kinesthetic","Linguistic"],a:1},
+{w:2,q:"Sternberg proposed his theory in 1985 as an alternative to the idea of the ___.",o:["general intelligence factor","multiple intelligences","specific intelligence factor","unconscious intelligence"],a:0},
+{w:2,q:"Which of the following is not a kind of product in the structure of intellect model?",o:["symbolic","classes","systems","implications"],a:0},
+// ---------- Week 3 ----------
+{w:3,q:"The connections between nerve cells are called ___.",o:["systems","syntaxes","neurons","synapses"],a:3},
+{w:3,q:"In order to create a ___, information must be changed into a usable form, which occurs through a process known as encoding.",o:["past memory","new imagination","new memory","past imagination"],a:2},
+{w:3,q:"Calling back the stored information in response to some cue for use in a process or activity is called ___.",o:["Retrieval","Recall","Recollection","All of the given"],a:3},
+{w:3,q:"For many with ___ deficits, reading facial expressions and knowing how to respond are confusing daily challenges.",o:["memory","intelligence","social cognition","biological cognition"],a:2},
+{w:3,q:"The Information Processing View of Learning assumes that there are limits to how much information can be processed at each stage.",o:["True","False"],a:0},
+{w:3,q:"The Information Processing View of Learning assumes that information process is involved in ___.",o:["forgetting","remembering","perceiving","All of the given"],a:3},
+{w:3,q:"The capacity of the sensory register is ___.",o:["very small","very large","7+/-2 chunks","unlimited"],a:1},
+{w:3,q:"Most children do not begin to engage in the process of rehearsal on their own until about age ___.",o:["seven","two","thirteen","one"],a:0},
+{w:3,q:"___ provides an interface between the sub-systems of working memory and the part of long term memory specialized for episodic memory.",o:["Phonological loop","Visuo-spatial sketchpad","Retrieval buffer","Episodic buffer"],a:3},
+{w:3,q:"Memories of specific episodes of one's life refers to ___.",o:["declarative memory","experimental episodic memory","autobiographical episodic memory","procedural memory"],a:2},
+// ---------- Week 4 ----------
+{w:4,q:"___ thinking is the ability to create mental representations of objects, places, events, or people in your mind.",o:["General","Creative","Divergent","Symbolic"],a:3},
+{w:4,q:"We compare new information to our ___ of the person, place, or thing, so we know how to categorize the new information mentally.",o:["protofit","protobite","prototype","none of the given"],a:2},
+{w:4,q:"Which of the following is not true?",o:["Thinking is a higher mental process","Thinking is a sub-vocal talking","Thinking is fulfilling a need or problem solving","Thinking is only done in verbal symbols"],a:3},
+{w:4,q:"Mental images are ___.",o:["Auditory","Visual","Gustatory","All of the given"],a:3},
+{w:4,q:"___ organize complex phenomena into simpler, easily understandable, and usable categories and help to solve our problems.",o:["Concepts","Propositions","Constructs","Components"],a:0},
+{w:4,q:"The lowermost level of Bloom's taxonomy is ___.",o:["remember","apply","understand","analyze"],a:0},
+{w:4,q:"The psychomotor domain of the Bloom's taxonomy is concerned with ___.",o:["Biological makeup","Thoughts and beliefs","Feelings and emotions","Skilled behavior"],a:3},
+{w:4,q:"Which of the following is an example of meta-cognition skills?",o:["Ignoring your limits","Self-monitoring","Skimming all important information","All of the given"],a:1},
+{w:4,q:"___ critical thinking skill helps you analyze and process information to come to an unbiased conclusion.",o:["Open-mindedness","Self-regulation","Self-control","Observation"],a:0},
+{w:4,q:"The inspiration phase of the creative thinking process refers to the ___ stage.",o:["Incubation","Insight","Evaluation","Preparation"],a:3},
+// ---------- Week 5 ----------
+{w:5,q:"Which of the following is true about motivation?",o:["It is a physical impulse","It is an external process","It has a willingness to activate but not channel the attitudes of learners","None of the given"],a:3},
+{w:5,q:"The term \"motivation\" comes from a ___ word.",o:["Greek","Latin","Hindi","Bengali"],a:1},
+{w:5,q:"It is called extrinsic motivation if causal factor is ___.",o:["curiosity","social pressure","self-satisfaction","needs"],a:1},
+{w:5,q:"___ motivation is considered to be more crucial for students as it is associated with deep learning, better performance and self-efficacy.",o:["Intrinsic","Extrinsic","Introjected regulation","None of the given"],a:0},
+{w:5,q:"___ proposed that there are three primary drives that drive human behavior.",o:["Hull","Watson","Piaget","Gestalt"],a:0},
+{w:5,q:"Expectancy Theory of Motivation was developed by ___.",o:["Vroom","Hull","Murray","None of the given"],a:0},
+{w:5,q:"An example of ___ is thinking, \"If I work hard I can achieve the targets my boss has set for me\".",o:["purposeful","valence","instrumentality","expectancy"],a:3},
+{w:5,q:"In SMART goals, T stands for ___.",o:["Temporary","Time-based","Tough","Testing"],a:1},
+{w:5,q:"Friendship is a ___ need in Maslow's hierarchy.",o:["Love and belonging","Esteem","Physiological","Safety"],a:0},
+{w:5,q:"___ theory differentiates between autonomous motivation and controlled motivation.",o:["Arousal","Goal-setting","Need hierarchy","Self-determination"],a:3},
+// ---------- Week 6 ----------
+{w:6,q:"According to Daniel Goleman, ___ component of emotional intelligence focuses on how we handle relationships with others.",o:["self-awareness","motivation","empathy","emotional regulation"],a:2},
+{w:6,q:"Emotional intelligence can be considered a type of ___ intelligence.",o:["academic","genetic","social","external"],a:2},
+{w:6,q:"Noticing a difficult emotion and slowing down or resisting any impulsive action that may follow highlights ___ component of emotional intelligence.",o:["Self-regulation","Motivation","Emotional literacy","Empathy"],a:0},
+{w:6,q:"The following are signs of emotional intelligence, except ___.",o:["strong sense of curiosity","holding onto mistakes","ability to manage emotions in difficult situations","self-confidence"],a:1},
+{w:6,q:"Perceiving emotions means ___.",o:["Ignoring signals","Understanding only what somebody is saying to you","Understanding only somebody's facial expression","Understanding both verbal and nonverbal signals"],a:3},
+{w:6,q:"___ suggests that 10 distinct components provide the scaffolding of emotionally and socially intelligent behaviors.",o:["Bar-On","Goleman","Salovey","Mayer"],a:0},
+{w:6,q:"Which of the following is a facilitator of EQ?",o:["optimism","happiness","independence","all of the given"],a:3,n:"The answer key prints \"a = all of the given\"; the answer text is \"all of the given\" (option d)."},
+{w:6,q:"___ is a strategy for improving one's self-awareness.",o:["rejecting feedback","using critical self-talk daily","developing a fixed mindset","pursuing one's passion"],a:3},
+{w:6,q:"Having students create autobiographies is an example of creating opportunities for ___.",o:["emotional labor","emotional contagion","metacognition","none of the given"],a:2},
+{w:6,q:"Which of the following is not true about management of emotions?",o:["It is essentially a private act","It is directly regulated by others","It is influenced by cultural norms","It is influenced by what society defines as appropriate to feel and express"],a:1},
+// ---------- Week 7 ----------
+{w:7,q:"Which of the following is false about learning according to Gagne's definition?",o:["It is a change in human disposition","It persists over a period of time","It is simply ascribable to processes of growth","None of the above"],a:2},
+{w:7,q:"Manual or physical skills come under ___ component of Bloom's taxonomy.",o:["Cognitive","Affective","Psychomotor","Physical"],a:2},
+{w:7,q:"Reflection, learning and education was explored by ___.",o:["Carl Rogers","John Watson","Benjamin Bloom","John Dewey"],a:3},
+{w:7,q:"The principles of ___ refer to how close in time two events must be for a bond to be formed.",o:["behavior","reinforcement","repetition","contiguity"],a:3},
+{w:7,q:"___ gives information to learners about their success or failure concerning the task at hand.",o:["Cognitive feedback","Emotional feedback","Reinforcement","Physical feedback"],a:0},
+{w:7,q:"The ___ orientation to learning has a quality of personal involvement: the whole person in both feeling and cognitive aspects being in the learning event.",o:["behavioral","cognitive","humanistic","social"],a:2},
+{w:7,q:"Learning through play is ___ learning.",o:["primary","secondary","passive","active"],a:3},
+{w:7,q:"People with ___ learning style are prone to sorting their ideas after speaking, rather than thinking ideas through before.",o:["logical","solitary","visual","auditory"],a:3},
+{w:7,q:"Which of the following statements is false?",o:["Effective instruction is static","Effective instruction is eclectic","Effective instruction is generative","Effective instruction is interactive"],a:0},
+{w:7,q:"In ADDIE model, I stands for ___.",o:["instruction","implementation","integration","induction"],a:1},
+// ---------- Week 8 ----------
+{w:8,q:"The word 'pedagogy' has been derived from the ___ word \"pedagogue\".",o:["Latin","Sanskrit","Greek","English"],a:2},
+{w:8,q:"Which of the following statements is not true about pedagogy?",o:["It is a method or way of teaching","It is derived from the Greek word \"pedagogue\"","It helps a teacher understand how learning should be facilitated.","It harms the quality of teaching and learning."],a:3},
+{w:8,q:"Pedagogy can enhance the student-teacher relationship.",o:["True","False"],a:0},
+{w:8,q:"___ learning is based on the model that knowledge can be created within a population where members actively interact by sharing experiences and take on asymmetry roles.",o:["integrative","inquiry-based","collaborative","constructivist"],a:2},
+{w:8,q:"The Pedagogical Model provides an overview of the learning cycle and breaks it down into ___ domains or phases of instruction.",o:["five","three","two","seven"],a:0},
+{w:8,q:"Which of the following is not a type of inquiry-based approach?",o:["confrontation","structure","guided","open"],a:0},
+{w:8,q:"In experiential learning, students are engaged ___.",o:["intellectually","soulfully","socially","all of the given"],a:3},
+{w:8,q:"___ stage of experiential theory by Kolb focuses on planning.",o:["concrete experience","abstract conceptualization","reflective observation","active experimentation"],a:3},
+{w:8,q:"People with a ___ learning style can often act on \"gut feeling\" and will rely on others' analysis rather than their own.",o:["accommodating","converging","diverging","assimilating"],a:0},
+{w:8,q:"According to the ___ principle, students learn better from animation and narration than from animation and on-screen text.",o:["multimedia","modality","coherence","temporal contiguity"],a:1},
+// ---------- Week 9 ----------
+{w:9,q:"E-learning is any form of ___.",o:["teaching","training","tutoring","all of the given"],a:3},
+{w:9,q:"___ is a feature of e-learning.",o:["difficulty in access","user friendliness","social injustice","closed learning"],a:1},
+{w:9,q:"E-learning is a synonym of audio-visual learning, multimedia learning, and distance learning.",o:["True","False"],a:1},
+{w:9,q:"Which of the following is not a type of e-learning?",o:["text-driven","interactive","simulation","physical"],a:3},
+{w:9,q:"Which of the following is not a benefit of e-learning?",o:["It can accommodate the need of a housewife","People can revise the learning content as many times as they want","It facilitates in developing and communicating new training policies","None of the given"],a:3},
+{w:9,q:"Good learners know ___.",o:["What they are learning","Why they are learning","How they are learning","All of the given"],a:3},
+{w:9,q:"Learners may multitask when engaging in an online course, which could be resulting in ___.",o:["hyperfocus","better retrieval","shorter attention spans","None of the given"],a:2},
+{w:9,q:"___ learning is the crucial determinant of successful e-learning.",o:["passive","retrospective","social","active"],a:3},
+{w:9,q:"The brain can process 36,000 visual cues per ___.",o:["hour","second","day","year"],a:0},
+{w:9,q:"For effective learning, online courses should ___.",o:["use headings","use complex language","present long pieces of text","use random images"],a:0},
+// ---------- Week 10 ----------
+{w:10,q:"During Covid-19 the world was busy in preparing 1.5 billion learners for the new normal, i.e., ___ learning.",o:["ineffective","physical","remote","experiential"],a:2},
+{w:10,q:"To develop learner readiness for online learning, training sessions on ___ are helpful.",o:["netiquettes","time management","developing study skills","all of the given"],a:3},
+{w:10,q:"The typical picture of a teacher being a dispenser of knowledge to the students has been replaced by that of a ___.",o:["obstructor","parent","friend","facilitator"],a:3},
+{w:10,q:"In 2018, Global Education and Skills Forum noted that the 'future' teacher would need 5 skills to thrive in the 21st century. Which of the following is not one of them?",o:["Strong social skills","Data analysis","External focus","Strictness"],a:3},
+{w:10,q:"Participatory education demands ___ so as to build a needs-based approach to teaching.",o:["creativity","stubbornness","reward","none of the given"],a:0},
+{w:10,q:"Students who consider intelligence as a malleable entity tend to focus on their obstacles instead of goals.",o:["True","False"],a:1},
+{w:10,q:"Which of the following is not a principle to enhance student learning?",o:["What students already know affects their learning","Learning is context-based","Students' cognitive development and learning is limited by the general stages of development.","The acquisition of knowledge and skills in the long term depends largely on practice."],a:2},
+{w:10,q:"___ feedback to students is important for learning.",o:["Unclear","Late","Harsh","Explanatory"],a:3},
+{w:10,q:"Mastery goals are those that are geared towards the acquisition or improvement of ___.",o:["Skills","Number of students in a classroom","Teacher feedback","None of the given"],a:0},
+{w:10,q:"The vast majority of formative assessment is ___.",o:["Formal","Incorrect","Written","informal"],a:3},
+// ---------- Week 11 ----------
+{w:11,q:"Social cognition has a protracted development through infancy to ___.",o:["teenage","old-age","adulthood","death"],a:2},
+{w:11,q:"Which of the following abilities comes under social cognition?",o:["Face processing","Joint attention","Theory of mind","All of the given"],a:3},
+{w:11,q:"Under social cognition, abilities involved in affective processing are often called ___.",o:["hot","cold","white","black"],a:0},
+{w:11,q:"Social schemas refer to people's mental representations of social ___.",o:["values","memories","skills","patterns"],a:3},
+{w:11,q:"During the earliest stages of development, children are very ___-centric. They see the world from their own perspective and struggle to think about how other people may view the world.",o:["selfish","ego","conscious","emotional"],a:1},
+{w:11,q:"A theory of mind refers to a person's ability to understand and think about the ___ of other people.",o:["behaviors","family backgrounds","mental states","language"],a:2},
+{w:11,q:"The same social behavior in one cultural setting might have a very different meaning and interpretation if it were to occur or be observed in another culture.",o:["True","False"],a:0},
+{w:11,q:"Social cognitive theory by Bandura focuses on concepts of ___.",o:["self-efficacy","modeling","observational learning","all of the given"],a:3},
+{w:11,q:"The central tenet of Bandura's social-cognitive theory is that people seek to develop a sense of ___ over the important events in their lives.",o:["agency","dependency","attachment","emotion"],a:0},
+{w:11,q:"___ hypothesis suggests that social processes influence how information is selected, organized, integrated, and retrieved.",o:["activation","cognitive influence","interaction","social cue strength"],a:1},
+// ---------- Week 12 (from the SWAYAM page's accepted answers) ----------
+{w:12,q:"Sustainability in economic sustainability is ___.",o:["multidimensional","bidimensional","unidimensional","none of the given"],a:2},
+{w:12,q:"The term \"sustainable development\" was first mentioned in a book related to the 1972 UN Stockholm conference on ___.",o:["water","poverty","economic crisis","human environment"],a:3},
+{w:12,q:"Environmental sustainability focuses on impacts of processes, products and services on ___.",o:["water","biodiversity","human health","all of the given"],a:3},
+{w:12,q:"Which of the following does not come under social sustainability?",o:["Labour practices","Revenue generation","Human rights","Business ethics"],a:1},
+{w:12,q:"SDG ___ focuses on clean water and sanitation.",o:["1","17","6","3"],a:2},
+{w:12,q:"SDG 16 focuses on ___.",o:["No poverty","No hunger","Good health","Peace and justice"],a:3},
+{w:12,q:"On 20 October 2020, the Higher Education Sustainability Initiative (HESI) raised the flag of higher education as a driver for sustainable development and inclusive societies on the first day of the ___ 2020.",o:["National Sustainability Meeting","National Teachers Meeting","Global Childrens' Meeting","Global Education Meeting"],a:3},
+{w:12,q:"Education is related to all SDGs.",o:["True","False"],a:0},
+{w:12,q:"Successful implementation of ESD requires a shift in focus from ___.",o:["teaching to learning","learning to teaching","reading to speaking","knowing to ignoring"],a:0},
+{w:12,q:"___ competency is the ability to reflect on one's own role in the local community and (global) society.",o:["collaboration","self-awareness","strategic","normative"],a:1},
+];
+DATA.forEach((d,i)=>{d.id=i; d.num=DATA.filter((x,j)=>j<i&&x.w===d.w).length+1;});
+
+const L = "ABCD";
+const WEEKS = [...new Set(DATA.map(d=>d.w))];
+const $ = s => document.querySelector(s);
+const esc = s => s.replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+// ---- per-viewer storage (safe) ----
+function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def}catch(e){return def}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+
+const S = {
+  mode:"cards", weeks:new Set(WEEKS), order:[], pos:0, flipped:false,
+  shuffle:false, onlyAgain:false, marks:load("pol_marks",{}),
+  quiz:{answered:{}, right:0, total:0}, search:""
+};
+
+// ---- theme ----
+(function(){const t=load("pol_theme",null); if(t) document.documentElement.dataset.theme=t;})();
+$("#themeBtn").onclick=()=>{
+  const cur=document.documentElement.dataset.theme ||
+    (matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+  const next=cur==="dark"?"light":"dark";
+  document.documentElement.dataset.theme=next; save("pol_theme",next);
+};
+
+// ---- deck building ----
+function buildDeck(){
+  let deck = DATA.filter(d=>S.weeks.has(d.w));
+  if (S.onlyAgain && S.mode!=="list") deck = deck.filter(d=>S.marks[d.id]!=="known");
+  deck = deck.map(d=>d.id);
+  if (S.shuffle && S.mode!=="list"){
+    for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+  }
+  S.order=deck; S.pos=0; S.flipped=false;
+  S.quiz={answered:{},right:0,total:0};
+}
+
+// ---- chips ----
+function renderChips(){
+  const c=$("#chips");
+  const all = S.weeks.size===WEEKS.length;
+  c.innerHTML = `<button data-w="all" class="${all?"on":""}">All weeks</button>` +
+    WEEKS.map(w=>`<button data-w="${w}" class="${!all&&S.weeks.has(w)?"on":""}">Week ${w}</button>`).join("");
+  c.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    const w=b.dataset.w;
+    if (w==="all") S.weeks=new Set(WEEKS);
+    else {
+      const n=+w;
+      if (S.weeks.size===WEEKS.length) S.weeks=new Set([n]);
+      else if (S.weeks.has(n)) { S.weeks.delete(n); if(!S.weeks.size) S.weeks=new Set(WEEKS); }
+      else S.weeks.add(n);
+    }
+    buildDeck(); renderChips(); render();
+  });
+}
+
+// ---- tabs ----
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));
+  S.mode=b.dataset.mode; buildDeck(); render();
+});
+
+function optsHTML(d, cls){
+  return `<ul class="opts">${d.o.map((o,i)=>`<li data-i="${i}" class="${cls?cls(i):""}"><b>${L[i]}.</b>${esc(o)}</li>`).join("")}</ul>`;
+}
+function toolbar(extra){
+  const known = DATA.filter(d=>S.marks[d.id]==="known").length;
+  return `<div class="bar">
+    <label><input type="checkbox" id="shuf" ${S.shuffle?"checked":""}> Shuffle</label>
+    <label><input type="checkbox" id="again" ${S.onlyAgain?"checked":""}> Hide cards marked "Got it"</label>
+    <span style="margin-left:auto">${extra||""} · Known: ${known}/${DATA.length}</span>
+  </div>`;
+}
+function bindToolbar(){
+  const sh=$("#shuf"), ag=$("#again");
+  if(sh) sh.onchange=()=>{S.shuffle=sh.checked; buildDeck(); render();};
+  if(ag) ag.onchange=()=>{S.onlyAgain=ag.checked; buildDeck(); render();};
+}
+
+// ---- render ----
+function render(){
+  if (S.mode==="cards") renderCards();
+  else if (S.mode==="quiz") renderQuiz();
+  else renderList();
+}
+
+function emptyMsg(){
+  return `<div class="empty">No cards here. ${S.onlyAgain?`Every card in this selection is marked "Got it". <button id="reset">Reset marks</button>`:""}</div>`;
+}
+
+function renderCards(){
+  const v=$("#view");
+  if(!S.order.length){ v.innerHTML=toolbar()+emptyMsg(); bindToolbar(); bindReset(); return; }
+  const d=DATA[S.order[S.pos]];
+  const mark=S.marks[d.id];
+  v.innerHTML = toolbar(`Card ${S.pos+1} / ${S.order.length}`) + `
+  <div class="progress"><div style="width:${(S.pos+1)/S.order.length*100}%"></div></div>
+  <div class="scene"><div class="card ${S.flipped?"flipped":""}" id="card">
+    <div class="face front">
+      <div class="meta"><span class="tag">Week ${d.w} · Q${d.num}</span><span>${mark==="known"?"✓ Got it":mark==="again"?"↻ Review again":""}</span></div>
+      <p class="q">${esc(d.q)}</p>
+      ${optsHTML(d)}
+      <div class="hint">Click card or press Space to reveal the answer</div>
+    </div>
+    <div class="face back">
+      <div class="meta"><span class="tag">Week ${d.w} · Q${d.num}</span><span>Answer</span></div>
+      <p class="qsmall">${esc(d.q)}</p>
+      <div class="ans">${L[d.a]}. ${esc(d.o[d.a])}</div>
+      ${optsHTML(d, i=>i===d.a?"correct":"")}
+      ${d.n?`<div class="note">Note: ${esc(d.n)}</div>`:""}
+      <div class="hint">Click to flip back</div>
+    </div>
+  </div></div>
+  <div class="controls">
+    <button id="prev">← Prev</button>
+    <button id="flip" class="primary">Flip</button>
+    <button id="bad" class="bad">↻ Again</button>
+    <button id="good" class="good">✓ Got it</button>
+    <button id="next">Next →</button>
+  </div>
+  <div class="kbd"><kbd>←</kbd> <kbd>→</kbd> navigate · <kbd>Space</kbd> flip · <kbd>G</kbd> got it · <kbd>A</kbd> again</div>`;
+  fitCard();
+  bindToolbar();
+  $("#card").onclick=flip; $("#flip").onclick=flip;
+  $("#prev").onclick=()=>go(-1); $("#next").onclick=()=>go(1);
+  $("#good").onclick=()=>markCard("known"); $("#bad").onclick=()=>markCard("again");
+}
+// size card to the taller face so nothing is clipped
+function fitCard(){
+  const card=$("#card"); if(!card) return;
+  let h=0; card.querySelectorAll(".face").forEach(f=>{f.style.position="relative";h=Math.max(h,f.scrollHeight);f.style.position="";});
+  card.style.minHeight=Math.max(h,300)+"px";
+}
+function flip(){S.flipped=!S.flipped; $("#card").classList.toggle("flipped",S.flipped);}
+function go(n){
+  if(!S.order.length) return;
+  S.pos=(S.pos+n+S.order.length)%S.order.length; S.flipped=false; render();
+}
+function markCard(m){
+  const id=S.order[S.pos]; S.marks[id]=m; save("pol_marks",S.marks);
+  if(S.onlyAgain && m==="known"){
+    S.order.splice(S.pos,1); if(S.pos>=S.order.length) S.pos=0; S.flipped=false; render();
+  } else go(1);
+}
+function bindReset(){const r=$("#reset"); if(r) r.onclick=()=>{S.marks={}; save("pol_marks",S.marks); buildDeck(); render();};}
+
+function renderQuiz(){
+  const v=$("#view");
+  if(!S.order.length){ v.innerHTML=toolbar()+emptyMsg(); bindToolbar(); bindReset(); return; }
+  if(S.pos>=S.order.length){
+    const pct=Math.round(S.quiz.right/S.quiz.total*100);
+    const wrong=S.order.filter(id=>S.quiz.answered[id]!==DATA[id].a);
+    v.innerHTML = `<div class="quiz"><p class="q">Quiz finished</p>
+      <p class="score">Score: ${S.quiz.right} / ${S.quiz.total} (${pct}%)</p>
+      ${wrong.length?`<p class="sub">Questions you missed:</p><div class="list">${wrong.map(id=>{const d=DATA[id];
+        return `<div class="item"><p class="q">W${d.w} Q${d.num}. ${esc(d.q)}</p><div class="a">${L[d.a]}. ${esc(d.o[d.a])}</div></div>`}).join("")}</div>`:"<p>Perfect score!</p>"}
+      <div class="controls"><button class="primary" id="restart">Restart quiz</button>
+      ${wrong.length?`<button id="retryWrong">Retry missed only</button>`:""}</div></div>`;
+    $("#restart").onclick=()=>{buildDeck(); render();};
+    const rw=$("#retryWrong"); if(rw) rw.onclick=()=>{S.order=wrong; S.pos=0; S.quiz={answered:{},right:0,total:0}; render();};
+    return;
+  }
+  const d=DATA[S.order[S.pos]];
+  const ans=S.quiz.answered[d.id];
+  const done=ans!==undefined;
+  v.innerHTML = toolbar(`Question ${S.pos+1} / ${S.order.length} · <span class="score">Score ${S.quiz.right}/${S.quiz.total}</span>`) + `
+  <div class="progress"><div style="width:${(S.pos)/S.order.length*100}%"></div></div>
+  <div class="quiz ${done?"done":""}">
+    <div class="meta"><span class="tag">Week ${d.w} · Q${d.num}</span><span>${done?(ans===d.a?"✓ Correct":"✗ Wrong"):"Pick an answer"}</span></div>
+    <p class="q">${esc(d.q)}</p>
+    ${optsHTML(d, i=>!done?"":i===d.a?"correct":i===ans?"wrong":"")}
+    ${done&&d.n?`<div class="note">Note: ${esc(d.n)}</div>`:""}
+    <div class="controls">${done?`<button class="primary" id="qnext">${S.pos+1<S.order.length?"Next →":"See results"}</button>`:""}</div>
+  </div>
+  <div class="kbd"><kbd>1</kbd>–<kbd>4</kbd> or <kbd>A</kbd>–<kbd>D</kbd> answer · <kbd>Enter</kbd> / <kbd>→</kbd> next</div>`;
+  bindToolbar();
+  if(!done) v.querySelectorAll(".quiz .opts li").forEach(li=>li.onclick=()=>answer(+li.dataset.i));
+  const n=$("#qnext"); if(n) n.onclick=qNext;
+}
+function answer(i){
+  const d=DATA[S.order[S.pos]];
+  if(S.quiz.answered[d.id]!==undefined || i>=d.o.length) return;
+  S.quiz.answered[d.id]=i; S.quiz.total++; if(i===d.a) S.quiz.right++;
+  if(i!==d.a){S.marks[d.id]="again"; save("pol_marks",S.marks);}
+  render();
+}
+function qNext(){
+  const d=DATA[S.order[S.pos]]; if(!d||S.quiz.answered[d.id]===undefined) return;
+  S.pos++; render();
+}
+
+function renderList(){
+  const v=$("#view");
+  const q=S.search.toLowerCase();
+  const items=S.order.map(id=>DATA[id]).filter(d=>!q||(d.q+" "+d.o.join(" ")).toLowerCase().includes(q));
+  let html=`<input class="search" id="search" placeholder="Search questions and answers…" value="${esc(S.search)}">
+    <div class="bar"><span>${items.length} questions</span><button id="print" style="margin-left:auto">Print</button></div><div class="list">`;
+  let lastW=-1;
+  items.forEach(d=>{
+    if(d.w!==lastW){html+=`<h2>Week ${d.w}</h2>`; lastW=d.w;}
+    html+=`<div class="item"><p class="q">${d.num}. ${esc(d.q)}</p><div class="a">→ ${L[d.a]}. ${esc(d.o[d.a])}</div>${d.n?`<div class="note">${esc(d.n)}</div>`:""}</div>`;
+  });
+  html+= items.length?"</div>":`</div><div class="empty">No matches.</div>`;
+  v.innerHTML=html;
+  const s=$("#search");
+  s.oninput=()=>{S.search=s.value; const p=s.selectionStart; renderList(); const n=$("#search"); n.focus(); n.setSelectionRange(p,p);};
+  $("#print").onclick=()=>window.print();
+}
+
+// ---- keyboard ----
+document.addEventListener("keydown",e=>{
+  if(e.target.tagName==="INPUT") return;
+  const k=e.key.toLowerCase();
+  if(S.mode==="cards"){
+    if(k===" "||k==="enter"){e.preventDefault(); if($("#card")) flip();}
+    else if(k==="arrowright") go(1);
+    else if(k==="arrowleft") go(-1);
+    else if(k==="g") markCard("known");
+    else if(k==="a") markCard("again");
+  } else if(S.mode==="quiz"){
+    if("1234".includes(k)&&k) answer(+k-1);
+    else if("abcd".includes(k)&&k) answer("abcd".indexOf(k));
+    else if(k==="enter"||k==="arrowright"){e.preventDefault(); qNext();}
+  }
+});
+window.addEventListener("resize",fitCard);
+
+buildDeck(); renderChips(); render();
+</script>
+</body>
+</html>

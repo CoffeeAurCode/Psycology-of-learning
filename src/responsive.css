@@ -210,10 +210,6 @@
     width: 36px;
     height: 36px;
   }
-  .otp {
-    font-size: 1.3rem;
-    letter-spacing: 0.22em;
-  }
 }
 
 /* ---------- short phones (iPhone SE/8, small Androids): keep card buttons above the tab bar ---------- */

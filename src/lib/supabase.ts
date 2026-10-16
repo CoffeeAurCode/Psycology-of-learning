@@ -19,7 +19,6 @@ export function friendlyError(e: unknown): string {
     return "The database isn't set up yet. Run supabase/setup.sql in the Supabase SQL editor.";
   if (code === "23505") return "That name is taken. Try another.";
   if (/rate limit|too many/i.test(msg)) return "Too many attempts. Please wait a minute and try again.";
-  if (/Token has expired or is invalid|otp/i.test(msg)) return "That code is wrong or has expired. Request a new one.";
   if (/Failed to fetch|NetworkError/i.test(msg)) return "You seem to be offline. Check your connection.";
   if (status && status >= 500) return "Sign-in is having trouble right now. Please try again in a minute.";
   return msg;

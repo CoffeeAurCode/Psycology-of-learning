@@ -59,7 +59,7 @@ test.describe("signed-in users", () => {
     await deleteMyTestUsers();
   });
 
-  test("OTP sign-in produces a real session", async () => {
+  test("a signed-in client gets a real session", async () => {
     const { data } = await A.auth.getUser();
     expect(data.user?.email).toBe(a.email);
   });

@@ -218,11 +218,8 @@ test("signed-out visitors are sent to sign in before a ranked test", async ({ pa
   await goto(page, "/test");
   await page.getByRole("link", { name: /Sign in to start/ }).click();
   await expect(page).toHaveURL(/\/me\?next=\/test/);
-  await page.getByRole("button", { name: /Use email instead/ }).click();
-  await expect(page.getByRole("button", { name: /Email me a code/ })).toBeVisible();
-  await page.getByLabel("Email").fill("not-an-email");
-  await page.getByRole("button", { name: /Email me a code/ }).click();
-  await expect(page.getByText("Enter a valid email address.")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Continue with Google/ })).toBeVisible();
+  await expect(page.getByLabel("Email")).toHaveCount(0); // Google is the only way in
 });
 
 test("Continue with Google hands off to Supabase and returns to where they were going", async ({ page }) => {

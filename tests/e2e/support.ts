@@ -54,7 +54,7 @@ export async function deleteMyTestUsers() {
   }
 }
 
-/** The 6-digit code the user would have received by email. */
+/** A one-time sign-in code minted by the admin API (tests only; never emailed). */
 export async function otpFor(email: string) {
   const { data, error } = await admin().auth.admin.generateLink({ type: "magiclink", email });
   if (error) throw error;
@@ -67,6 +67,15 @@ export async function signedInClient(email: string): Promise<SupabaseClient> {
   const { error } = await c.auth.verifyOtp({ email, token: await otpFor(email), type: "email" });
   if (error) throw error;
   return c;
+}
+
+/** Drop a real session into the page's storage, exactly what supabase-js saves after Google sign-in. */
+export async function signInPage(page: Page, email: string) {
+  const { data } = await (await signedInClient(email)).auth.getSession();
+  const key = `sb-${new URL(env.url).hostname.split(".")[0]}-auth-token`;
+  await page.evaluate(([k, v]) => localStorage.setItem(k, v), [key, JSON.stringify(data.session)]);
+  await page.reload();
+  await ready(page);
 }
 
 /** Delete every throwaway user (cascades to profiles, attempts and progress). Global teardown only. */

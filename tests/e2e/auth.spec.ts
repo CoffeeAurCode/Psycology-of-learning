@@ -1,8 +1,8 @@
 // Full signed-in journey through the real UI against the live Supabase project:
-// email code sign-in → leaderboard name → 100-question test → results → leaderboard
+// sign-in → leaderboard name → 100-question test → results → leaderboard
 // → profile edits → flashcard sync → sign out. Throwaway users; no real emails are sent.
 import { test, expect } from "@playwright/test";
-import { ANSWER, cardProgressOf, createTestUser, currentQuestion, deleteMyTestUsers, goto, hasAdmin, otpFor, signedInClient } from "./support";
+import { ANSWER, cardProgressOf, createTestUser, currentQuestion, deleteMyTestUsers, goto, hasAdmin, signInPage, signedInClient } from "./support";
 
 test.skip(!hasAdmin, "needs SUPABASE_SECRET_KEY (or local Supabase.txt) to create throwaway users");
 test.describe.configure({ mode: "serial", timeout: 480_000 });
@@ -18,26 +18,13 @@ test("sign in, take a ranked test, appear on the leaderboard, manage account", a
   const user = await createTestUser(tag);
   const name = `E2E ${tag} ${Math.floor(Math.random() * 9000 + 1000)}`;
 
-  // Don't actually email anyone: the "send code" request is answered locally.
-  // Verification of the code below is the real Supabase endpoint.
-  let otpRequests = 0;
-  await page.route("**/auth/v1/otp*", async (route) => {
-    otpRequests++;
-    await route.fulfill({ status: 200, contentType: "application/json", body: "{}" });
-  });
-
-  // ---- sign in with the 6-digit code ----
+  // ---- sign in ----
+  // Google's own login screen can't be automated, so the throwaway user's real Supabase
+  // session is put in place of it; the Google hand-off itself is covered in ui.spec.ts.
   await goto(page, "/test");
   await page.getByRole("link", { name: /Sign in to start/ }).click();
-  await page.getByRole("button", { name: /Use email instead/ }).click();
-  await page.getByLabel("Email").fill(user.email);
-  await page.getByRole("button", { name: /Email me a code/ }).click();
-  await expect(page.getByText("Check your inbox")).toBeVisible();
-  expect(otpRequests).toBe(1);
-
-  await page.locator("#code").fill("00000000"); // wrong code first (8 digits auto-submits)
-  await expect(page.locator(".err")).toContainText(/wrong or has expired/i);
-  await page.locator("#code").fill(await otpFor(user.email));
+  await expect(page.getByRole("button", { name: /Continue with Google/ })).toBeVisible();
+  await signInPage(page, user.email);
   await expect(page.getByText("You're in!")).toBeVisible();
 
   // ---- choose a leaderboard name (validation first) ----

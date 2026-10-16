@@ -1435,14 +1435,6 @@ a {
   border-color: var(--ink);
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--red) 18%, transparent);
 }
-.otp {
-  font-size: 1.55rem;
-  letter-spacing: 0.32em;
-  text-align: center;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  padding-left: calc(16px + 0.32em);
-}
 .err {
   color: var(--bad);
   font-size: 0.88rem;

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { Icon } from "../components/Icon";
@@ -9,11 +9,6 @@ import { useTheme, type ThemePref } from "../lib/theme";
 import { friendlyError, isConfigured, supabase } from "../lib/supabase";
 import { QUESTIONS } from "../data/questions";
 
-// Supabase "Email OTP length" (Auth → Providers → Email). This project uses 8.
-// Codes of 6–10 digits are accepted; we auto-submit once OTP_LENGTH digits are typed or pasted.
-const OTP_LENGTH = Number(import.meta.env.VITE_OTP_LENGTH ?? 8);
-const OTP_MIN = 6;
-const OTP_MAX = 10;
 const NAME_RE = /^[A-Za-z0-9_. -]{3,20}$/;
 
 export default function Account() {
@@ -69,19 +64,14 @@ function Head({ title, sub }: { title: string; sub?: string }) {
   );
 }
 
-/* ---------------- Google, or email → one-time code ---------------- */
+/* ---------------- Google sign-in ---------------- */
 const OAUTH_ERROR_PARAMS = ["error", "error_code", "error_description"];
 
 function SignIn() {
   const [params, setParams] = useSearchParams();
-  const [step, setStep] = useState<"start" | "email" | "code">("start");
-  const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   // Supabase sends people back with ?error=… if they cancel on Google's screen
   const [err, setErr] = useState<string | null>(() => (params.has("error") ? "Google sign-in didn't finish. Please try again." : null));
-  const [cooldown, setCooldown] = useState(0);
-  const codeRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!OAUTH_ERROR_PARAMS.some((k) => params.has(k))) return;
@@ -89,12 +79,6 @@ function SignIn() {
     OAUTH_ERROR_PARAMS.forEach((k) => p.delete(k));
     setParams(p, { replace: true });
   }, [params, setParams]);
-
-  useEffect(() => {
-    if (cooldown <= 0) return;
-    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
-    return () => clearTimeout(t);
-  }, [cooldown]);
 
   const google = async () => {
     setBusy(true);
@@ -109,139 +93,29 @@ function SignIn() {
     }
   };
 
-  const send = async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    const em = email.trim().toLowerCase();
-    if (!/^\S+@\S+\.\S+$/.test(em)) return setErr("Enter a valid email address.");
-    setBusy(true);
-    setErr(null);
-    const { error } = await supabase.auth.signInWithOtp({ email: em, options: { shouldCreateUser: true } });
-    setBusy(false);
-    if (error) return setErr(friendlyError(error));
-    setEmail(em);
-    setStep("code");
-    setCooldown(60);
-    setTimeout(() => codeRef.current?.focus(), 350);
-  };
-
-  const verify = async (token: string) => {
-    setBusy(true);
-    setErr(null);
-    const { error } = await supabase.auth.verifyOtp({ email, token, type: "email" });
-    setBusy(false);
-    if (error) {
-      setErr(friendlyError(error));
-      setCode("");
-    }
-  };
-
-  const onCode = (v: string) => {
-    const digits = v.replace(/\D/g, "").slice(0, OTP_MAX);
-    setCode(digits);
-    if (digits.length === OTP_LENGTH && !busy) verify(digits);
-  };
-
   return (
     <div>
       <div className="auth-hero">
         <motion.img src="/brand/badge-hex.webp" width={128} height={180} alt="Coffee aur Code" initial={{ y: 20, opacity: 0, rotate: -6 }} animate={{ y: 0, opacity: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 200, damping: 16 }} />
       </div>
-      <AnimatePresence mode="wait">
-        {step === "start" ? (
-          <motion.div key="start" initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -30, opacity: 0 }} className="stack">
-            <SignInIntro />
-            <button className="btn block" disabled={busy} onClick={google}>
-              <GoogleLogo /> {busy ? "Opening Google…" : "Continue with Google"}
-            </button>
-            {err && <div className="err">{err}</div>}
-            <button
-              className="btn sm ghost block"
-              disabled={busy}
-              onClick={() => {
-                setStep("email");
-                setErr(null);
-              }}
-            >
-              <Icon name="mail" size={16} /> Use email instead
-            </button>
-            <PrivacyNote />
-          </motion.div>
-        ) : step === "email" ? (
-          <motion.form key="email" onSubmit={send} noValidate initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -30, opacity: 0 }} className="stack">
-            <SignInIntro />
-            <div className="field">
-              <label htmlFor="email">Email</label>
-              <input id="email" className="input" type="email" inputMode="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} autoFocus />
-            </div>
-            {err && <div className="err">{err}</div>}
-            <button className="btn primary block" disabled={busy}>
-              {busy ? "Sending…" : "Email me a code"} <Icon name="arrow" size={18} />
-            </button>
-            <p className="muted" style={{ fontSize: ".8rem", textAlign: "center", margin: 0 }}>
-              No password needed. New here? This creates your account.
-            </p>
-            <button
-              type="button"
-              className="btn sm ghost block"
-              onClick={() => {
-                setStep("start");
-                setErr(null);
-              }}
-            >
-              <Icon name="left" size={16} /> Back to Google sign-in
-            </button>
-          </motion.form>
-        ) : (
-          <motion.div key="code" initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -30, opacity: 0 }} className="stack">
-            <div style={{ textAlign: "center" }}>
-              <h1 className="display" style={{ fontSize: "1.8rem", margin: "8px 0 6px" }}>
-                Check your inbox
-              </h1>
-              <p className="muted" style={{ margin: 0 }}>
-                We sent a {OTP_LENGTH}-digit code to <b style={{ color: "var(--ink)" }}>{email}</b>
-              </p>
-            </div>
-            <div className="field">
-              <label htmlFor="code" className="sr-only">
-                Code
-              </label>
-              <input
-                ref={codeRef}
-                id="code"
-                className="input otp"
-                inputMode="numeric"
-                autoComplete="one-time-code"
-                placeholder={"•".repeat(OTP_LENGTH)}
-                value={code}
-                onChange={(e) => onCode(e.target.value)}
-                maxLength={OTP_MAX}
-              />
-            </div>
-            {err && <div className="err">{err}</div>}
-            <button className="btn primary block" disabled={busy || code.length < OTP_MIN} onClick={() => verify(code)}>
-              {busy ? "Checking…" : "Verify & sign in"}
-            </button>
-            <div className="row between">
-              <button
-                className="btn sm ghost"
-                onClick={() => {
-                  setStep("email");
-                  setCode("");
-                  setErr(null);
-                }}
-              >
-                <Icon name="left" size={16} /> Change email
-              </button>
-              <button className="btn sm ghost" disabled={cooldown > 0 || busy} onClick={() => send()}>
-                {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}
-              </button>
-            </div>
-            <p className="muted" style={{ fontSize: ".8rem", textAlign: "center", margin: 0 }}>
-              Can't find it? Check spam or promotions.
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <motion.div initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="stack">
+        <div style={{ textAlign: "center" }}>
+          <h1 className="display" style={{ fontSize: "1.8rem", margin: "8px 0 6px" }}>
+            Pull up a chair
+          </h1>
+          <p className="muted" style={{ margin: 0 }}>
+            Sign in to save progress, take ranked tests and get on the leaderboard.
+          </p>
+        </div>
+        <button className="btn primary block" disabled={busy} onClick={google}>
+          <GoogleLogo /> {busy ? "Opening Google…" : "Continue with Google"}
+        </button>
+        {err && <div className="err">{err}</div>}
+        <p className="muted" style={{ fontSize: ".8rem", textAlign: "center", margin: 0 }}>
+          New here? This creates your account with your Google email.
+        </p>
+        <PrivacyNote />
+      </motion.div>
       <Preferences />
     </div>
   );
@@ -362,7 +236,7 @@ function Me() {
           <span className="grow">
             What we store
             <small>
-              Your email, leaderboard name, test scores &amp; times, and which flashcards you marked. With Google sign-in, also the name and photo Google shares. No password, no phone, no location.
+              Your Google email, the name and photo Google shares, your leaderboard name, test scores &amp; times, and which flashcards you marked. No password, no phone, no location.
             </small>
           </span>
         </div>
@@ -405,19 +279,6 @@ function Me() {
         </div>
       </Sheet>
       <Toast msg={toast} />
-    </div>
-  );
-}
-
-function SignInIntro() {
-  return (
-    <div style={{ textAlign: "center" }}>
-      <h1 className="display" style={{ fontSize: "1.8rem", margin: "8px 0 6px" }}>
-        Pull up a chair
-      </h1>
-      <p className="muted" style={{ margin: 0 }}>
-        Sign in to save progress, take ranked tests and get on the leaderboard.
-      </p>
     </div>
   );
 }

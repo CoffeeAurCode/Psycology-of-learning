@@ -69,21 +69,45 @@ function Head({ title, sub }: { title: string; sub?: string }) {
   );
 }
 
-/* ---------------- email → one-time code ---------------- */
+/* ---------------- Google, or email → one-time code ---------------- */
+const OAUTH_ERROR_PARAMS = ["error", "error_code", "error_description"];
+
 function SignIn() {
-  const [step, setStep] = useState<"email" | "code">("email");
+  const [params, setParams] = useSearchParams();
+  const [step, setStep] = useState<"start" | "email" | "code">("start");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
+  // Supabase sends people back with ?error=… if they cancel on Google's screen
+  const [err, setErr] = useState<string | null>(() => (params.has("error") ? "Google sign-in didn't finish. Please try again." : null));
   const [cooldown, setCooldown] = useState(0);
   const codeRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!OAUTH_ERROR_PARAMS.some((k) => params.has(k))) return;
+    const p = new URLSearchParams(params);
+    OAUTH_ERROR_PARAMS.forEach((k) => p.delete(k));
+    setParams(p, { replace: true });
+  }, [params, setParams]);
 
   useEffect(() => {
     if (cooldown <= 0) return;
     const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
     return () => clearTimeout(t);
   }, [cooldown]);
+
+  const google = async () => {
+    setBusy(true);
+    setErr(null);
+    const next = params.get("next");
+    const redirectTo = `${window.location.origin}/me${next ? `?next=${encodeURIComponent(next)}` : ""}`;
+    const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo } });
+    // on success the browser is already leaving for Google, so stay "busy"
+    if (error) {
+      setBusy(false);
+      setErr(friendlyError(error));
+    }
+  };
 
   const send = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -123,16 +147,28 @@ function SignIn() {
         <motion.img src="/brand/badge-hex.webp" width={128} height={180} alt="Coffee aur Code" initial={{ y: 20, opacity: 0, rotate: -6 }} animate={{ y: 0, opacity: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 200, damping: 16 }} />
       </div>
       <AnimatePresence mode="wait">
-        {step === "email" ? (
+        {step === "start" ? (
+          <motion.div key="start" initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -30, opacity: 0 }} className="stack">
+            <SignInIntro />
+            <button className="btn block" disabled={busy} onClick={google}>
+              <GoogleLogo /> {busy ? "Opening Google…" : "Continue with Google"}
+            </button>
+            {err && <div className="err">{err}</div>}
+            <button
+              className="btn sm ghost block"
+              disabled={busy}
+              onClick={() => {
+                setStep("email");
+                setErr(null);
+              }}
+            >
+              <Icon name="mail" size={16} /> Use email instead
+            </button>
+            <PrivacyNote />
+          </motion.div>
+        ) : step === "email" ? (
           <motion.form key="email" onSubmit={send} noValidate initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -30, opacity: 0 }} className="stack">
-            <div style={{ textAlign: "center" }}>
-              <h1 className="display" style={{ fontSize: "1.8rem", margin: "8px 0 6px" }}>
-                Pull up a chair
-              </h1>
-              <p className="muted" style={{ margin: 0 }}>
-                Sign in to save progress, take ranked tests and get on the leaderboard.
-              </p>
-            </div>
+            <SignInIntro />
             <div className="field">
               <label htmlFor="email">Email</label>
               <input id="email" className="input" type="email" inputMode="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} autoFocus />
@@ -144,7 +180,16 @@ function SignIn() {
             <p className="muted" style={{ fontSize: ".8rem", textAlign: "center", margin: 0 }}>
               No password needed. New here? This creates your account.
             </p>
-            <PrivacyNote />
+            <button
+              type="button"
+              className="btn sm ghost block"
+              onClick={() => {
+                setStep("start");
+                setErr(null);
+              }}
+            >
+              <Icon name="left" size={16} /> Back to Google sign-in
+            </button>
           </motion.form>
         ) : (
           <motion.div key="code" initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -30, opacity: 0 }} className="stack">
@@ -256,7 +301,7 @@ function ChooseName() {
       </div>
       <NameForm onDone={() => {}} cta="Let's go" />
       <button className="btn ghost block" style={{ marginTop: 8 }} onClick={signOut}>
-        Use a different email
+        Use a different account
       </button>
     </div>
   );
@@ -317,7 +362,7 @@ function Me() {
           <span className="grow">
             What we store
             <small>
-              Your email, leaderboard name, test scores &amp; times, and which flashcards you marked. No password, no phone, no location.
+              Your email, leaderboard name, test scores &amp; times, and which flashcards you marked. With Google sign-in, also the name and photo Google shares. No password, no phone, no location.
             </small>
           </span>
         </div>
@@ -361,6 +406,30 @@ function Me() {
       </Sheet>
       <Toast msg={toast} />
     </div>
+  );
+}
+
+function SignInIntro() {
+  return (
+    <div style={{ textAlign: "center" }}>
+      <h1 className="display" style={{ fontSize: "1.8rem", margin: "8px 0 6px" }}>
+        Pull up a chair
+      </h1>
+      <p className="muted" style={{ margin: 0 }}>
+        Sign in to save progress, take ranked tests and get on the leaderboard.
+      </p>
+    </div>
+  );
+}
+
+function GoogleLogo() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true">
+      <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.6-.4-3.9z" />
+      <path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 8 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" />
+      <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z" />
+      <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z" />
+    </svg>
   );
 }
 

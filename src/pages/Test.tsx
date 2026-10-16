@@ -146,10 +146,10 @@ function Intro() {
         ) : !ready ? null : !session ? (
           <>
             <Link to="/me?next=/test" className="btn primary block">
-              <Icon name="mail" size={19} /> Sign in with email to start
+              Sign in to start <Icon name="arrow" size={19} />
             </Link>
             <p className="muted" style={{ textAlign: "center", fontSize: ".85rem", margin: 0 }}>
-              No password. We'll email you a sign-in code.
+              One tap with Google. No password.
             </p>
           </>
         ) : !profile ? (

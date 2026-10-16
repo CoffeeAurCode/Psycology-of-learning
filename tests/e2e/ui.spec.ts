@@ -216,12 +216,34 @@ test("theme toggle switches light/dark and is remembered", async ({ page }) => {
 
 test("signed-out visitors are sent to sign in before a ranked test", async ({ page }) => {
   await goto(page, "/test");
-  await page.getByRole("link", { name: /Sign in with email to start/ }).click();
+  await page.getByRole("link", { name: /Sign in to start/ }).click();
   await expect(page).toHaveURL(/\/me\?next=\/test/);
+  await page.getByRole("button", { name: /Use email instead/ }).click();
   await expect(page.getByRole("button", { name: /Email me a code/ })).toBeVisible();
   await page.getByLabel("Email").fill("not-an-email");
   await page.getByRole("button", { name: /Email me a code/ }).click();
   await expect(page.getByText("Enter a valid email address.")).toBeVisible();
+});
+
+test("Continue with Google hands off to Supabase and returns to where they were going", async ({ page }) => {
+  // Stop at Supabase's authorize endpoint; we never drive Google's own login screen.
+  let authorize: URL | undefined;
+  await page.route("**/auth/v1/authorize*", async (route) => {
+    authorize = new URL(route.request().url());
+    await route.fulfill({ status: 200, contentType: "text/html", body: "<p>google</p>" });
+  });
+  await goto(page, "/me?next=/test");
+  await page.getByRole("button", { name: /Continue with Google/ }).click();
+  await expect.poll(() => authorize?.searchParams.get("provider")).toBe("google");
+  const back = new URL(authorize!.searchParams.get("redirect_to")!);
+  expect(back.pathname + back.search).toBe("/me?next=%2Ftest");
+  expect(authorize!.searchParams.get("code_challenge")).toBeTruthy(); // PKCE
+
+  // cancelling on Google's screen brings them back with ?error=… → friendly message, clean URL
+  await page.unroute("**/auth/v1/authorize*");
+  await goto(page, "/me?next=/test&error=access_denied&error_description=cancelled");
+  await expect(page.locator(".err")).toContainText("Google sign-in didn't finish");
+  await expect(page).toHaveURL(/\/me\?next=%2Ftest$|\/me\?next=\/test$/);
 });
 
 test("leaderboard loads from the live database", async ({ page }) => {

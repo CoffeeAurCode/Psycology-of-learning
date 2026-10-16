@@ -28,7 +28,8 @@ test("sign in, take a ranked test, appear on the leaderboard, manage account", a
 
   // ---- sign in with the 6-digit code ----
   await goto(page, "/test");
-  await page.getByRole("link", { name: /Sign in with email to start/ }).click();
+  await page.getByRole("link", { name: /Sign in to start/ }).click();
+  await page.getByRole("button", { name: /Use email instead/ }).click();
   await page.getByLabel("Email").fill(user.email);
   await page.getByRole("button", { name: /Email me a code/ }).click();
   await expect(page.getByText("Check your inbox")).toBeVisible();
@@ -115,6 +116,6 @@ test("sign in, take a ranked test, appear on the leaderboard, manage account", a
   await page.getByRole("button", { name: "Sign out" }).click();
   await expect(page.getByText("Pull up a chair")).toBeVisible();
   await goto(page, "/test");
-  await expect(page.getByRole("link", { name: /Sign in with email to start/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Sign in to start/ })).toBeVisible();
   expect(crashes, "uncaught errors in the page").toEqual([]);
 });

@@ -1,0 +1,1029 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="dlm-series" content="psych-learning-build">
+<meta name="description" content="Design tokens for two themes, the reset, the top bar and the floating tab bar">
+<title>L2.10a Styling I: tokens, themes, base and the shell · Coffee aur Code</title>
+<script>(function(){try{var t=localStorage.getItem('dlm:psych-learning-build:theme');if(t){t=JSON.parse(t);if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+<link rel="stylesheet" href="assets/lib/katex/katex.min.css">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cpath%20d%3D%22M7%2016h22v9a9%209%200%200%201-9%209h-4a9%209%200%200%201-9-9z%22%20fill%3D%22%2317110e%22%2F%3E%3Cpath%20d%3D%22M29%2019h2.5a4%204%200%200%201%200%208H28%22%20fill%3D%22none%22%20stroke%3D%22%2317110e%22%20stroke-width%3D%222.6%22%2F%3E%3Cpath%20d%3D%22M15%204c-2%203%202%205%200%208M21%203c-2%203%202%205%200%208%22%20fill%3D%22none%22%20stroke%3D%22%23d7262f%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
+</head>
+<body data-lesson="l2-10a">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="Coffee aur Code study series: home"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M15 4c-2 3 2 5 0 8M21 3c-2 3 2 5 0 8" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round"/><path d="M7 16h22v9a9 9 0 0 1-9 9h-4a9 9 0 0 1-9-9z" fill="var(--ink)"/><path d="M29 19h2.5a4 4 0 0 1 0 8H28" fill="none" stroke="var(--ink)" stroke-width="2.6"/><path d="M12 22.5l-2.5 2.5 2.5 2.5M18 22.5l2.5 2.5-2.5 2.5" fill="none" stroke="var(--bg)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="brand-name">Coffee aur Code<small>Build it from memory</small></span></a>
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Hub</a><span class="sep">/</span><a href="index.html#level-2">Level 2 · Build it</a><span class="sep">/</span><span class="here">L2.10a Styling I: tokens, themes, base and the shell</span></nav>
+  <span class="spacer"></span>
+  <div class="actions">
+    <a class="btn ghost sm label-wide" href="plan.html">Plan</a>
+    <button class="btn sm" type="button" data-open="menu" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span class="label-wide">Lessons</span></button>
+    <button class="icon-btn theme-toggle" type="button" aria-label="Switch colour theme"><svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+  </div>
+  <div class="read-progress" aria-hidden="true"></div>
+</header>
+<div class="layout">
+  <aside class="toc" aria-label="On this page">
+    <p class="toc-label">On this page</p>
+    <ol><li><a href="#warm-up"><span class="n">1</span><span>Warm-up: pull it from memory</span></a></li><li><a href="#the-problem-this-solves"><span class="n">2</span><span>The problem this solves</span></a></li><li><a href="#concepts"><span class="n">3</span><span>Concepts</span></a></li><li><a href="#reading-the-real-code"><span class="n">4</span><span>Reading the real code</span></a></li><li><a href="#worked-traces"><span class="n">5</span><span>Worked traces</span></a></li><li><a href="#running-and-testing"><span class="n">6</span><span>Running and testing</span></a></li><li><a href="#bug-journal"><span class="n">7</span><span>Bug journal</span></a></li><li><a href="#why-this-design"><span class="n">8</span><span>Why this design</span></a></li><li><a href="#check-yourself"><span class="n">9</span><span>Check yourself</span></a></li><li><a href="#practice"><span class="n">10</span><span>Practice</span></a></li><li><a href="#from-memory"><span class="n">11</span><span>From memory</span></a></li><li><a href="#flashcards"><span class="n">12</span><span>Flashcards</span></a></li><li><a href="#the-menu-board"><span class="n">13</span><span>The menu board</span></a></li><li><a href="#glossary"><span class="n">14</span><span>Glossary</span></a></li><li><a href="#go-further"><span class="n">15</span><span>Go further</span></a></li></ol>
+    <div class="toc-done"><button class="btn sm complete" type="button" data-complete="l2-10a" aria-pressed="false">Mark complete</button></div>
+  </aside>
+  <main class="lesson" id="main">
+    <div class="eyebrow"><span class="lvl">Level 2 · Build it</span><span>Lesson 16 of 18</span><span>70 min</span></div>
+    <div class="lesson-title"><span class="lesson-num">L2.10a</span><h1>Styling I: tokens, themes, base and the shell</h1></div>
+    <div class="recipe"><div class="recipe-head"><span class="t">Recipe card</span><span class="time">70 min</span></div><dl><dt>You need</dt><dd>L1.02 (cascade, custom properties, media queries), L2.04 (<code>theme.tsx</code>, <code>index.html</code> meta tags), L2.05 (the <code>Topbar</code> and <code>TabBar</code> markup)</dd><dt>You'll produce</dt><dd>Lines 1–315 of <code>src/styles.css</code>: the design tokens for both themes, the base reset, the type helpers, the sticky top bar and the floating tab bar</dd></dl></div>
+    <p class="lede"><strong>In two sentences:</strong> Every colour, shadow, radius and size in the app is a named variable (a <em>token</em>) defined once at the top of <code>styles.css</code>, and dark mode is nothing more than a second set of values for the same names. Below the tokens sit a small reset that makes buttons, inputs and images behave the same in every browser, and the two pieces of chrome that frame every page: a frosted sticky top bar and a floating tab bar that respects the iPhone's notch and home indicator.</p>
+    
+
+
+
+
+
+
+<h2 class="objectives-h" id="objectives">By the end, without notes, you can</h2><ol class="objectives">
+<li>Write the token block from memory and explain the three-selector pattern that gives you "System / Light / Dark" with no JavaScript in the cascade.</li>
+<li>Explain what <code>color-scheme</code>, <code>color-mix()</code>, <code>backdrop-filter</code>, <code>env(safe-area-inset-*)</code> and <code>100dvh</code> each do, and what breaks without each.</li>
+<li>Explain why <code>overflow-x</code> is set twice (<code>hidden</code>, then <code>clip</code>) on both <code>html</code> and <code>body</code>, and diagnose the iPhone sideways-scroll bug from its symptom.</li>
+<li>Compute the shell's bottom padding and the tab bar's width on a given phone.</li>
+</ol><section class="lsec" id="warm-up" aria-labelledby="warm-up-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">1</span><h2 id="warm-up-h">Warm-up: pull it from memory</h2></div><div class="warmup"><p><b>Pull it from memory first.</b> Answer aloud or on paper before you open the answers. Wrong is fine; trying is the point.</p><ol>
+<li><em class="from">L2.04</em> What does <code>ThemeProvider</code> write to <code>&lt;html&gt;</code> when the preference is <code>"system"</code>? When it is <code>"dark"</code>?</li>
+<li><em class="from">L1.02</em> Two rules set <code>color</code> on the same element: <code>:root p { color: red }</code> and <code>p { color: blue }</code>. Which wins, and why?</li>
+<li><em class="from">L2.05</em> Which element does <code>layoutId="tab-pill"</code> belong to, and what does Motion do with it when you change tabs?</li>
+</ol><details class="reveal"><summary>Check your answers<span class="rv-hint">reveal</span></summary><div class="rv-body">
+<ol>
+<li>For <code>"system"</code> it <strong>deletes</strong> <code>data-theme</code> (<code>delete root.dataset.theme</code>). For <code>"dark"</code> it sets <code>data-theme="dark"</code>. It also updates <code>&lt;meta name="theme-color"&gt;</code> to <code>#0e0c0b</code> (dark) or <code>#f6f0e6</code> (light).</li>
+<li>Red. <code>:root p</code> has higher specificity (one pseudo-class + one type selector = 0-1-1) than <code>p</code> (0-0-1). Order only matters when specificity ties.</li>
+<li>The red/black <code>motion.span.tab-pill</code> rendered inside the <strong>active</strong> tab only. When the active tab changes, the old pill unmounts and a new one mounts in another tab; because they share a <code>layoutId</code>, Motion animates one pill sliding from the old position to the new one.</li>
+</ol>
+</div></details></div></section>
+
+
+<section class="lsec" id="the-problem-this-solves" aria-labelledby="the-problem-this-solves-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">2</span><h2 id="the-problem-this-solves-h">The problem this solves</h2></div><p>A naive stylesheet writes colours where they are used: <code>background: #fffdf9</code> on cards, <code>#17110e</code> on text, and so on, hundreds of times. Then you add dark mode and must find and duplicate every one of those rules under a dark selector. You will miss some, and the app ends up with white boxes in dark mode.</p><p><strong>The idea:</strong> name every design decision once (<code>--surface</code>, <code>--ink</code>, <code>--red</code>) and write every component against the <em>names</em>. A theme is then a list of values for those names. Switching theme changes about 25 values in one place, and the whole app follows.</p><figure class="fig" id="fig-1"><div class="fig-tools"><button class="btn ghost sm fig-zoom" type="button" aria-label="Open figure 1 full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg><span>Enlarge</span></button></div><div class="fig-frame"><svg class="dg dg-flow" id="fig-l2-10a-1" viewBox="0 0 637 770" width="637" height="770" style="--w:637" role="img" aria-labelledby="fig-l2-10a-1-title" xmlns="http://www.w3.org/2000/svg"><title id="fig-l2-10a-1-title">Figure 1: Read top to bottom: each layer only uses names defined above it, and responsive.css loads last so it can override any of them.</title><defs>
+<marker id="fig-l2-10a-1-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-ah" d="M0,1 L9,5 L0,9 z"></path></marker>
+<marker id="fig-l2-10a-1-ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-aho" d="M1,1 L9,5 L1,9"></path></marker>
+<marker id="fig-l2-10a-1-x" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path class="dg-aho" d="M1,1 L9,9 M9,1 L1,9"></path></marker>
+<marker id="fig-l2-10a-1-c" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><circle class="dg-ah" cx="5" cy="5" r="4"></circle></marker>
+<marker id="fig-l2-10a-1-one" viewBox="0 0 20 20" refX="19" refY="10" markerWidth="16" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M12,3 V17 M16,3 V17"></path></marker>
+<marker id="fig-l2-10a-1-zone" viewBox="0 0 24 20" refX="23" refY="10" markerWidth="19" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M18,3 V17"></path><circle class="dg-hole" cx="9" cy="10" r="4"></circle></marker>
+<marker id="fig-l2-10a-1-many" viewBox="0 0 24 20" refX="23" refY="10" markerWidth="19" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M23,3 L14,10 L23,17 M14,10 H23"></path><circle class="dg-hole" cx="8" cy="10" r="4"></circle></marker>
+<marker id="fig-l2-10a-1-omany" viewBox="0 0 24 20" refX="23" refY="10" markerWidth="19" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M23,3 L14,10 L23,17 M10,3 V17"></path></marker>
+</defs><rect class="dg-g dg-g0" x="8" y="8" width="620.3" height="194" rx="14"></rect><text class="dg-gt" x="22" y="28">TOKENS (LINES 1–100)</text><path class="dg-e" d="M318,202 L318,258" marker-end="url(#fig-l2-10a-1-a)"></path><path class="dg-e" d="M318,314 L318,370" marker-end="url(#fig-l2-10a-1-a)"></path><path class="dg-e" d="M318,426 L318,482" marker-end="url(#fig-l2-10a-1-a)"></path><path class="dg-e" d="M318,538 L318,594" marker-end="url(#fig-l2-10a-1-a)"></path><path class="dg-e" d="M318,650 L318,706" marker-end="url(#fig-l2-10a-1-a)"></path><g class="dg-node"><rect class="dg-n" x="224.3" y="49" width="153.5" height="38" rx="9"></rect><text class="dg-t" x="301.1" y="68" text-anchor="middle" dominant-baseline="central">:root — light values</text></g><g class="dg-node"><rect class="dg-n" x="397.8" y="40" width="214.5" height="56" rx="9"></rect><text class="dg-t" x="505.1" y="59" text-anchor="middle" dominant-baseline="central">@media dark →</text><text class="dg-t" x="505.1" y="77" text-anchor="middle" dominant-baseline="central">:root:not([data-theme=light])</text></g><g class="dg-node"><rect class="dg-n" x="24" y="49" width="180.3" height="38" rx="9"></rect><text class="dg-t" x="114.2" y="68" text-anchor="middle" dominant-baseline="central">:root[data-theme=dark]</text></g><g class="dg-node"><rect class="dg-n" x="199" y="258" width="237.2" height="56" rx="9"></rect><text class="dg-t" x="317.6" y="277" text-anchor="middle" dominant-baseline="central">Base (102–186): reset, focus ring,</text><text class="dg-t" x="317.6" y="295" text-anchor="middle" dominant-baseline="central">type helpers</text></g><g class="dg-node"><rect class="dg-n" x="207" y="370" width="221.7" height="56" rx="9"></rect><text class="dg-t" x="317.8" y="389" text-anchor="middle" dominant-baseline="central">Shell (188–262): .shell, .topbar,</text><text class="dg-t" x="317.8" y="407" text-anchor="middle" dominant-baseline="central">.icon-btn</text></g><g class="dg-node"><rect class="dg-n" x="203" y="482" width="230.4" height="56" rx="9"></rect><text class="dg-t" x="318.2" y="501" text-anchor="middle" dominant-baseline="central">Tab bar (264–315): .tabbar, .tab,</text><text class="dg-t" x="318.2" y="519" text-anchor="middle" dominant-baseline="central">.tab-pill, .tab-dot</text></g><g class="dg-node"><rect class="dg-n" x="185" y="594" width="266.3" height="56" rx="9"></rect><text class="dg-t" x="318.1" y="613" text-anchor="middle" dominant-baseline="central">Components (L2.10b): cards, buttons,</text><text class="dg-t" x="318.1" y="631" text-anchor="middle" dominant-baseline="central">deck, test, results…</text></g><g class="dg-node"><rect class="dg-n" x="186" y="706" width="263.3" height="56" rx="9"></rect><text class="dg-t" x="317.6" y="725" text-anchor="middle" dominant-baseline="central">responsive.css (L2.10c): overrides per</text><text class="dg-t" x="317.6" y="743" text-anchor="middle" dominant-baseline="central">screen size</text></g></svg></div><figcaption><b class="fig-n">Figure 1.</b> Read top to bottom: each layer only uses names defined above it, and <code>responsive.css</code> loads last so it can override any of them.</figcaption></figure></section>
+
+
+
+
+
+<section class="lsec" id="concepts" aria-labelledby="concepts-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">3</span><h2 id="concepts-h">Concepts</h2></div><h3 id="3-1-custom-properties-are-variables-the-cascade-resolves">3.1 Custom properties are variables the cascade resolves</h3><ol>
+<li><strong>Definition.</strong> A custom property is a CSS property whose name starts with <code>--</code>. You read it with <code>var(--name)</code>.</li>
+<li><strong>Why here.</strong> Two themes, one set of component rules.</li>
+<li><strong>How it works.</strong> Custom properties <em>inherit</em> like <code>color</code> does. Define them on <code>:root</code> (the <code>&lt;html&gt;</code> element) and every element in the page sees them. <code>var()</code> is resolved per element at computed-value time, so if a higher-specificity rule redefines <code>--ink</code> on <code>:root</code>, every <code>color: var(--ink)</code> in the app changes at once. Analogy: the tokens are a price list pinned at the café door. The menu items say "one espresso", not "₹120"; reprint the price list and every menu item updates.</li>
+<li><strong>Minimal example.</strong><div class="code numbered" id="code-1" data-lang="html"><div class="code-head"><span class="lang">HTML</span><span class="file"></span><span class="sp"></span><span class="lines-n">7 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="HTML code, 7 lines"><code><span class="ln" data-n="1"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">&gt;</span></span><span class="token style"><span class="token language-css"></span></span></span><span class="ln" data-n="2"><span class="token style"><span class="token language-css">  <span class="token selector">:root</span> <span class="token punctuation">{</span> <span class="token property">--ink</span><span class="token punctuation">:</span> black<span class="token punctuation">;</span> <span class="token punctuation">}</span></span></span></span><span class="ln" data-n="3"><span class="token style"><span class="token language-css">  <span class="token selector">:root.dark</span> <span class="token punctuation">{</span> <span class="token property">--ink</span><span class="token punctuation">:</span> white<span class="token punctuation">;</span> <span class="token property">background</span><span class="token punctuation">:</span> black<span class="token punctuation">;</span> <span class="token punctuation">}</span></span></span></span><span class="ln" data-n="4"><span class="token style"><span class="token language-css">  <span class="token selector">p</span> <span class="token punctuation">{</span> <span class="token property">color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--ink<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span></span></span></span><span class="ln" data-n="5"><span class="token style"><span class="token language-css"></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">&gt;</span></span></span><span class="ln" data-n="6"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span>Hello<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span></span><span class="ln" data-n="7"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token special-attr"><span class="token attr-name">onclick</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value javascript language-javascript">document<span class="token punctuation">.</span>documentElement<span class="token punctuation">.</span>classList<span class="token punctuation">.</span><span class="token function">toggle</span><span class="token punctuation">(</span><span class="token string">'dark'</span><span class="token punctuation">)</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">&gt;</span></span>toggle<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">&gt;</span></span></span></code></pre><textarea class="copy-src" hidden="">&lt;style&gt;
+  :root { --ink: black; }
+  :root.dark { --ink: white; background: black; }
+  p { color: var(--ink); }
+&lt;/style&gt;
+&lt;p&gt;Hello&lt;/p&gt;
+&lt;button onclick="document.documentElement.classList.toggle('dark')"&gt;toggle&lt;/button&gt;</textarea></div>
+</li>
+<li><strong>In the project.</strong> Every component uses tokens: <code>.card { background: var(--surface); border: 1px solid var(--border); }</code>.</li>
+<li><strong>Without it.</strong> Every component needs a second dark rule; one forgotten rule gives a cream card on a black page.</li>
+<li><strong>Try it.</strong> In DevTools on the live site, select <code>&lt;html&gt;</code> and change <code>--red</code> to <code>blue</code>. Buttons, the focus ring, text selection and the tab dot all turn blue.</li>
+</ol><h3 id="3-2-three-selectors-give-three-theme-states">3.2 Three selectors give three theme states</h3><p>The app offers <strong>System</strong>, <strong>Light</strong> and <strong>Dark</strong>. "System" must follow the OS setting live, with no JavaScript in the styling path. The pattern is three rules:</p><div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Matches when</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>:root { … }</code></td>
+<td>Always</td>
+<td>Light values (the default)</td>
+</tr>
+<tr>
+<td><code>@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { … } }</code></td>
+<td>OS is dark <strong>and</strong> the user did not force Light</td>
+<td>Dark values</td>
+</tr>
+<tr>
+<td><code>:root[data-theme="dark"] { … }</code></td>
+<td>The user forced Dark (any OS)</td>
+<td>Dark values</td>
+</tr>
+</tbody>
+</table></div><p><strong>Why <code>:not([data-theme="light"])</code>?</strong> Without it, a user on a dark OS who picks "Light" would still get dark values from the media query. The <code>:not()</code> makes the media rule step aside when Light is forced.</p><p><strong>Why is the dark block written twice?</strong> CSS has no way to say "media query OR attribute" in one selector. So the 23 dark declarations appear twice, once inside the media query and once under <code>[data-theme="dark"]</code>. They are byte-for-byte identical (checked with <code>diff</code>). Duplication is the price of a no-JS theme path; a build step or a mixin could remove it, but this project has no CSS preprocessor.</p><p><strong>Specificity check.</strong> <code>:root</code> is 0-1-0. <code>:root:not([data-theme="light"])</code> is 0-2-0 (<code>:not()</code> counts as its argument, an attribute selector). <code>:root[data-theme="dark"]</code> is 0-2-0. Both dark rules beat the light rule, so dark values win whenever a dark rule matches.</p><h3 id="3-3-color-scheme-tells-the-browser-which-built-in-palette-to">3.3 <code>color-scheme</code> tells the browser which built-in palette to use</h3><p><code>color-scheme: light</code> or <code>dark</code> changes the browser's own UI colours: scrollbars, the date-picker, form-control defaults and the default page background before your CSS paints. It is set inside each token block, so it flips with the theme. <code>index.html</code> also has <code>&lt;meta name="color-scheme" content="dark light"&gt;</code>, which applies before any CSS loads and prevents a white flash on dark phones.</p><h3 id="3-4-color-mix-makes-translucent-versions-of-tokens">3.4 <code>color-mix()</code> makes translucent versions of tokens</h3><p><code>color-mix(in srgb, var(--bg) 82%, transparent)</code> gives "the background colour at 82% opacity". You cannot write <code>rgba(var(--bg), 0.82)</code> because <code>--bg</code> is a hex string, not three numbers. <code>color-mix</code> works on any colour value, so the top bar and tab bar stay correct in both themes. Supported in Safari 16.2+ and Chrome 111+; older browsers get the fallback in <code>responsive.css</code> (<a href="l2-10c-responsive.html">L2.10c</a>).</p><h3 id="3-5-backdrop-filter-frosts-what-is-behind-an-element">3.5 <code>backdrop-filter</code> frosts what is behind an element</h3><p><code>backdrop-filter: saturate(1.4) blur(14px)</code> blurs and boosts the colour of whatever is <em>behind</em> the element (content scrolling under the top bar), not the element itself. It only shows if the element's own background is translucent, which is why it is paired with <code>color-mix(… 82%, transparent)</code>. Safari needs the <code>-webkit-</code> prefix, so both lines are written.</p><h3 id="3-6-safe-areas-viewport-fit-cover-env">3.6 Safe areas: <code>viewport-fit=cover</code> + <code>env()</code></h3><p>An iPhone screen has a notch or Dynamic Island at the top and a home indicator bar at the bottom. By default Safari letterboxes the page away from them. <code>index.html</code> opts out with <code>viewport-fit=cover</code>, so the page fills the whole screen, and in return the CSS must keep content clear of the hardware itself:</p><ul>
+<li><code>env(safe-area-inset-top)</code>: the notch height (about 47 px on an iPhone 13 in portrait).</li>
+<li><code>env(safe-area-inset-bottom)</code>: the home-indicator height (34 px on Face-ID iPhones).</li>
+<li>On phones without these, and on desktops, they are <code>0px</code>.</li>
+</ul><h3 id="3-7-100dvh-the-viewport-height-that-tracks-the-browser-bar">3.7 <code>100dvh</code>: the viewport height that tracks the browser bar</h3><p>On mobile, <code>100vh</code> is the height <em>with the address bar hidden</em>, so a <code>100vh</code> element is taller than the screen while the bar is showing. <code>100dvh</code> (dynamic viewport height) follows the visible area as the bar slides. <code>min-height: 100dvh</code> makes short pages fill the screen exactly. Browsers older than Safari 15.4 ignore <code>dvh</code>; <a href="l2-10c-responsive.html">L2.10c</a> adds <code>vh</code> fallbacks and <a href="l3-04-viewports-contrast.html">L3.04</a> explains the three viewport units.</p><h3 id="3-8-overflow-x-clip-versus-hidden">3.8 <code>overflow-x: clip</code> versus <code>hidden</code></h3><p>Both stop content from showing outside the box. The difference:</p><div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th></th>
+<th><code>hidden</code></th>
+<th><code>clip</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Content outside is painted?</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Box becomes a <em>scroll container</em>?</td>
+<td><strong>Yes</strong> (scrollable by code, by focus, and on iOS sometimes by finger)</td>
+<td><strong>No</strong></td>
+</tr>
+<tr>
+<td><code>position: sticky</code> inside still sticks to the viewport?</td>
+<td><strong>No</strong>, it sticks to this box instead</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Browser support</td>
+<td>Everywhere</td>
+<td>Safari 16+, Chrome 90+, Firefox 81+</td>
+</tr>
+</tbody>
+</table></div><p>The app needs <strong>no sideways scrolling ever</strong> and a <strong>sticky top bar</strong>. <code>clip</code> gives both. Writing <code>overflow-x: hidden;</code> then <code>overflow-x: clip;</code> is a fallback: a browser that doesn't know <code>clip</code> drops the second line as invalid and keeps <code>hidden</code>. The deep dive on why WebKit needed it on <code>html</code> as well as <code>body</code> is in the bug journal below and in <a href="l3-03-gestures-3d.html">L3.03</a>.</p><h3 id="3-9-a-variable-font-with-a-width-axis">3.9 A variable font with a width axis</h3><p><code>main.tsx</code> imports <code>@fontsource-variable/archivo/wdth.css</code>: one font file containing every <strong>weight</strong> (100–900) and every <strong>width</strong> (62%–125%). <code>font-stretch: 125%</code> on <code>.display</code> selects the widest cut for headings, and <code>112%</code> for the brand title. One file, many styles, one download.</p></section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="lsec" id="reading-the-real-code" aria-labelledby="reading-the-real-code-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">4</span><h2 id="reading-the-real-code-h">Reading the real code</h2></div><h3 id="4-1-light-tokens-lines-1-43">4.1 Light tokens (lines 1–43)</h3><div class="code numbered collapsible" id="code-2" data-lang="css"><div class="code-head"><span class="lang">CSS</span><span class="file"></span><span class="sp"></span><span class="lines-n">43 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="CSS code, 43 lines"><code><span class="ln" data-n="1"><span class="token comment">/* =====================================================================</span></span><span class="ln" data-n="2"><span class="token comment">   Coffee aur Code · design tokens</span></span><span class="ln" data-n="3"><span class="token comment">   Espresso black, steam red, cream — straight from the logo.</span></span><span class="ln" data-n="4"><span class="token comment">   ===================================================================== */</span></span><span class="ln" data-n="5"><span class="token selector">:root</span> <span class="token punctuation">{</span></span><span class="ln" data-n="6">  <span class="token property">color-scheme</span><span class="token punctuation">:</span> light<span class="token punctuation">;</span></span><span class="ln" data-n="7">  <span class="token property">--bg</span><span class="token punctuation">:</span> #f6f0e6<span class="token punctuation">;</span></span><span class="ln" data-n="8">  <span class="token property">--bg-glow</span><span class="token punctuation">:</span> <span class="token function">rgba</span><span class="token punctuation">(</span>215<span class="token punctuation">,</span> 38<span class="token punctuation">,</span> 47<span class="token punctuation">,</span> 0.07<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="9">  <span class="token property">--surface</span><span class="token punctuation">:</span> #fffdf9<span class="token punctuation">;</span></span><span class="ln" data-n="10">  <span class="token property">--surface-2</span><span class="token punctuation">:</span> #f1e8da<span class="token punctuation">;</span></span><span class="ln" data-n="11">  <span class="token property">--surface-3</span><span class="token punctuation">:</span> #e8dccb<span class="token punctuation">;</span></span><span class="ln" data-n="12">  <span class="token property">--ink</span><span class="token punctuation">:</span> #17110e<span class="token punctuation">;</span></span><span class="ln" data-n="13">  <span class="token property">--muted</span><span class="token punctuation">:</span> #6f6359<span class="token punctuation">;</span></span><span class="ln" data-n="14">  <span class="token property">--tab-ink</span><span class="token punctuation">:</span> #574c43<span class="token punctuation">;</span></span><span class="ln" data-n="15">  <span class="token property">--faint</span><span class="token punctuation">:</span> #75685c<span class="token punctuation">;</span></span><span class="ln" data-n="16">  <span class="token property">--border</span><span class="token punctuation">:</span> #e6dac8<span class="token punctuation">;</span></span><span class="ln" data-n="17">  <span class="token property">--border-strong</span><span class="token punctuation">:</span> #cfc0aa<span class="token punctuation">;</span></span><span class="ln" data-n="18">  <span class="token property">--red</span><span class="token punctuation">:</span> #d7262f<span class="token punctuation">;</span></span><span class="ln" data-n="19">  <span class="token property">--red-soft</span><span class="token punctuation">:</span> #fbe3e1<span class="token punctuation">;</span></span><span class="ln" data-n="20">  <span class="token property">--red-ink</span><span class="token punctuation">:</span> #b51e27<span class="token punctuation">;</span></span><span class="ln" data-n="21">  <span class="token property">--red-fill</span><span class="token punctuation">:</span> #c01f29<span class="token punctuation">;</span></span><span class="ln" data-n="22">  <span class="token property">--cream</span><span class="token punctuation">:</span> #f4eadb<span class="token punctuation">;</span></span><span class="ln" data-n="23">  <span class="token property">--coffee</span><span class="token punctuation">:</span> #8a4b22<span class="token punctuation">;</span></span><span class="ln" data-n="24">  <span class="token property">--good</span><span class="token punctuation">:</span> #186b3b<span class="token punctuation">;</span></span><span class="ln" data-n="25">  <span class="token property">--good-soft</span><span class="token punctuation">:</span> #dcf0e2<span class="token punctuation">;</span></span><span class="ln" data-n="26">  <span class="token property">--bad</span><span class="token punctuation">:</span> #b81f28<span class="token punctuation">;</span></span><span class="ln" data-n="27">  <span class="token property">--bad-soft</span><span class="token punctuation">:</span> #fbe3e1<span class="token punctuation">;</span></span><span class="ln" data-n="28">  <span class="token property">--gold</span><span class="token punctuation">:</span> #c99a2e<span class="token punctuation">;</span></span><span class="ln" data-n="29">  <span class="token property">--silver</span><span class="token punctuation">:</span> #8f969c<span class="token punctuation">;</span></span><span class="ln" data-n="30">  <span class="token property">--bronze</span><span class="token punctuation">:</span> #b06a3b<span class="token punctuation">;</span></span><span class="ln" data-n="31">  <span class="token property">--primary</span><span class="token punctuation">:</span> #17110e<span class="token punctuation">;</span></span><span class="ln" data-n="32">  <span class="token property">--on-primary</span><span class="token punctuation">:</span> #f8f1e6<span class="token punctuation">;</span></span><span class="ln" data-n="33">  <span class="token property">--mug</span><span class="token punctuation">:</span> #15110f<span class="token punctuation">;</span></span><span class="ln" data-n="34">  <span class="token property">--mug-line</span><span class="token punctuation">:</span> #f4eadb<span class="token punctuation">;</span></span><span class="ln" data-n="35">  <span class="token property">--mug-edge</span><span class="token punctuation">:</span> #15110f<span class="token punctuation">;</span></span><span class="ln" data-n="36">  <span class="token property">--shadow-1</span><span class="token punctuation">:</span> 0 1px 2px <span class="token function">rgba</span><span class="token punctuation">(</span>50<span class="token punctuation">,</span> 30<span class="token punctuation">,</span> 10<span class="token punctuation">,</span> 0.06<span class="token punctuation">)</span><span class="token punctuation">,</span> 0 6px 18px <span class="token function">rgba</span><span class="token punctuation">(</span>50<span class="token punctuation">,</span> 30<span class="token punctuation">,</span> 10<span class="token punctuation">,</span> 0.07<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="37">  <span class="token property">--shadow-2</span><span class="token punctuation">:</span> 0 18px 40px -12px <span class="token function">rgba</span><span class="token punctuation">(</span>50<span class="token punctuation">,</span> 30<span class="token punctuation">,</span> 10<span class="token punctuation">,</span> 0.28<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="38">  <span class="token property">--radius</span><span class="token punctuation">:</span> 20px<span class="token punctuation">;</span></span><span class="ln" data-n="39">  <span class="token property">--radius-sm</span><span class="token punctuation">:</span> 14px<span class="token punctuation">;</span></span><span class="ln" data-n="40">  <span class="token property">--tab-h</span><span class="token punctuation">:</span> 68px<span class="token punctuation">;</span></span><span class="ln" data-n="41">  <span class="token property">--font</span><span class="token punctuation">:</span> <span class="token string">"Archivo Variable"</span><span class="token punctuation">,</span> <span class="token string">"Archivo"</span><span class="token punctuation">,</span> system-ui<span class="token punctuation">,</span> -apple-system<span class="token punctuation">,</span> <span class="token string">"Segoe UI"</span><span class="token punctuation">,</span> Roboto<span class="token punctuation">,</span> sans-serif<span class="token punctuation">;</span></span><span class="ln" data-n="42">  <span class="token property">--ease-out</span><span class="token punctuation">:</span> <span class="token function">cubic-bezier</span><span class="token punctuation">(</span>0.22<span class="token punctuation">,</span> 1<span class="token punctuation">,</span> 0.36<span class="token punctuation">,</span> 1<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="43"><span class="token punctuation">}</span></span></code></pre><button type="button" class="more" aria-expanded="false">Show all 43 lines</button><textarea class="copy-src" hidden="">/* =====================================================================
+   Coffee aur Code · design tokens
+   Espresso black, steam red, cream — straight from the logo.
+   ===================================================================== */
+:root {
+  color-scheme: light;
+  --bg: #f6f0e6;
+  --bg-glow: rgba(215, 38, 47, 0.07);
+  --surface: #fffdf9;
+  --surface-2: #f1e8da;
+  --surface-3: #e8dccb;
+  --ink: #17110e;
+  --muted: #6f6359;
+  --tab-ink: #574c43;
+  --faint: #75685c;
+  --border: #e6dac8;
+  --border-strong: #cfc0aa;
+  --red: #d7262f;
+  --red-soft: #fbe3e1;
+  --red-ink: #b51e27;
+  --red-fill: #c01f29;
+  --cream: #f4eadb;
+  --coffee: #8a4b22;
+  --good: #186b3b;
+  --good-soft: #dcf0e2;
+  --bad: #b81f28;
+  --bad-soft: #fbe3e1;
+  --gold: #c99a2e;
+  --silver: #8f969c;
+  --bronze: #b06a3b;
+  --primary: #17110e;
+  --on-primary: #f8f1e6;
+  --mug: #15110f;
+  --mug-line: #f4eadb;
+  --mug-edge: #15110f;
+  --shadow-1: 0 1px 2px rgba(50, 30, 10, 0.06), 0 6px 18px rgba(50, 30, 10, 0.07);
+  --shadow-2: 0 18px 40px -12px rgba(50, 30, 10, 0.28);
+  --radius: 20px;
+  --radius-sm: 14px;
+  --tab-h: 68px;
+  --font: "Archivo Variable", "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}</textarea></div><p>The tokens fall into families. Learn them as families, not as 37 separate lines.</p><div class="table-wrap wide" tabindex="0"><table>
+<thead>
+<tr>
+<th>Family</th>
+<th>Tokens</th>
+<th>Role</th>
+<th>What breaks if you change it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Page</strong></td>
+<td><code>--bg</code>, <code>--bg-glow</code></td>
+<td>Cream page and a faint red glow at the top</td>
+<td><code>--bg</code> is also used by the top bar's frosted mix, so a change shows there too</td>
+</tr>
+<tr>
+<td><strong>Surfaces</strong></td>
+<td><code>--surface</code>, <code>-2</code>, <code>-3</code></td>
+<td>Three steps of "raised": card, inset (segmented control track), pressed</td>
+<td>Too close to <code>--bg</code> and cards vanish into the page</td>
+</tr>
+<tr>
+<td><strong>Text</strong></td>
+<td><code>--ink</code>, <code>--muted</code>, <code>--tab-ink</code>, <code>--faint</code></td>
+<td>Body text, secondary text, tab labels, hints</td>
+<td>Each was tuned to pass WCAG AA (4.5:1) on its background; lighter values failed axe (<a href="l3-04-viewports-contrast.html">L3.04</a>)</td>
+</tr>
+<tr>
+<td><strong>Lines</strong></td>
+<td><code>--border</code>, <code>--border-strong</code></td>
+<td>Hairlines; stronger for inputs and option rows</td>
+<td>Too faint and inputs lose their edges</td>
+</tr>
+<tr>
+<td><strong>Brand red</strong></td>
+<td><code>--red</code>, <code>--red-soft</code>, <code>--red-ink</code>, <code>--red-fill</code></td>
+<td>Accent, tinted background, red <em>text</em>, red <em>button fill</em></td>
+<td>See the note below</td>
+</tr>
+<tr>
+<td><strong>Brand neutrals</strong></td>
+<td><code>--cream</code>, <code>--coffee</code></td>
+<td>Logo cream and coffee brown (mug liquid, illustrations)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Feedback</strong></td>
+<td><code>--good</code>, <code>--good-soft</code>, <code>--bad</code>, <code>--bad-soft</code></td>
+<td>Correct/wrong answers, "Got it"/"Again"</td>
+<td>Contrast on white text buttons</td>
+</tr>
+<tr>
+<td><strong>Medals</strong></td>
+<td><code>--gold</code>, <code>--silver</code>, <code>--bronze</code></td>
+<td>Podium blocks and avatar rings (<a href="l2-09c-results-leaderboard.html">L2.09c</a>)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Primary</strong></td>
+<td><code>--primary</code>, <code>--on-primary</code></td>
+<td>The main button: espresso with cream text in light mode, <strong>inverted</strong> in dark</td>
+<td>Invert only one of the pair and the button text disappears</td>
+</tr>
+<tr>
+<td><strong>Mug</strong></td>
+<td><code>--mug</code>, <code>--mug-line</code>, <code>--mug-edge</code></td>
+<td>The SVG mug's body, line art and outline (<a href="l2-06b-mug-icons-home.html">L2.06b</a>)</td>
+<td><code>--mug-edge</code> flips to cream in dark mode so the black mug stays visible on a black page</td>
+</tr>
+<tr>
+<td><strong>Depth</strong></td>
+<td><code>--shadow-1</code>, <code>--shadow-2</code></td>
+<td>Resting cards; floating things (tab bar, sheets)</td>
+<td>Shadows are brown-tinted (<code>rgba(50,30,10,…)</code>), not grey, so they look warm on cream</td>
+</tr>
+<tr>
+<td><strong>Shape and size</strong></td>
+<td><code>--radius</code>, <code>--radius-sm</code>, <code>--tab-h</code></td>
+<td>Corner radii; tab bar height, used in several layout calculations</td>
+<td><code>--tab-h</code> feeds the shell's bottom padding, the pinned leaderboard row and the toast position, so it must stay a token</td>
+</tr>
+<tr>
+<td><strong>Type and motion</strong></td>
+<td><code>--font</code>, <code>--ease-out</code></td>
+<td>Font stack; the app's standard "fast start, soft landing" curve</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div><p><strong>Why four reds?</strong> One red cannot do every job. Measured against the light page <code>#f6f0e6</code>:</p><ul>
+<li><code>--red</code> <code>#d7262f</code> is the brand red but only reaches <strong>4.40:1</strong>, just under the 4.5:1 needed for small text. It is used for large or decorative things: icons, the focus ring, dots.</li>
+<li><code>--red-ink</code> <code>#b51e27</code> is darker and is used whenever red is <em>text</em>.</li>
+<li><code>--red-fill</code> <code>#c01f29</code> is the background for red buttons with white text.</li>
+<li><code>--red-soft</code> <code>#fbe3e1</code> is a tint for backgrounds (the "you" leaderboard row).</li>
+</ul><p>The ratio formula and every measured pair are in <a href="l3-04-viewports-contrast.html">L3.04</a>.</p><p><strong>The font stack</strong> reads left to right: the self-hosted variable font (<code>"Archivo Variable"</code>), a locally installed Archivo if one exists, then the OS UI fonts. <code>system-ui</code> and <code>-apple-system</code> (the older Safari name) give San Francisco on Apple devices, <code>"Segoe UI"</code> on Windows and Roboto on Android. If the web font fails, text still looks native rather than falling back to Times.</p><p><strong><code>--ease-out: cubic-bezier(0.22, 1, 0.36, 1)</code></strong> is the "ease-out quint"-like curve: it starts fast and settles gently. Motion's transitions in the TSX use the same four numbers (<code>ease: [0.22, 1, 0.36, 1]</code>, seen in the podium blocks), so CSS and JS animations feel like one system.</p><h3 id="4-2-dark-tokens-the-system-driven-copy-lines-45-73">4.2 Dark tokens, the system-driven copy (lines 45–73)</h3><div class="code numbered" id="code-3" data-lang="css"><div class="code-head"><span class="lang">CSS</span><span class="file"></span><span class="sp"></span><span class="lines-n">29 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="CSS code, 29 lines"><code><span class="ln" data-n="1"><span class="token atrule"><span class="token rule">@media</span> <span class="token punctuation">(</span><span class="token property">prefers-color-scheme</span><span class="token punctuation">:</span> dark<span class="token punctuation">)</span></span> <span class="token punctuation">{</span></span><span class="ln" data-n="2">  <span class="token selector">:root:not([data-theme="light"])</span> <span class="token punctuation">{</span></span><span class="ln" data-n="3">    <span class="token property">color-scheme</span><span class="token punctuation">:</span> dark<span class="token punctuation">;</span></span><span class="ln" data-n="4">    <span class="token property">--bg</span><span class="token punctuation">:</span> #0e0c0b<span class="token punctuation">;</span></span><span class="ln" data-n="5">    <span class="token property">--bg-glow</span><span class="token punctuation">:</span> <span class="token function">rgba</span><span class="token punctuation">(</span>239<span class="token punctuation">,</span> 58<span class="token punctuation">,</span> 66<span class="token punctuation">,</span> 0.09<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="6">    <span class="token property">--surface</span><span class="token punctuation">:</span> #171413<span class="token punctuation">;</span></span><span class="ln" data-n="7">    <span class="token property">--surface-2</span><span class="token punctuation">:</span> #211d1b<span class="token punctuation">;</span></span><span class="ln" data-n="8">    <span class="token property">--surface-3</span><span class="token punctuation">:</span> #2c2725<span class="token punctuation">;</span></span><span class="ln" data-n="9">    <span class="token property">--ink</span><span class="token punctuation">:</span> #f4eadb<span class="token punctuation">;</span></span><span class="ln" data-n="10">    <span class="token property">--muted</span><span class="token punctuation">:</span> #ab9d8e<span class="token punctuation">;</span></span><span class="ln" data-n="11">    <span class="token property">--tab-ink</span><span class="token punctuation">:</span> #b8ab9c<span class="token punctuation">;</span></span><span class="ln" data-n="12">    <span class="token property">--faint</span><span class="token punctuation">:</span> #9b8e80<span class="token punctuation">;</span></span><span class="ln" data-n="13">    <span class="token property">--border</span><span class="token punctuation">:</span> #2b2624<span class="token punctuation">;</span></span><span class="ln" data-n="14">    <span class="token property">--border-strong</span><span class="token punctuation">:</span> #3f3734<span class="token punctuation">;</span></span><span class="ln" data-n="15">    <span class="token property">--red</span><span class="token punctuation">:</span> #ef3a42<span class="token punctuation">;</span></span><span class="ln" data-n="16">    <span class="token property">--red-soft</span><span class="token punctuation">:</span> #3b1619<span class="token punctuation">;</span></span><span class="ln" data-n="17">    <span class="token property">--red-ink</span><span class="token punctuation">:</span> #ff7075<span class="token punctuation">;</span></span><span class="ln" data-n="18">    <span class="token property">--red-fill</span><span class="token punctuation">:</span> #c4222b<span class="token punctuation">;</span></span><span class="ln" data-n="19">    <span class="token property">--good</span><span class="token punctuation">:</span> #4cc477<span class="token punctuation">;</span></span><span class="ln" data-n="20">    <span class="token property">--good-soft</span><span class="token punctuation">:</span> #142e1e<span class="token punctuation">;</span></span><span class="ln" data-n="21">    <span class="token property">--bad</span><span class="token punctuation">:</span> #ff5a60<span class="token punctuation">;</span></span><span class="ln" data-n="22">    <span class="token property">--bad-soft</span><span class="token punctuation">:</span> #3b1619<span class="token punctuation">;</span></span><span class="ln" data-n="23">    <span class="token property">--primary</span><span class="token punctuation">:</span> #f4eadb<span class="token punctuation">;</span></span><span class="ln" data-n="24">    <span class="token property">--on-primary</span><span class="token punctuation">:</span> #120f0e<span class="token punctuation">;</span></span><span class="ln" data-n="25">    <span class="token property">--mug-edge</span><span class="token punctuation">:</span> #f4eadb<span class="token punctuation">;</span></span><span class="ln" data-n="26">    <span class="token property">--shadow-1</span><span class="token punctuation">:</span> 0 1px 2px <span class="token function">rgba</span><span class="token punctuation">(</span>0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0.4<span class="token punctuation">)</span><span class="token punctuation">,</span> 0 8px 24px <span class="token function">rgba</span><span class="token punctuation">(</span>0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0.35<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="27">    <span class="token property">--shadow-2</span><span class="token punctuation">:</span> 0 24px 48px -12px <span class="token function">rgba</span><span class="token punctuation">(</span>0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0.7<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="28">  <span class="token punctuation">}</span></span><span class="ln" data-n="29"><span class="token punctuation">}</span></span></code></pre><textarea class="copy-src" hidden="">@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0e0c0b;
+    --bg-glow: rgba(239, 58, 66, 0.09);
+    --surface: #171413;
+    --surface-2: #211d1b;
+    --surface-3: #2c2725;
+    --ink: #f4eadb;
+    --muted: #ab9d8e;
+    --tab-ink: #b8ab9c;
+    --faint: #9b8e80;
+    --border: #2b2624;
+    --border-strong: #3f3734;
+    --red: #ef3a42;
+    --red-soft: #3b1619;
+    --red-ink: #ff7075;
+    --red-fill: #c4222b;
+    --good: #4cc477;
+    --good-soft: #142e1e;
+    --bad: #ff5a60;
+    --bad-soft: #3b1619;
+    --primary: #f4eadb;
+    --on-primary: #120f0e;
+    --mug-edge: #f4eadb;
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --shadow-2: 0 24px 48px -12px rgba(0, 0, 0, 0.7);
+  }
+}</textarea></div><ul>
+<li><strong>Only 23 tokens are redefined.</strong> Shape, size, font, motion, medals, <code>--cream</code>, <code>--coffee</code>, <code>--mug</code> and <code>--mug-line</code> don't change with theme, so they are not repeated. A token you forget here keeps its light value: that is the failure mode to watch for when you add a new colour token.</li>
+<li><strong>Dark is not "invert".</strong> The page is <code>#0e0c0b</code> (espresso, not pure black), surfaces step <em>up</em> in lightness (<code>#171413</code> → <code>#211d1b</code> → <code>#2c2725</code>) because in the dark, raised things are lighter. Text is cream <code>#f4eadb</code>, not white, to avoid glare.</li>
+<li><strong>Reds get brighter in dark mode</strong> (<code>#ef3a42</code>, text <code>#ff7075</code>): the same red that pops on cream looks muddy on black. <code>--red-fill</code> stays dark (<code>#c4222b</code>) because it sits under white text.</li>
+<li><strong>Shadows become pure black and stronger</strong> (0.4/0.35/0.7 alpha): brown shadows are invisible on a near-black page.</li>
+<li><strong><code>--primary</code> inverts</strong>: the main button becomes cream with espresso text.</li>
+</ul><h3 id="4-3-dark-tokens-the-forced-copy-lines-74-100">4.3 Dark tokens, the forced copy (lines 74–100)</h3><div class="code" id="code-4" data-lang="css"><div class="code-head"><span class="lang">CSS</span><span class="file"></span><span class="sp"></span><span class="lines-n">4 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="CSS code, 4 lines"><code><span class="ln" data-n="1"><span class="token selector">:root[data-theme="dark"]</span> <span class="token punctuation">{</span></span><span class="ln" data-n="2">  <span class="token property">color-scheme</span><span class="token punctuation">:</span> dark<span class="token punctuation">;</span></span><span class="ln" data-n="3">  <span class="token comment">/* …the same 23 declarations as lines 47–71, character for character… */</span></span><span class="ln" data-n="4"><span class="token punctuation">}</span></span></code></pre><textarea class="copy-src" hidden="">:root[data-theme="dark"] {
+  color-scheme: dark;
+  /* …the same 23 declarations as lines 47–71, character for character… */
+}</textarea></div><p>The body of this rule is identical to the block above (verify it yourself: <code>diff &lt;(sed -n 47,71p src/styles.css | sed 's/^  //') &lt;(sed -n 75,99p src/styles.css)</code> prints nothing). It exists because a <code>@media</code> rule cannot be combined with an attribute selector using "or" (§3.2). <strong>If you change a dark colour, change it in both places.</strong> A test can't catch a mismatch between them yet; the axe scans in <a href="l4-07-a11y-lighthouse-flaky.html">L4.07</a> force dark through <code>data-theme</code>, so only the forced copy is scanned.</p><h3 id="4-4-the-reset-lines-102-155">4.4 The reset (lines 102–155)</h3><div class="code numbered" id="code-5" data-lang="css"><div class="code-head"><span class="lang">CSS</span><span class="file"></span><span class="sp"></span><span class="lines-n">27 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="CSS code, 27 lines"><code><span class="ln" data-n="1"><span class="token comment">/* ---------- base ---------- */</span></span><span class="ln" data-n="2"><span class="token selector">*,</span></span><span class="ln" data-n="3"><span class="token selector">*::before,</span></span><span class="ln" data-n="4"><span class="token selector">*::after</span> <span class="token punctuation">{</span></span><span class="ln" data-n="5">  <span class="token property">box-sizing</span><span class="token punctuation">:</span> border-box<span class="token punctuation">;</span></span><span class="ln" data-n="6"><span class="token punctuation">}</span></span><span class="ln" data-n="7"><span class="token selector">html</span> <span class="token punctuation">{</span></span><span class="ln" data-n="8">  <span class="token property">overscroll-behavior-x</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span></span><span class="ln" data-n="9">  <span class="token property">overflow-x</span><span class="token punctuation">:</span> hidden<span class="token punctuation">;</span></span><span class="ln" data-n="10">  <span class="token property">overflow-x</span><span class="token punctuation">:</span> clip<span class="token punctuation">;</span></span><span class="ln" data-n="11">  <span class="token property">-webkit-text-size-adjust</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span></span><span class="ln" data-n="12">  <span class="token property">-webkit-tap-highlight-color</span><span class="token punctuation">:</span> transparent<span class="token punctuation">;</span></span><span class="ln" data-n="13"><span class="token punctuation">}</span></span><span class="ln" data-n="14"><span class="token selector">body</span> <span class="token punctuation">{</span></span><span class="ln" data-n="15">  <span class="token property">margin</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span></span><span class="ln" data-n="16">  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--bg<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="17">  <span class="token property">background-image</span><span class="token punctuation">:</span> <span class="token function">radial-gradient</span><span class="token punctuation">(</span>120% 60% at 50% -10%<span class="token punctuation">,</span> <span class="token function">var</span><span class="token punctuation">(</span>--bg-glow<span class="token punctuation">)</span><span class="token punctuation">,</span> transparent 60%<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="18">  <span class="token property">background-attachment</span><span class="token punctuation">:</span> fixed<span class="token punctuation">;</span></span><span class="ln" data-n="19">  <span class="token property">color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--ink<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="20">  <span class="token property">font</span><span class="token punctuation">:</span> 400 16px/1.5 <span class="token function">var</span><span class="token punctuation">(</span>--font<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="21">  <span class="token property">min-height</span><span class="token punctuation">:</span> 100dvh<span class="token punctuation">;</span></span><span class="ln" data-n="22">  <span class="token property">overscroll-behavior</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span></span><span class="ln" data-n="23">  <span class="token comment">/* slide animations must never make the page scroll sideways (clip keeps position: sticky working) */</span></span><span class="ln" data-n="24">  <span class="token property">overflow-x</span><span class="token punctuation">:</span> hidden<span class="token punctuation">;</span></span><span class="ln" data-n="25">  <span class="token property">overflow-x</span><span class="token punctuation">:</span> clip<span class="token punctuation">;</span></span><span class="ln" data-n="26">  <span class="token property">transition</span><span class="token punctuation">:</span> background-color 0.3s<span class="token punctuation">,</span> color 0.3s<span class="token punctuation">;</span></span><span class="ln" data-n="27"><span class="token punctuation">}</span></span></code></pre><textarea class="copy-src" hidden="">/* ---------- base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  overscroll-behavior-x: none;
+  overflow-x: hidden;
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image: radial-gradient(120% 60% at 50% -10%, var(--bg-glow), transparent 60%);
+  background-attachment: fixed;
+  color: var(--ink);
+  font: 400 16px/1.5 var(--font);
+  min-height: 100dvh;
+  overscroll-behavior: none;
+  /* slide animations must never make the page scroll sideways (clip keeps position: sticky working) */
+  overflow-x: hidden;
+  overflow-x: clip;
+  transition: background-color 0.3s, color 0.3s;
+}</textarea></div><ul class="line-notes" data-for="code-5">
+<li class="pairable" data-lines="5" tabindex="0" role="button" aria-label="Highlight line 5 in the code above: box-sizing: border-box everywhere. width then includes padding and border. Witho"><span class="pair-hint" aria-hidden="true">L5</span><strong><code>box-sizing: border-box</code> everywhere.</strong> <code>width</code> then includes padding and border. Without it, <code>width: 100%; padding: 16px</code> is 32 px wider than its parent: the classic cause of sideways scrolling. Pseudo-elements are included because they are boxes too.</li>
+<li class="pairable" data-lines="7" tabindex="0" role="button" aria-label="Highlight line 7 in the code above: html: overscroll-behavior-x: none stops a horizontal overscroll from triggering "><span class="pair-hint" aria-hidden="true">L7</span><strong><code>html</code>:</strong>
+<ul>
+<li><code>overscroll-behavior-x: none</code> stops a horizontal overscroll from triggering the browser's back/forward gesture (that was the "a swipe triggered go back" bug in <a href="l2-08a-flashcard-deck.html">L2.08a</a>; the card also sets <code>touch-action</code>, this is the page-level backstop).</li>
+<li><code>overflow-x: hidden</code> then <code>clip</code>: the fallback pair from §3.8, on the root, because of the WebKit bug below.</li>
+<li><code>-webkit-text-size-adjust: 100%</code> stops iOS from enlarging text when you rotate to landscape.</li>
+<li><code>-webkit-tap-highlight-color: transparent</code> removes the grey flash iOS and Android draw over tapped links and buttons; the app gives its own pressed states (<code>:active</code>, <code>whileTap</code>).</li>
+</ul>
+</li>
+<li class="pairable" data-lines="14" tabindex="0" role="button" aria-label="Highlight line 14 in the code above: body: margin: 0: browsers default to 8 px. The background is a solid token plus "><span class="pair-hint" aria-hidden="true">L14</span><strong><code>body</code>:</strong>
+<ul>
+<li><code>margin: 0</code>: browsers default to 8 px.</li>
+<li>The background is a solid token plus a <strong>radial gradient</strong> centred 10% <em>above</em> the top edge (<code>at 50% -10%</code>), 120% wide and 60% tall, fading from the red glow to transparent by 60% of its radius. On screen that is a faint warm light at the top of the page.</li>
+<li><code>background-attachment: fixed</code> keeps the glow at the top of the <em>screen</em> while content scrolls. (iOS ignores <code>fixed</code> on backgrounds and treats it as <code>scroll</code>; the glow then scrolls away, which is harmless.)</li>
+<li><code>font: 400 16px/1.5 var(--font)</code>: weight 400, size 16 px, line height 1.5, family from the token. 16 px matters on iOS: inputs with smaller text make Safari zoom in when focused.</li>
+<li><code>overscroll-behavior: none</code> stops the rubber-band bounce and pull-to-refresh, which feel wrong in an app-like UI and could reload the page mid-test.</li>
+<li><code>overflow-x</code> again, on <code>body</code>, for the slide animations (bug journal).</li>
+<li><code>transition</code> on background and text colour makes the theme switch a 0.3 s cross-fade instead of a flash.</li>
+</ul>
+</li>
+</ul><div class="code numbered" id="code-6" data-lang="css"><div class="code-head"><span class="lang">CSS</span><span class="file"></span><span class="sp"></span><span class="lines-n">27 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="CSS code, 27 lines"><code><span class="ln" data-n="1"><span class="token selector">button,</span></span><span class="ln" data-n="2"><span class="token selector">input</span> <span class="token punctuation">{</span></span><span class="ln" data-n="3">  <span class="token property">font</span><span class="token punctuation">:</span> inherit<span class="token punctuation">;</span></span><span class="ln" data-n="4">  <span class="token property">color</span><span class="token punctuation">:</span> inherit<span class="token punctuation">;</span></span><span class="ln" data-n="5"><span class="token punctuation">}</span></span><span class="ln" data-n="6"><span class="token selector">button</span> <span class="token punctuation">{</span></span><span class="ln" data-n="7">  <span class="token property">cursor</span><span class="token punctuation">:</span> pointer<span class="token punctuation">;</span></span><span class="ln" data-n="8">  <span class="token property">border</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span></span><span class="ln" data-n="9">  <span class="token property">background</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span></span><span class="ln" data-n="10">  <span class="token property">padding</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span></span><span class="ln" data-n="11"><span class="token punctuation">}</span></span><span class="ln" data-n="12"><span class="token selector">img</span> <span class="token punctuation">{</span></span><span class="ln" data-n="13">  <span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span></span><span class="ln" data-n="14">  <span class="token property">max-width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span></span><span class="ln" data-n="15"><span class="token punctuation">}</span></span><span class="ln" data-n="16"><span class="token selector">a</span> <span class="token punctuation">{</span></span><span class="ln" data-n="17">  <span class="token property">color</span><span class="token punctuation">:</span> inherit<span class="token punctuation">;</span></span><span class="ln" data-n="18"><span class="token punctuation">}</span></span><span class="ln" data-n="19"><span class="token selector">:focus-visible</span> <span class="token punctuation">{</span></span><span class="ln" data-n="20">  <span class="token property">outline</span><span class="token punctuation">:</span> 2.5px solid <span class="token function">var</span><span class="token punctuation">(</span>--red<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="21">  <span class="token property">outline-offset</span><span class="token punctuation">:</span> 2px<span class="token punctuation">;</span></span><span class="ln" data-n="22">  <span class="token property">border-radius</span><span class="token punctuation">:</span> 8px<span class="token punctuation">;</span></span><span class="ln" data-n="23"><span class="token punctuation">}</span></span><span class="ln" data-n="24"><span class="token selector">::selection</span> <span class="token punctuation">{</span></span><span class="ln" data-n="25">  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--red<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="26">  <span class="token property">color</span><span class="token punctuation">:</span> #fff<span class="token punctuation">;</span></span><span class="ln" data-n="27"><span class="token punctuation">}</span></span></code></pre><textarea class="copy-src" hidden="">button,
+input {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+  border: 0;
+  background: none;
+  padding: 0;
+}
+img {
+  display: block;
+  max-width: 100%;
+}
+a {
+  color: inherit;
+}
+:focus-visible {
+  outline: 2.5px solid var(--red);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+::selection {
+  background: var(--red);
+  color: #fff;
+}</textarea></div><ul class="line-notes" data-for="code-6">
+<li><strong>Form controls don't inherit fonts by default.</strong> Without <code>font: inherit</code> buttons render in the OS's 13 px system font. <code>color: inherit</code> stops them being black in dark mode.</li>
+<li class="pairable" data-lines="1,6" tabindex="0" role="button" aria-label="Highlight lines 1, 6 in the code above: button reset: no border, background or padding, so every button starts as plain "><span class="pair-hint" aria-hidden="true">L1, 6</span><strong><code>button</code> reset</strong>: no border, background or padding, so every button starts as plain text and the component classes (<code>.btn</code>, <code>.icon-btn</code>, <code>.chip</code>) add exactly the look they want.</li>
+<li><strong><code>img { display: block }</code></strong> removes the few pixels of gap under inline images (they sit on the text baseline and leave room for descenders). <code>max-width: 100%</code> stops large images overflowing narrow screens.</li>
+<li class="pairable" data-lines="19" tabindex="0" role="button" aria-label="Highlight line 19 in the code above: :focus-visible shows a red ring only when focus came from the keyboard (or anoth"><span class="pair-hint" aria-hidden="true">L19</span><strong><code>:focus-visible</code></strong> shows a red ring only when focus came from the keyboard (or another non-pointer method), not on mouse clicks. This is the keyboard user's cursor; removing it fails WCAG 2.4.7. The <code>border-radius</code> rounds the ring's corners in browsers that follow it.</li>
+<li class="pairable" data-lines="24" tabindex="0" role="button" aria-label="Highlight line 24 in the code above: ::selection colours selected text with the brand."><span class="pair-hint" aria-hidden="true">L24</span><strong><code>::selection</code></strong> colours selected text with the brand.</li>
+</ul><h3 id="4-5-type-helpers-lines-157-186">4.5 Type helpers (lines 157–186)</h3><div class="code numbered" id="code-7" data-lang="css"><div class="code-head"><span class="lang">CSS</span><span class="file"></span><span class="sp"></span><span class="lines-n">30 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="CSS code, 30 lines"><code><span class="ln" data-n="1"><span class="token selector">.display</span> <span class="token punctuation">{</span></span><span class="ln" data-n="2">  <span class="token property">font-stretch</span><span class="token punctuation">:</span> 125%<span class="token punctuation">;</span></span><span class="ln" data-n="3">  <span class="token property">font-weight</span><span class="token punctuation">:</span> 800<span class="token punctuation">;</span></span><span class="ln" data-n="4">  <span class="token property">letter-spacing</span><span class="token punctuation">:</span> -0.01em<span class="token punctuation">;</span></span><span class="ln" data-n="5">  <span class="token property">line-height</span><span class="token punctuation">:</span> 1.05<span class="token punctuation">;</span></span><span class="ln" data-n="6"><span class="token punctuation">}</span></span><span class="ln" data-n="7"><span class="token selector">.caps</span> <span class="token punctuation">{</span></span><span class="ln" data-n="8">  <span class="token property">text-transform</span><span class="token punctuation">:</span> uppercase<span class="token punctuation">;</span></span><span class="ln" data-n="9">  <span class="token property">letter-spacing</span><span class="token punctuation">:</span> 0.14em<span class="token punctuation">;</span></span><span class="ln" data-n="10">  <span class="token property">font-size</span><span class="token punctuation">:</span> 0.72rem<span class="token punctuation">;</span></span><span class="ln" data-n="11">  <span class="token property">font-weight</span><span class="token punctuation">:</span> 700<span class="token punctuation">;</span></span><span class="ln" data-n="12">  <span class="token property">color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--muted<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="13"><span class="token punctuation">}</span></span><span class="ln" data-n="14"><span class="token selector">.muted</span> <span class="token punctuation">{</span></span><span class="ln" data-n="15">  <span class="token property">color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--muted<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="16"><span class="token punctuation">}</span></span><span class="ln" data-n="17"><span class="token selector">.tnum</span> <span class="token punctuation">{</span></span><span class="ln" data-n="18">  <span class="token property">font-variant-numeric</span><span class="token punctuation">:</span> tabular-nums<span class="token punctuation">;</span></span><span class="ln" data-n="19"><span class="token punctuation">}</span></span><span class="ln" data-n="20"><span class="token selector">.red</span> <span class="token punctuation">{</span></span><span class="ln" data-n="21">  <span class="token property">color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--red<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="22"><span class="token punctuation">}</span></span><span class="ln" data-n="23"><span class="token selector">.sr-only</span> <span class="token punctuation">{</span></span><span class="ln" data-n="24">  <span class="token property">position</span><span class="token punctuation">:</span> absolute<span class="token punctuation">;</span></span><span class="ln" data-n="25">  <span class="token property">width</span><span class="token punctuation">:</span> 1px<span class="token punctuation">;</span></span><span class="ln" data-n="26">  <span class="token property">height</span><span class="token punctuation">:</span> 1px<span class="token punctuation">;</span></span><span class="ln" data-n="27">  <span class="token property">overflow</span><span class="token punctuation">:</span> hidden<span class="token punctuation">;</span></span><span class="ln" data-n="28">  <span class="token property">clip</span><span class="token punctuation">:</span> <span class="token function">rect</span><span class="token punctuation">(</span>0 0 0 0<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="29">  <span class="token property">white-space</span><span class="token punctuation">:</span> nowrap<span class="token punctuation">;</span></span><span class="ln" data-n="30"><span class="token punctuation">}</span></span></code></pre><textarea class="copy-src" hidden="">.display {
+  font-stretch: 125%;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+.caps {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.muted {
+  color: var(--muted);
+}
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+.red {
+  color: var(--red);
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}</textarea></div><ul class="line-notes" data-for="code-7">
+<li class="pairable" data-lines="1" tabindex="0" role="button" aria-label="Highlight line 1 in the code above: .display: wide (125%), heavy (800), slightly tightened letters and lines. It is "><span class="pair-hint" aria-hidden="true">L1</span><strong><code>.display</code></strong>: wide (125%), heavy (800), slightly tightened letters and lines. It is the "menu board" headline style used on every <code>h1</code>. Tight <code>line-height: 1.05</code> works only for short headings; on body text it would make lines collide.</li>
+<li class="pairable" data-lines="7" tabindex="0" role="button" aria-label="Highlight line 7 in the code above: .caps: small uppercase labels (&quot;YOUR SCORE&quot;, &quot;LEADERBOARD&quot;). Uppercase needs ext"><span class="pair-hint" aria-hidden="true">L7</span><strong><code>.caps</code></strong>: small uppercase labels ("YOUR SCORE", "LEADERBOARD"). Uppercase needs extra letter-spacing (0.14em) to stay readable.</li>
+<li class="pairable" data-lines="17" tabindex="0" role="button" aria-label="Highlight line 17 in the code above: .tnum: tabular numerals, where every digit has the same width. Timers (12:34 → 1"><span class="pair-hint" aria-hidden="true">L17</span><strong><code>.tnum</code></strong>: tabular numerals, where every digit has the same width. Timers (<code>12:34</code> → <code>12:35</code>) and scores don't jiggle as digits change. Used on the test clock, stats and leaderboard.</li>
+<li class="pairable" data-lines="20" tabindex="0" role="button" aria-label="Highlight line 20 in the code above: .red uses --red, which is fine for the short bold words it decorates (&quot;· you&quot;, &quot;"><span class="pair-hint" aria-hidden="true">L20</span><strong><code>.red</code></strong> uses <code>--red</code>, which is fine for the short bold words it decorates ("· you", "Take a test →"). For long red text the code uses <code>--red-ink</code>.</li>
+<li class="pairable" data-lines="23" tabindex="0" role="button" aria-label="Highlight line 23 in the code above: .sr-only (&quot;screen-reader only&quot;): visually hidden, still read aloud. A 1×1 px box"><span class="pair-hint" aria-hidden="true">L23</span><strong><code>.sr-only</code></strong> ("screen-reader only"): visually hidden, still read aloud. A 1×1 px box with everything clipped. <code>display: none</code> would hide it from screen readers too. <code>white-space: nowrap</code> stops the text wrapping into a tall invisible column that can affect layout.</li>
+</ul><h3 id="4-6-the-shell-and-the-top-bar-lines-188-262">4.6 The shell and the top bar (lines 188–262)</h3><div class="code numbered" id="code-8" data-lang="css"><div class="code-head"><span class="lang">CSS</span><span class="file"></span><span class="sp"></span><span class="lines-n">9 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="CSS code, 9 lines"><code><span class="ln" data-n="1"><span class="token comment">/* ---------- app shell ---------- */</span></span><span class="ln" data-n="2"><span class="token selector">.shell</span> <span class="token punctuation">{</span></span><span class="ln" data-n="3">  <span class="token property">max-width</span><span class="token punctuation">:</span> 560px<span class="token punctuation">;</span></span><span class="ln" data-n="4">  <span class="token property">margin</span><span class="token punctuation">:</span> 0 auto<span class="token punctuation">;</span></span><span class="ln" data-n="5">  <span class="token property">min-height</span><span class="token punctuation">:</span> 100dvh<span class="token punctuation">;</span></span><span class="ln" data-n="6">  <span class="token property">padding-top</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span></span><span class="ln" data-n="7">  <span class="token property">padding-bottom</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span><span class="token function">var</span><span class="token punctuation">(</span>--tab-h<span class="token punctuation">)</span> + 28px + <span class="token function">env</span><span class="token punctuation">(</span>safe-area-inset-bottom<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="8">  <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span></span><span class="ln" data-n="9"><span class="token punctuation">}</span></span></code></pre><textarea class="copy-src" hidden="">/* ---------- app shell ---------- */
+.shell {
+  max-width: 560px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  padding-top: 0;
+  padding-bottom: calc(var(--tab-h) + 28px + env(safe-area-inset-bottom));
+  position: relative;
+}</textarea></div><ul class="line-notes" data-for="code-8">
+<li><strong><code>max-width: 560px; margin: 0 auto</code></strong>: a phone-width column centred on any screen. <code>responsive.css</code> widens it on tablets and turns it into a two-column layout with a side rail on laptops (<a href="l2-10c-responsive.html">L2.10c</a>). The side gutters (<code>padding-left/right: max(16px, env(safe-area-inset-left/right))</code>) live in <code>responsive.css</code> too, so landscape iPhones keep content clear of the notch.</li>
+<li class="pairable" data-lines="7" tabindex="0" role="button" aria-label="Highlight line 7 in the code above: padding-bottom reserves room for the floating tab bar so the last thing on a pag"><span class="pair-hint" aria-hidden="true">L7</span><strong><code>padding-bottom</code></strong> reserves room for the floating tab bar so the last thing on a page is never hidden behind it: the bar's height + 12 px gap below it + 16 px breathing room above it (= 28) + the home indicator.</li>
+</ul><div class="code numbered" id="code-9" data-lang="css"><div class="code-head"><span class="lang">CSS</span><span class="file"></span><span class="sp"></span><span class="lines-n">20 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="CSS code, 20 lines"><code><span class="ln" data-n="1"><span class="token selector">.topbar</span> <span class="token punctuation">{</span></span><span class="ln" data-n="2">  <span class="token property">position</span><span class="token punctuation">:</span> sticky<span class="token punctuation">;</span></span><span class="ln" data-n="3">  <span class="token property">top</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span></span><span class="ln" data-n="4">  <span class="token property">z-index</span><span class="token punctuation">:</span> 20<span class="token punctuation">;</span></span><span class="ln" data-n="5">  <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span></span><span class="ln" data-n="6">  <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span></span><span class="ln" data-n="7">  <span class="token property">gap</span><span class="token punctuation">:</span> 10px<span class="token punctuation">;</span></span><span class="ln" data-n="8">  <span class="token property">padding</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span>10px + <span class="token function">env</span><span class="token punctuation">(</span>safe-area-inset-top<span class="token punctuation">)</span><span class="token punctuation">)</span> 0 10px<span class="token punctuation">;</span></span><span class="ln" data-n="9">  <span class="token property">margin</span><span class="token punctuation">:</span> 0 -16px<span class="token punctuation">;</span></span><span class="ln" data-n="10">  <span class="token property">padding-left</span><span class="token punctuation">:</span> 16px<span class="token punctuation">;</span></span><span class="ln" data-n="11">  <span class="token property">padding-right</span><span class="token punctuation">:</span> 16px<span class="token punctuation">;</span></span><span class="ln" data-n="12">  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">color-mix</span><span class="token punctuation">(</span>in srgb<span class="token punctuation">,</span> <span class="token function">var</span><span class="token punctuation">(</span>--bg<span class="token punctuation">)</span> 82%<span class="token punctuation">,</span> transparent<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="13">  <span class="token property">backdrop-filter</span><span class="token punctuation">:</span> <span class="token function">saturate</span><span class="token punctuation">(</span>1.4<span class="token punctuation">)</span> <span class="token function">blur</span><span class="token punctuation">(</span>14px<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="14">  <span class="token property">-webkit-backdrop-filter</span><span class="token punctuation">:</span> <span class="token function">saturate</span><span class="token punctuation">(</span>1.4<span class="token punctuation">)</span> <span class="token function">blur</span><span class="token punctuation">(</span>14px<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="15">  <span class="token property">border-bottom</span><span class="token punctuation">:</span> 1px solid transparent<span class="token punctuation">;</span></span><span class="ln" data-n="16">  <span class="token property">transition</span><span class="token punctuation">:</span> border-color 0.2s<span class="token punctuation">;</span></span><span class="ln" data-n="17"><span class="token punctuation">}</span></span><span class="ln" data-n="18"><span class="token selector">.topbar.scrolled</span> <span class="token punctuation">{</span></span><span class="ln" data-n="19">  <span class="token property">border-bottom-color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--border<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="20"><span class="token punctuation">}</span></span></code></pre><textarea class="copy-src" hidden="">.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: calc(10px + env(safe-area-inset-top)) 0 10px;
+  margin: 0 -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: saturate(1.4) blur(14px);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+.topbar.scrolled {
+  border-bottom-color: var(--border);
+}</textarea></div><ul class="line-notes" data-for="code-9">
+<li><strong><code>position: sticky; top: 0</code></strong>: the bar scrolls with the page until it reaches the top, then stays. It only works if no ancestor between it and the viewport is a scroll container, which is exactly why the page uses <code>overflow-x: clip</code> and not <code>hidden</code> (§3.8).</li>
+<li class="pairable" data-lines="4" tabindex="0" role="button" aria-label="Highlight line 4 in the code above: z-index: 20: above page content, below the tab bar (30) and sheets."><span class="pair-hint" aria-hidden="true">L4</span><strong><code>z-index: 20</code></strong>: above page content, below the tab bar (30) and sheets.</li>
+<li><strong>Top padding includes the notch</strong> so the logo sits below the Dynamic Island while the frosted background extends behind it.</li>
+<li class="pairable" data-lines="9" tabindex="0" role="button" aria-label="Highlight line 9 in the code above: margin: 0 -16px plus padding-left/right: 16px: the shell has 16 px gutters, but "><span class="pair-hint" aria-hidden="true">L9</span><strong><code>margin: 0 -16px</code> plus <code>padding-left/right: 16px</code></strong>: the shell has 16 px gutters, but the frosted background should run edge to edge. Negative margins pull the bar out over the gutters; the padding puts the content back in line with the page. This is the "full-bleed inside a padded container" pattern.</li>
+<li><strong>Frosted glass</strong>: 82% background plus blur (§3.4, §3.5).</li>
+<li><strong>The border appears only after scrolling.</strong> <code>App.tsx</code> sets <code>scrolled</code> when <code>window.scrollY &gt; 4</code>. At the top the bar blends into the page; once content slides under it, a hairline separates them. The <code>transparent</code> default keeps the bar's height identical in both states, so nothing jumps by 1 px.</li>
+</ul><div class="code numbered" id="code-10" data-lang="css"><div class="code-head"><span class="lang">CSS</span><span class="file"></span><span class="sp"></span><span class="lines-n">31 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="CSS code, 31 lines"><code><span class="ln" data-n="1"><span class="token selector">.topbar .brand</span> <span class="token punctuation">{</span></span><span class="ln" data-n="2">  <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span></span><span class="ln" data-n="3">  <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span></span><span class="ln" data-n="4">  <span class="token property">gap</span><span class="token punctuation">:</span> 10px<span class="token punctuation">;</span></span><span class="ln" data-n="5">  <span class="token property">text-decoration</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span></span><span class="ln" data-n="6">  <span class="token property">min-width</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span></span><span class="ln" data-n="7"><span class="token punctuation">}</span></span><span class="ln" data-n="8"><span class="token selector">.topbar .brand img</span> <span class="token punctuation">{</span></span><span class="ln" data-n="9">  <span class="token property">width</span><span class="token punctuation">:</span> 34px<span class="token punctuation">;</span></span><span class="ln" data-n="10">  <span class="token property">height</span><span class="token punctuation">:</span> 34px<span class="token punctuation">;</span></span><span class="ln" data-n="11"><span class="token punctuation">}</span></span><span class="ln" data-n="12"><span class="token selector">.topbar .brand-title</span> <span class="token punctuation">{</span></span><span class="ln" data-n="13">  <span class="token property">font-weight</span><span class="token punctuation">:</span> 800<span class="token punctuation">;</span></span><span class="ln" data-n="14">  <span class="token property">font-stretch</span><span class="token punctuation">:</span> 112%<span class="token punctuation">;</span></span><span class="ln" data-n="15">  <span class="token property">font-size</span><span class="token punctuation">:</span> 1.02rem<span class="token punctuation">;</span></span><span class="ln" data-n="16">  <span class="token property">line-height</span><span class="token punctuation">:</span> 1.1<span class="token punctuation">;</span></span><span class="ln" data-n="17">  <span class="token property">white-space</span><span class="token punctuation">:</span> nowrap<span class="token punctuation">;</span></span><span class="ln" data-n="18"><span class="token punctuation">}</span></span><span class="ln" data-n="19"><span class="token selector">.topbar .brand-sub</span> <span class="token punctuation">{</span></span><span class="ln" data-n="20">  <span class="token property">font-size</span><span class="token punctuation">:</span> 0.62rem<span class="token punctuation">;</span></span><span class="ln" data-n="21">  <span class="token property">letter-spacing</span><span class="token punctuation">:</span> 0.2em<span class="token punctuation">;</span></span><span class="ln" data-n="22">  <span class="token property">font-weight</span><span class="token punctuation">:</span> 700<span class="token punctuation">;</span></span><span class="ln" data-n="23">  <span class="token property">color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--muted<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="24">  <span class="token property">text-transform</span><span class="token punctuation">:</span> uppercase<span class="token punctuation">;</span></span><span class="ln" data-n="25"><span class="token punctuation">}</span></span><span class="ln" data-n="26"><span class="token selector">.topbar .brand-sub b</span> <span class="token punctuation">{</span></span><span class="ln" data-n="27">  <span class="token property">color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--red<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="28"><span class="token punctuation">}</span></span><span class="ln" data-n="29"><span class="token selector">.topbar .spacer</span> <span class="token punctuation">{</span></span><span class="ln" data-n="30">  <span class="token property">flex</span><span class="token punctuation">:</span> 1<span class="token punctuation">;</span></span><span class="ln" data-n="31"><span class="token punctuation">}</span></span></code></pre><textarea class="copy-src" hidden="">.topbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  min-width: 0;
+}
+.topbar .brand img {
+  width: 34px;
+  height: 34px;
+}
+.topbar .brand-title {
+  font-weight: 800;
+  font-stretch: 112%;
+  font-size: 1.02rem;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.topbar .brand-sub {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.topbar .brand-sub b {
+  color: var(--red);
+}
+.topbar .spacer {
+  flex: 1;
+}</textarea></div><ul class="line-notes" data-for="code-10">
+<li class="pairable" data-lines="6" tabindex="0" role="button" aria-label="Highlight line 6 in the code above: min-width: 0 on the brand link: flex items default to min-width: auto, meaning &quot;"><span class="pair-hint" aria-hidden="true">L6</span><strong><code>min-width: 0</code></strong> on the brand link: flex items default to <code>min-width: auto</code>, meaning "never shrink below my content". On a 280 px Galaxy Fold the title plus the theme button is wider than the screen; <code>min-width: 0</code> lets the brand shrink. (<code>responsive.css</code> also shrinks the title there.)</li>
+<li class="pairable" data-lines="17" tabindex="0" role="button" aria-label="Highlight line 17 in the code above: white-space: nowrap keeps &quot;Psychology of Learning&quot; on one line."><span class="pair-hint" aria-hidden="true">L17</span><strong><code>white-space: nowrap</code></strong> keeps "Psychology of Learning" on one line.</li>
+<li><strong>The red "aur"</strong> inside "COFFEE AUR CODE" echoes the logo.</li>
+<li><strong><code>.spacer { flex: 1 }</code></strong> eats the free space, pushing the theme toggle to the right edge. It is the flexbox way to write "left group … right group".</li>
+</ul><div class="code numbered" id="code-11" data-lang="css"><div class="code-head"><span class="lang">CSS</span><span class="file"></span><span class="sp"></span><span class="lines-n">14 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="CSS code, 14 lines"><code><span class="ln" data-n="1"><span class="token selector">.icon-btn</span> <span class="token punctuation">{</span></span><span class="ln" data-n="2">  <span class="token property">width</span><span class="token punctuation">:</span> 42px<span class="token punctuation">;</span></span><span class="ln" data-n="3">  <span class="token property">height</span><span class="token punctuation">:</span> 42px<span class="token punctuation">;</span></span><span class="ln" data-n="4">  <span class="token property">display</span><span class="token punctuation">:</span> grid<span class="token punctuation">;</span></span><span class="ln" data-n="5">  <span class="token property">place-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span></span><span class="ln" data-n="6">  <span class="token property">border-radius</span><span class="token punctuation">:</span> 14px<span class="token punctuation">;</span></span><span class="ln" data-n="7">  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--surface<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="8">  <span class="token property">border</span><span class="token punctuation">:</span> 1px solid <span class="token function">var</span><span class="token punctuation">(</span>--border<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="9">  <span class="token property">color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--ink<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="10">  <span class="token property">transition</span><span class="token punctuation">:</span> background 0.2s<span class="token punctuation">,</span> border-color 0.2s<span class="token punctuation">;</span></span><span class="ln" data-n="11"><span class="token punctuation">}</span></span><span class="ln" data-n="12"><span class="token selector">.icon-btn:active</span> <span class="token punctuation">{</span></span><span class="ln" data-n="13">  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--surface-2<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="14"><span class="token punctuation">}</span></span></code></pre><textarea class="copy-src" hidden="">.icon-btn {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  transition: background 0.2s, border-color 0.2s;
+}
+.icon-btn:active {
+  background: var(--surface-2);
+}</textarea></div><ul class="line-notes" data-for="code-11">
+<li><strong>42 × 42 px</strong>: comfortably above the 24 px WCAG 2.2 minimum target size and near Apple's 44 pt guideline.</li>
+<li><strong><code>display: grid; place-items: center</code></strong>: the shortest way to centre one child both ways.</li>
+<li class="pairable" data-lines="12" tabindex="0" role="button" aria-label="Highlight line 12 in the code above: :active darkens on press, replacing the tap highlight removed in the reset."><span class="pair-hint" aria-hidden="true">L12</span><strong><code>:active</code></strong> darkens on press, replacing the tap highlight removed in the reset.</li>
+</ul><h3 id="4-7-the-floating-tab-bar-lines-264-315">4.7 The floating tab bar (lines 264–315)</h3><div class="code numbered" id="code-12" data-lang="css"><div class="code-head"><span class="lang">CSS</span><span class="file"></span><span class="sp"></span><span class="lines-n">19 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="CSS code, 19 lines"><code><span class="ln" data-n="1"><span class="token comment">/* ---------- tab bar ---------- */</span></span><span class="ln" data-n="2"><span class="token selector">.tabbar</span> <span class="token punctuation">{</span></span><span class="ln" data-n="3">  <span class="token property">position</span><span class="token punctuation">:</span> fixed<span class="token punctuation">;</span></span><span class="ln" data-n="4">  <span class="token property">z-index</span><span class="token punctuation">:</span> 30<span class="token punctuation">;</span></span><span class="ln" data-n="5">  <span class="token property">left</span><span class="token punctuation">:</span> 50%<span class="token punctuation">;</span></span><span class="ln" data-n="6">  <span class="token property">transform</span><span class="token punctuation">:</span> <span class="token function">translateX</span><span class="token punctuation">(</span>-50%<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="7">  <span class="token property">bottom</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span>12px + <span class="token function">env</span><span class="token punctuation">(</span>safe-area-inset-bottom<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="8">  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token function">min</span><span class="token punctuation">(</span>528px<span class="token punctuation">,</span> <span class="token function">calc</span><span class="token punctuation">(</span>100% - 24px<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="9">  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--tab-h<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="10">  <span class="token property">display</span><span class="token punctuation">:</span> grid<span class="token punctuation">;</span></span><span class="ln" data-n="11">  <span class="token property">grid-template-columns</span><span class="token punctuation">:</span> <span class="token function">repeat</span><span class="token punctuation">(</span>5<span class="token punctuation">,</span> 1fr<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="12">  <span class="token property">padding</span><span class="token punctuation">:</span> 6px<span class="token punctuation">;</span></span><span class="ln" data-n="13">  <span class="token property">border-radius</span><span class="token punctuation">:</span> 24px<span class="token punctuation">;</span></span><span class="ln" data-n="14">  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">color-mix</span><span class="token punctuation">(</span>in srgb<span class="token punctuation">,</span> <span class="token function">var</span><span class="token punctuation">(</span>--surface<span class="token punctuation">)</span> 95%<span class="token punctuation">,</span> transparent<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="15">  <span class="token property">backdrop-filter</span><span class="token punctuation">:</span> <span class="token function">saturate</span><span class="token punctuation">(</span>1.5<span class="token punctuation">)</span> <span class="token function">blur</span><span class="token punctuation">(</span>18px<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="16">  <span class="token property">-webkit-backdrop-filter</span><span class="token punctuation">:</span> <span class="token function">saturate</span><span class="token punctuation">(</span>1.5<span class="token punctuation">)</span> <span class="token function">blur</span><span class="token punctuation">(</span>18px<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="17">  <span class="token property">border</span><span class="token punctuation">:</span> 1px solid <span class="token function">var</span><span class="token punctuation">(</span>--border<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="18">  <span class="token property">box-shadow</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--shadow-2<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="19"><span class="token punctuation">}</span></span></code></pre><textarea class="copy-src" hidden="">/* ---------- tab bar ---------- */
+.tabbar {
+  position: fixed;
+  z-index: 30;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  width: min(528px, calc(100% - 24px));
+  height: var(--tab-h);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  padding: 6px;
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
+  backdrop-filter: saturate(1.5) blur(18px);
+  -webkit-backdrop-filter: saturate(1.5) blur(18px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-2);
+}</textarea></div><ul class="line-notes" data-for="code-12">
+<li class="pairable" data-lines="3" tabindex="0" role="button" aria-label="Highlight line 3 in the code above: position: fixed pins it to the screen, not the page."><span class="pair-hint" aria-hidden="true">L3</span><strong><code>position: fixed</code></strong> pins it to the screen, not the page.</li>
+<li><strong>Centring a fixed element</strong>: <code>left: 50%</code> puts its left edge at the middle; <code>translateX(-50%)</code> moves it back by half its own width. (Note: this <code>transform</code> is why <code>responsive.css</code> must reset it when the bar becomes a side rail.)</li>
+<li><strong><code>bottom: 12px + home indicator</code></strong>: it floats 12 px above the indicator on iPhones and 12 px above the edge elsewhere.</li>
+<li><strong><code>width: min(528px, 100% − 24px)</code></strong>: 12 px margins on phones, capped at the 560 px shell minus 32 px on wide screens.</li>
+<li><strong>Five equal columns</strong> (<code>repeat(5, 1fr)</code>), one per tab: Home, Study, Test, Ranks, Me. The rail brand and rail foot are also children of <code>&lt;nav&gt;</code> but are <code>display: none</code> on phones, so they don't take a column.</li>
+<li><strong>95% surface plus blur</strong>: almost solid, so labels stay readable over busy content.</li>
+<li class="pairable" data-lines="18" tabindex="0" role="button" aria-label="Highlight line 18 in the code above: --shadow-2: the &quot;floating&quot; depth."><span class="pair-hint" aria-hidden="true">L18</span><strong><code>--shadow-2</code></strong>: the "floating" depth.</li>
+</ul><div class="code numbered" id="code-13" data-lang="css"><div class="code-head"><span class="lang">CSS</span><span class="file"></span><span class="sp"></span><span class="lines-n">33 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="CSS code, 33 lines"><code><span class="ln" data-n="1"><span class="token selector">.tab</span> <span class="token punctuation">{</span></span><span class="ln" data-n="2">  <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span></span><span class="ln" data-n="3">  <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span></span><span class="ln" data-n="4">  <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span></span><span class="ln" data-n="5">  <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span></span><span class="ln" data-n="6">  <span class="token property">justify-content</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span></span><span class="ln" data-n="7">  <span class="token property">gap</span><span class="token punctuation">:</span> 2px<span class="token punctuation">;</span></span><span class="ln" data-n="8">  <span class="token property">border-radius</span><span class="token punctuation">:</span> 18px<span class="token punctuation">;</span></span><span class="ln" data-n="9">  <span class="token property">text-decoration</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span></span><span class="ln" data-n="10">  <span class="token property">color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--tab-ink<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="11">  <span class="token property">font-size</span><span class="token punctuation">:</span> 0.68rem<span class="token punctuation">;</span></span><span class="ln" data-n="12">  <span class="token property">font-weight</span><span class="token punctuation">:</span> 600<span class="token punctuation">;</span></span><span class="ln" data-n="13">  <span class="token property">transition</span><span class="token punctuation">:</span> color 0.2s<span class="token punctuation">;</span></span><span class="ln" data-n="14"><span class="token punctuation">}</span></span><span class="ln" data-n="15"><span class="token selector">.tab.active</span> <span class="token punctuation">{</span></span><span class="ln" data-n="16">  <span class="token property">color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--on-primary<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="17"><span class="token punctuation">}</span></span><span class="ln" data-n="18"><span class="token selector">.tab .tab-pill</span> <span class="token punctuation">{</span></span><span class="ln" data-n="19">  <span class="token property">position</span><span class="token punctuation">:</span> absolute<span class="token punctuation">;</span></span><span class="ln" data-n="20">  <span class="token property">inset</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span></span><span class="ln" data-n="21">  <span class="token property">border-radius</span><span class="token punctuation">:</span> 18px<span class="token punctuation">;</span></span><span class="ln" data-n="22">  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--primary<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="23">  <span class="token property">z-index</span><span class="token punctuation">:</span> -1<span class="token punctuation">;</span></span><span class="ln" data-n="24"><span class="token punctuation">}</span></span><span class="ln" data-n="25"><span class="token selector">.tab .tab-dot</span> <span class="token punctuation">{</span></span><span class="ln" data-n="26">  <span class="token property">position</span><span class="token punctuation">:</span> absolute<span class="token punctuation">;</span></span><span class="ln" data-n="27">  <span class="token property">top</span><span class="token punctuation">:</span> 7px<span class="token punctuation">;</span></span><span class="ln" data-n="28">  <span class="token property">right</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span>50% - 16px<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="29">  <span class="token property">width</span><span class="token punctuation">:</span> 6px<span class="token punctuation">;</span></span><span class="ln" data-n="30">  <span class="token property">height</span><span class="token punctuation">:</span> 6px<span class="token punctuation">;</span></span><span class="ln" data-n="31">  <span class="token property">border-radius</span><span class="token punctuation">:</span> 50%<span class="token punctuation">;</span></span><span class="ln" data-n="32">  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--red<span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="33"><span class="token punctuation">}</span></span></code></pre><textarea class="copy-src" hidden="">.tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: 18px;
+  text-decoration: none;
+  color: var(--tab-ink);
+  font-size: 0.68rem;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+.tab.active {
+  color: var(--on-primary);
+}
+.tab .tab-pill {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: var(--primary);
+  z-index: -1;
+}
+.tab .tab-dot {
+  position: absolute;
+  top: 7px;
+  right: calc(50% - 16px);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--red);
+}</textarea></div><ul>
+<li><strong>Icon over label</strong>, centred, in a column.</li>
+<li><strong><code>--tab-ink</code></strong>, not <code>--muted</code>: tab labels are tiny (0.68 rem ≈ 10.9 px), so they got their own, darker token to pass contrast on the translucent bar. <code>#574c43</code> on <code>#fffdf9</code> is 8.20:1.</li>
+<li><strong>The active tab</strong> turns its text <code>--on-primary</code> because the pill behind it is <code>--primary</code>.</li>
+<li><strong>The pill</strong>: <code>position: absolute; inset: 0</code> fills the tab (<code>inset: 0</code> is shorthand for <code>top/right/bottom/left: 0</code>). <code>z-index: -1</code> puts it <em>behind</em> the icon and label. That works only because <code>.tab</code> is <code>position: relative</code> and the bar's <code>backdrop-filter</code> creates a stacking context: the pill stays above the bar's background but below the tab's content. Motion's <code>layoutId</code> animates this element between tabs.</li>
+<li><strong>The red dot</strong> on "Me" (when signed out): 6 px circle, placed <code>16px</code> right of the tab's centre line (<code>right: calc(50% − 16px)</code>) so it sits at the icon's top-right corner regardless of tab width.</li>
+</ul></section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="lsec" id="worked-traces" aria-labelledby="worked-traces-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">5</span><h2 id="worked-traces-h">Worked traces</h2></div><h3 id="5-1-which-tokens-apply-four-users-four-outcomes">5.1 Which tokens apply? Four users, four outcomes</h3><p>Predict each row before opening the answer.</p><div class="table-wrap wide wide-table" tabindex="0"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>OS setting</th>
+<th><code>pol.theme</code></th>
+<th><code>data-theme</code> on <code>&lt;html&gt;</code></th>
+<th>Light rule</th>
+<th>Media rule matches?</th>
+<th>Forced-dark rule matches?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Light</td>
+<td><code>system</code></td>
+<td><em>(absent)</em></td>
+<td>✓</td>
+<td>no (OS light)</td>
+<td>no</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Dark</td>
+<td><code>system</code></td>
+<td><em>(absent)</em></td>
+<td>✓</td>
+<td><strong>predict</strong></td>
+<td>no</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Dark</td>
+<td><code>light</code></td>
+<td><code>light</code></td>
+<td>✓</td>
+<td><strong>predict</strong></td>
+<td>no</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Light</td>
+<td><code>dark</code></td>
+<td><code>dark</code></td>
+<td>✓</td>
+<td>no (OS light)</td>
+<td><strong>predict</strong></td>
+</tr>
+</tbody>
+</table></div><details class="reveal"><summary>Reveal<span class="rv-hint">reveal</span></summary><div class="rv-body">
+<div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Result</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Light</td>
+<td>Only <code>:root</code> matches</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Dark</strong></td>
+<td>Media matches; <code>:not([data-theme="light"])</code> is true because the attribute is absent; 0-2-0 beats 0-1-0</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Light</strong></td>
+<td>Media query is true, but <code>:not([data-theme="light"])</code> is false, so that rule doesn't apply</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Dark</strong></td>
+<td><code>:root[data-theme="dark"]</code> matches regardless of OS</td>
+</tr>
+</tbody>
+</table></div>
+<p>Row 2 also changes live: if the user switches their phone to light at sunset, the media query stops matching and the page re-themes with no JavaScript. <code>ThemeProvider</code> still listens to the media change, but only to update <code>resolved</code> (for the theme toggle's icon and <code>&lt;meta name="theme-color"&gt;</code>).</p>
+</div></details><h3 id="5-2-layout-numbers-on-an-iphone-13-390-844-notch-47-px-home-">5.2 Layout numbers on an iPhone 13 (390 × 844, notch 47 px, home indicator 34 px)</h3><div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th>Quantity</th>
+<th>Formula</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tab bar width</td>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">min</span><span class="mopen">(</span><span class="mord">528</span><span class="mpunct">,</span><span class="mspace">&nbsp;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">390</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">24</span><span class="mclose">)</span></span></span></span></td>
+<td><strong>366 px</strong></td>
+</tr>
+<tr>
+<td>Tab bar inner width</td>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">366</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.9305em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord">6</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">padding</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7944em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord">1</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">border</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></td>
+<td>352 px</td>
+</tr>
+<tr>
+<td>One tab</td>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">352</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">÷</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">5</span></span></span></span></td>
+<td><strong>70.4 px</strong></td>
+</tr>
+<tr>
+<td>Tab bar bottom offset</td>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">12</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">34</span></span></span></span></td>
+<td><strong>46 px</strong> above the screen edge</td>
+</tr>
+<tr>
+<td>Shell bottom padding</td>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">68</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">28</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">34</span></span></span></span></td>
+<td><strong>130 px</strong></td>
+</tr>
+<tr>
+<td>Top bar top padding</td>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">10</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">47</span></span></span></span></td>
+<td><strong>57 px</strong></td>
+</tr>
+<tr>
+<td>Space between tab bar top and screen bottom</td>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">46</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">68</span></span></span></span></td>
+<td>114 px (the last 130 px of content clears it by 16 px)</td>
+</tr>
+</tbody>
+</table></div><p>On a Galaxy S9 at 320 px wide (no insets): bar width 296 px, each tab 54.4 px, shell padding 96 px.</p></section>
+
+
+
+
+
+
+
+
+<section class="lsec" id="running-and-testing" aria-labelledby="running-and-testing-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">6</span><h2 id="running-and-testing-h">Running and testing</h2></div><div class="code terminal" id="code-14" data-lang="bash"><div class="code-head"><span class="lang">Terminal</span><span class="file"></span><span class="sp"></span><span class="lines-n">2 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="Terminal code, 2 lines"><code><span class="ln" data-n="1"><span class="token function">npm</span> run dev            <span class="token comment"># http://localhost:5173 ; edit styles.css and watch it hot-reload</span></span><span class="ln" data-n="2">npx playwright <span class="token builtin class-name">test</span> tests/e2e/ui.spec.ts <span class="token parameter variable">-g</span> <span class="token string">"nothing hides"</span> <span class="token parameter variable">--project</span><span class="token operator">=</span>iphone-13</span></code></pre><textarea class="copy-src" hidden="">npm run dev            # http://localhost:5173 ; edit styles.css and watch it hot-reload
+npx playwright test tests/e2e/ui.spec.ts -g "nothing hides" --project=iphone-13</textarea></div><ul>
+<li><strong>"no page scrolls sideways and nothing hides under the tab bar"</strong> visits every route and checks that the page cannot scroll sideways, both immediately and 600 ms later (during and after entry animations). It also checks the flashcard buttons sit fully above the tab bar (<a href="l4-04-ui-tests-nav-cards.html">L4.04</a>).</li>
+<li><strong>"theme toggle switches light/dark and is remembered"</strong> in <code>ui.spec.ts</code> clicks the toggle, waits for the body background to change, checks <code>data-theme</code> is <code>light</code> or <code>dark</code>, reloads and checks it stuck, then picks "Dark" on the account page (<a href="l4-05-ui-tests-quiz-runner.html">L4.05</a>).</li>
+<li><strong><code>a11y.spec.ts</code></strong> runs axe in both themes, which is what caught the low-contrast token values (<a href="l4-07-a11y-lighthouse-flaky.html">L4.07</a>).</li>
+</ul><p><strong>Try it in DevTools:</strong> Rendering panel → "Emulate CSS media feature prefers-color-scheme" → dark. With the app on "System" the page re-themes instantly. Now set the app to "Light" and emulate dark again: nothing changes (row 3 of §5.1).</p></section>
+
+
+
+<section class="lsec" id="bug-journal" aria-labelledby="bug-journal-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">7</span><h2 id="bug-journal-h">Bug journal</h2></div><article class="incident" id="incident-1"><div class="incident-head"><span class="no">Incident ticket · #01</span><h3 id="iphones-could-scroll-the-page-sideways-during-slide-animatio">iPhones could scroll the page sideways during slide animations</h3></div><span class="incident-stamp ">Fixed</span><ol class="incident-fields"><li class="f-symptom"><span class="k">Symptom</span><div class="v">The layout test passed on every Chromium and Firefox device but failed on the three WebKit iPhones:<div class="code" id="code-15" data-lang="text"><div class="code-head"><span class="lang">Text</span><span class="file"></span><span class="sp"></span><span class="lines-n">5 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="Text code, 5 lines"><code><span class="ln" data-n="1">✘ [iphone-se]  › ui.spec.ts › no page scrolls sideways and nothing hides under the tab bar</span><span class="ln" data-n="2">    Expected: &lt;= 1</span><span class="ln" data-n="3">    Received:    4</span><span class="ln" data-n="4">✘ [iphone-13]  › … Received: 14</span><span class="ln" data-n="5">✘ [iphone-14-pro-max] › … Received: 14</span></code></pre><textarea class="copy-src" hidden="">✘ [iphone-se]  › ui.spec.ts › no page scrolls sideways and nothing hides under the tab bar
+    Expected: &lt;= 1
+    Received:    4
+✘ [iphone-13]  › … Received: 14
+✘ [iphone-14-pro-max] › … Received: 14</textarea></div></div></li><li class="f-diagnosis"><span class="k">Diagnosis</span><div class="v"><ul>
+<li><em>Which page?</em> A throwaway debug test visited each route and listed elements whose right edge passed the viewport:<div class="code" id="code-16" data-lang="text"><div class="code-head"><span class="lang">Text</span><span class="file"></span><span class="sp"></span><span class="lines-n">2 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="Text code, 2 lines"><code><span class="ln" data-n="1">OVER /study {"over":0,"vw":390,"offenders":["button.chip right=412", …]}</span><span class="ln" data-n="2">OVER /me    {"over":13,"vw":390,"offenders":["form.stack right=403", "h1.display right=403", …]}</span></code></pre><textarea class="copy-src" hidden="">OVER /study {"over":0,"vw":390,"offenders":["button.chip right=412", …]}
+OVER /me    {"over":13,"vw":390,"offenders":["form.stack right=403", "h1.display right=403", …]}</textarea></div>
+The Study chips are inside their own horizontally scrolling row, so they don't count (<code>over</code> is 0). The real offender is <code>/me</code>: the sign-in form was 13 px past the edge.</li>
+<li><em>Why 13 px?</em> The form enters with <code>initial={{ x: 30 }}</code> (it slides in from the right, <a href="l2-07a-auth-sign-in.html">L2.07a</a>). Mid-animation its right edge is past the viewport, and WebKit counts the transformed box toward the page's scroll width. Chromium does too, but the test caught WebKit mid-slide because its animation ran slightly later.</li>
+<li><em>Hypothesis 1: clip the body.</em> Added <code>overflow-x: hidden; overflow-x: clip</code> to <code>body</code>. The test still failed (12–18 px).</li>
+<li><em>Was the test right?</em> <code>scrollWidth − innerWidth</code> is a proxy: it says content reaches past the edge, not that anyone can scroll there. The test was rewritten to measure the property itself, by <em>trying</em> to scroll: <code>scrollTo(400, y)</code>, read <code>scrollX</code>, scroll back, at 0 ms and again at 600 ms. It still reported 8–14 px on iPhones, so the page really was scrollable. (The test change is its own story in <a href="l4-04-ui-tests-nav-cards.html">L4.04</a>.)</li>
+<li><em>Hypothesis 2: the root.</em> Putting the same pair on <code>html</code> makes the root's own value control the viewport. The test then passed on all 11 devices.</li>
+<li><em>Re-checked for this series</em> in a minimal page (a 100 px box translated 330 px right in a 390 px viewport), Chromium and WebKit behave identically: with no rule, or with <code>hidden</code> or <code>clip</code> on <code>body</code> only, the viewport scrolls by 40 px; with the rule on <code>html</code> and <code>body</code>, it scrolls by 0. The Chromium projects had passed in the session only because their slide animation had finished by the time they measured.</li>
+</ul></div></li><li class="f-root"><span class="k">Root cause</span><div class="v">A transformed child (<code>translateX(30px)</code>) extends the page's scrollable overflow even though it is only temporarily off-screen. <code>overflow-x</code> on <code>body</code> alone does not stop the <strong>viewport</strong> from scrolling; the rule has to be on the root element (<code>html</code>).</div></li><li class="f-fix"><span class="k">Fix</span><div class="v"><div class="code" id="code-17" data-lang="diff"><div class="code-head"><span class="lang">Diff</span><span class="file"></span><span class="sp"></span><span class="lines-n">5 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="Diff code, 5 lines"><code><span class="ln" data-n="1">html {</span><span class="ln" data-n="2">  overscroll-behavior-x: none;</span><span class="ln add" data-n="3">  overflow-x: hidden;   /* fallback for browsers without clip */</span><span class="ln add" data-n="4">  overflow-x: clip;     /* the root controls the viewport: no sideways panning, and no scroll container */</span><span class="ln" data-n="5">  -webkit-text-size-adjust: 100%;</span></code></pre><textarea class="copy-src" hidden="">html {
+  overscroll-behavior-x: none;
+  overflow-x: hidden;   /* fallback for browsers without clip */
+  overflow-x: clip;     /* the root controls the viewport: no sideways panning, and no scroll container */
+  -webkit-text-size-adjust: 100%;</textarea></div>
+<div class="code numbered" id="code-18" data-lang="diff"><div class="code-head"><span class="lang">Diff</span><span class="file"></span><span class="sp"></span><span class="lines-n">8 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="Diff code, 8 lines"><code><span class="ln" data-n="1">body {</span><span class="ln" data-n="2">  …</span><span class="ln" data-n="3">  overscroll-behavior: none;</span><span class="ln add" data-n="4">  /* slide animations must never make the page scroll sideways (clip keeps position: sticky working) */</span><span class="ln add" data-n="5">  overflow-x: hidden;</span><span class="ln add" data-n="6">  overflow-x: clip;</span><span class="ln" data-n="7">  transition: background-color 0.3s, color 0.3s;</span><span class="ln" data-n="8">}</span></code></pre><textarea class="copy-src" hidden="">body {
+  …
+  overscroll-behavior: none;
+  /* slide animations must never make the page scroll sideways (clip keeps position: sticky working) */
+  overflow-x: hidden;
+  overflow-x: clip;
+  transition: background-color 0.3s, color 0.3s;
+}</textarea></div></div></li><li class="f-lesson"><span class="k">Lesson</span><div class="v">Any <code>x</code> slide animation can make a phone page wobble sideways for a moment. Clip horizontal overflow at the <strong>root</strong>, use <code>clip</code> rather than <code>hidden</code> so <code>position: sticky</code> keeps working, and test "can the page actually scroll sideways?" by trying to scroll, during and after animations, on real WebKit.</div></li></ol></article><aside class="callout tip clean-run"><span class="callout-tag">Clean run</span><p>the token architecture never broke. The contrast failures that changed some token values are told in <a href="l3-04-viewports-contrast.html">L3.04</a>, where the maths lives.</p></aside></section>
+
+
+
+<section class="lsec" id="why-this-design" aria-labelledby="why-this-design-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">8</span><h2 id="why-this-design-h">Why this design</h2></div><div class="table-wrap wide wide-table" tabindex="0"><table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Alternatives</th>
+<th>Why this one</th>
+<th>Trade-off</th>
+<th>Choose differently when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Custom-property tokens</td>
+<td>Sass variables; Tailwind; CSS-in-JS</td>
+<td>Change at runtime (theme switch) with no rebuild; no build tooling</td>
+<td>No compile-time check for typos (<code>var(--suface)</code> silently fails)</td>
+<td>A large team → Tailwind or a typed token pipeline</td>
+</tr>
+<tr>
+<td>Three-selector theming</td>
+<td>JS toggles a class for all three states; only <code>prefers-color-scheme</code></td>
+<td>"System" follows the OS live with no JS; user override still possible</td>
+<td>Dark block duplicated</td>
+<td>A preprocessor is available → generate both copies from one source</td>
+</tr>
+<tr>
+<td>Separate <code>--red-ink</code> / <code>--red-fill</code></td>
+<td>One red everywhere</td>
+<td>Each passes contrast for its job</td>
+<td>More tokens to remember</td>
+<td>Brand red already passes 4.5:1 on your background</td>
+</tr>
+<tr>
+<td>Floating, fixed tab bar</td>
+<td>Static footer; hamburger menu</td>
+<td>Thumb-reachable on phones; always one tap to any section</td>
+<td>Covers content, so pages need bottom padding</td>
+<td>Desktop-first app → top nav (the app switches to a side rail on laptops)</td>
+</tr>
+<tr>
+<td><code>overflow-x: clip</code> on root and body</td>
+<td><code>hidden</code>; fixing every animation's overflow</td>
+<td>One rule protects every current and future slide</td>
+<td>Needs the <code>hidden</code> fallback for pre-2022 browsers</td>
+<td>You need horizontal scroll on the page itself (you almost never do)</td>
+</tr>
+<tr>
+<td><code>dvh</code> with <code>vh</code> fallbacks</td>
+<td><code>vh</code> only; JS measuring <code>innerHeight</code></td>
+<td>Correct on modern mobile browsers, no JS</td>
+<td>Older Safari gets the slightly-too-tall <code>vh</code></td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div></section>
+
+<section class="lsec" id="check-yourself" aria-labelledby="check-yourself-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">9</span><h2 id="check-yourself-h">Check yourself</h2></div><p class="quiz-intro">Answer each one before you look. Multiple-choice questions mark your pick and let you try again; for open questions, answer aloud, then reveal and grade yourself honestly.</p><div class="quiz mcq" data-quiz="l2-10a:q1"><div class="quiz-q"><span class="qn">Q1</span><div class="qt">A user's phone is in dark mode and the app is on "Light". You add a new token <code>--chip-bg</code> only to the light <code>:root</code> block and to <code>:root[data-theme="dark"]</code>. What does this user see?</div></div><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-letter="A"><span class="L">A</span><span class="ot">The dark <code>--chip-bg</code></span><span class="mark"></span></button></li><li><button type="button" class="quiz-opt" data-letter="B" data-correct="1"><span class="L">B</span><span class="ot">The light <code>--chip-bg</code></span><span class="mark"></span></button></li><li><button type="button" class="quiz-opt" data-letter="C"><span class="L">C</span><span class="ot">Nothing; the variable is undefined</span><span class="mark"></span></button></li></ul>
+<div class="quiz-fb" role="status" aria-live="polite" hidden=""></div>
+<div class="quiz-actions"><button type="button" class="btn sm ghost" data-giveup="">Show the answer</button></div>
+<div class="quiz-answer" hidden=""><b>b.</b> Forced Light means neither dark rule applies (§5.1 row 3), so the light value is used, which is correct for this user. The bug you introduced affects a <i>different</i> user: dark OS + "System" gets the light <code>--chip-bg</code>, because you forgot the media-query copy. (c) is wrong: the light block always defines it.</div></div><div class="quiz free" data-quiz="l2-10a:q2"><div class="quiz-q"><span class="qn">Q2</span><div class="qt">Someone "simplifies" <code>body { overflow-x: hidden; overflow-x: clip }</code> to just <code>overflow-x: hidden</code>. What can break?</div></div>
+<div class="quiz-actions"><button type="button" class="btn sm" data-reveal="" aria-expanded="false">Reveal the answer</button><span class="self" hidden="">Did you have it? <button type="button" class="btn sm" data-self="good">Yes</button><button type="button" class="btn sm" data-self="bad">Not yet</button></span></div>
+<div class="quiz-answer" hidden="">Because <code>html</code> now has its own non-visible <code>overflow-x</code>, the body's value is no longer propagated to the viewport; it applies to <code>body</code> itself. <code>hidden</code> makes <code>body</code> a <b>scroll container</b>, so the sticky top bar would stick inside <code>body</code> instead of the viewport, and code or focus could scroll <code>body</code> sideways. <code>clip</code> hides the overflow without creating a scroll container. Keep <code>clip</code>, with <code>hidden</code> only as the fallback line before it.</div></div><div class="quiz free" data-quiz="l2-10a:q3"><div class="quiz-q"><span class="qn">Q3</span><div class="qt">Why is <code>.tab .tab-pill</code> given <code>z-index: -1</code> instead of placing it after the label in the DOM with a higher z-index on the label?</div></div>
+<div class="quiz-actions"><button type="button" class="btn sm" data-reveal="" aria-expanded="false">Reveal the answer</button><span class="self" hidden="">Did you have it? <button type="button" class="btn sm" data-self="good">Yes</button><button type="button" class="btn sm" data-self="bad">Not yet</button></span></div>
+<div class="quiz-answer" hidden="">The pill is rendered first in the JSX and must sit <i>behind</i> the icon and text. With <code>z-index: -1</code> inside the tab bar's stacking context, it paints above the bar's background but below the tab's normal-flow content, with no z-index needed on the icon or label. Changing the order of the elements wouldn't help on its own: absolutely positioned elements paint above normal content unless you give them a negative z-index.</div></div><div class="quiz free" data-quiz="l2-10a:q4"><div class="quiz-q"><span class="qn">Q4</span><div class="qt">On an iPhone with a 34 px home indicator, you set <code>--tab-h: 54px</code> for landscape. What is the shell's bottom padding now?</div></div>
+<div class="quiz-actions"><button type="button" class="btn sm" data-reveal="" aria-expanded="false">Reveal the answer</button><span class="self" hidden="">Did you have it? <button type="button" class="btn sm" data-self="good">Yes</button><button type="button" class="btn sm" data-self="bad">Not yet</button></span></div>
+<div class="quiz-answer" hidden="">54 + 28 + 34 = <b>116 px</b> (in landscape the bottom inset is usually 21 px, giving 103 px). Because the padding is calculated from the token, changing the token is enough; no other rule needs editing. That is the reason <code>--tab-h</code> is a token.</div></div><div class="quiz free" data-quiz="l2-10a:q5"><div class="quiz-q"><span class="qn">Q5</span><div class="qt">The top bar loses its blur on an old Android browser but stays readable. Why?</div></div>
+<div class="quiz-actions"><button type="button" class="btn sm" data-reveal="" aria-expanded="false">Reveal the answer</button><span class="self" hidden="">Did you have it? <button type="button" class="btn sm" data-self="good">Yes</button><button type="button" class="btn sm" data-self="bad">Not yet</button></span></div>
+<div class="quiz-answer" hidden="">Its background is 82% opaque <code>--bg</code>, so even without <code>backdrop-filter</code> the content underneath shows only faintly. (On browsers without <code>color-mix</code>, <code>responsive.css</code> supplies a solid fallback background.) Progressive enhancement: the blur is a bonus, readability doesn't depend on it.</div></div><div class="quiz-score"><span>Right so far: <strong class="qs-right">0</strong> of <strong>5</strong></span><button type="button" class="btn sm ghost" data-quiz-reset="">Reset these questions</button></div></section>
+
+
+
+
+
+
+
+
+
+
+
+<section class="lsec" id="practice" aria-labelledby="practice-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">10</span><h2 id="practice-h">Practice</h2></div><div class="practice"><div class="practice-head"><span class="level-chip easy">Easy</span><span class="mins">10 min</span></div><p> Add a "sepia" theme: a third <code>:root[data-theme="sepia"]</code> block that redefines only <code>--bg</code>, <code>--surface</code>, <code>--surface-2</code> and <code>--ink</code>. Set it from DevTools (<code>document.documentElement.dataset.theme = "sepia"</code>).
+<strong>Done when</strong> cards and the page change but buttons, reds and borders keep their light values.</p><details class="reveal"><summary>Hint<span class="rv-hint">reveal</span></summary><div class="rv-body">Tokens you don't redefine fall back to <code>:root</code>. Check that your <code>--ink</code> still has ≥ 4.5:1 on your <code>--surface</code>.</div></details></div><div class="practice"><div class="practice-head"><span class="level-chip medium">Medium</span><span class="mins">20 min</span></div><p> Remove the duplicated dark block: keep only <code>:root[data-theme="dark"]</code>, and have <code>ThemeProvider</code> set <code>data-theme</code> to the <em>resolved</em> theme even in System mode.
+<strong>Done when</strong> all three preferences work and the OS switch still re-themes live.</p><details class="reveal"><summary>Solution sketch<span class="rv-hint">reveal</span></summary><div class="rv-body">In the effect, always write <code>root.dataset.theme = resolved</code>. <code>resolved</code> already updates from the <code>matchMedia</code> listener. Trade-off: before React runs, the page is light; on a dark phone that is a white flash at load. <code>index.html</code>'s <code>&lt;head&gt;</code> already has an inline "apply saved theme before paint" script that sets <code>data-theme</code> for a forced Light or Dark choice (L2.04); extend it to also read <code>matchMedia("(prefers-color-scheme: dark)")</code> when the preference is "system".</div></details></div><div class="practice"><div class="practice-head"><span class="level-chip hard">Hard</span><span class="mins">40 min</span></div><p> Make the tab bar hide on scroll down and reappear on scroll up, without causing sideways overflow or layout shift.
+<strong>Done when</strong> the shell's bottom padding still prevents content hiding when the bar is visible, and <code>noHorizontalOverflow</code> still passes.</p><details class="reveal"><summary>Key insight<span class="rv-hint">reveal</span></summary><div class="rv-body">Animate <code>transform: translate(-50%, calc(100% + 24px))</code>, not <code>bottom</code> or <code>display</code>: transforms don't trigger layout. Keep the <code>-50%</code> X part or the bar jumps sideways. Throttle the scroll listener with <code>requestAnimationFrame</code>, and show the bar whenever <code>scrollY &lt; 40</code>.</div></details></div></section>
+
+
+
+
+
+
+<section class="lsec" id="from-memory" aria-labelledby="from-memory-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">11</span><h2 id="from-memory-h">From memory</h2></div><p class="rung"><span class="rn">Rung 1</span>Cloze</p><div class="cloze wide" data-cloze="l2-10a:cloze1"><div class="code numbered" id="code-19" data-lang="css"><div class="code-head"><span class="lang">CSS</span><span class="file"></span><span class="sp"></span><span class="lines-n">15 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="CSS code, 15 lines"><code><span class="ln" data-n="1"><span class="token atrule"><span class="token rule">@media</span> <span class="token punctuation">(</span><span class="token property">prefers-color-scheme</span><span class="token punctuation">:</span> <input class="cloze-in" data-n="1" data-answer="dark" size="5" aria-label="Blank ①" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="token punctuation">)</span></span> <span class="token punctuation">{</span></span><span class="ln" data-n="2">  <span class="token selector">:root:<input class="cloze-in" data-n="2" data-answer="not" size="4" aria-label="Blank ②" autocomplete="off" autocapitalize="off" spellcheck="false">([data-theme="light"])</span> <span class="token punctuation">{</span> <span class="token property">color-scheme</span><span class="token punctuation">:</span> dark<span class="token punctuation">;</span> <span class="token property">--bg</span><span class="token punctuation">:</span> #0e0c0b<span class="token punctuation">;</span> <span class="token punctuation">}</span></span><span class="ln" data-n="3"><span class="token punctuation">}</span></span><span class="ln" data-n="4"><span class="token selector">:root[data-theme="<input class="cloze-in" data-n="3" data-answer="dark" size="5" aria-label="Blank ③" autocomplete="off" autocapitalize="off" spellcheck="false">"]</span> <span class="token punctuation">{</span> <span class="token property">color-scheme</span><span class="token punctuation">:</span> dark<span class="token punctuation">;</span> <span class="token property">--bg</span><span class="token punctuation">:</span> #0e0c0b<span class="token punctuation">;</span> <span class="token punctuation">}</span></span><span class="ln" data-n="5"> </span><span class="ln" data-n="6"><span class="token selector">html</span> <span class="token punctuation">{</span> <span class="token property">overflow-x</span><span class="token punctuation">:</span> hidden<span class="token punctuation">;</span> <span class="token property">overflow-x</span><span class="token punctuation">:</span> <input class="cloze-in" data-n="4" data-answer="clip" size="5" aria-label="Blank ④" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="token punctuation">;</span> <span class="token punctuation">}</span></span><span class="ln" data-n="7"><span class="token selector">body</span> <span class="token punctuation">{</span> <span class="token property">min-height</span><span class="token punctuation">:</span> 100<input class="cloze-in" data-n="5" data-answer="dvh" size="4" aria-label="Blank ⑤" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="token punctuation">;</span> <span class="token property">font</span><span class="token punctuation">:</span> 400 16px/1.5 <span class="token function">var</span><span class="token punctuation">(</span>--font<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span></span><span class="ln" data-n="8"> </span><span class="ln" data-n="9"><span class="token selector">.shell</span> <span class="token punctuation">{</span> <span class="token property">padding-bottom</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span><span class="token function">var</span><span class="token punctuation">(</span>--tab-h<span class="token punctuation">)</span> + 28px + <span class="token function">env</span><span class="token punctuation">(</span><input class="cloze-in" data-n="6" data-answer="safe-area-inset-bottom" size="23" aria-label="Blank ⑥" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span></span><span class="ln" data-n="10"><span class="token selector">.topbar</span> <span class="token punctuation">{</span> <span class="token property">position</span><span class="token punctuation">:</span> <input class="cloze-in" data-n="7" data-answer="sticky" size="7" aria-label="Blank ⑦" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="token punctuation">;</span> <span class="token property">top</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span></span><span class="ln" data-n="11">  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">color-mix</span><span class="token punctuation">(</span>in srgb<span class="token punctuation">,</span> <span class="token function">var</span><span class="token punctuation">(</span>--bg<span class="token punctuation">)</span> 82%<span class="token punctuation">,</span> <input class="cloze-in" data-n="8" data-answer="transparent" size="12" aria-label="Blank ⑧" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="12">  <span class="token property">backdrop-filter</span><span class="token punctuation">:</span> <span class="token function">saturate</span><span class="token punctuation">(</span>1.4<span class="token punctuation">)</span> <span class="token function">blur</span><span class="token punctuation">(</span>14px<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span></span><span class="ln" data-n="13"><span class="token selector">.tabbar</span> <span class="token punctuation">{</span> <span class="token property">position</span><span class="token punctuation">:</span> fixed<span class="token punctuation">;</span> <span class="token property">left</span><span class="token punctuation">:</span> 50%<span class="token punctuation">;</span> <span class="token property">transform</span><span class="token punctuation">:</span> <span class="token function">translateX</span><span class="token punctuation">(</span><input class="cloze-in" data-n="9" data-answer="-50%" size="5" aria-label="Blank ⑨" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="ln" data-n="14">  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token function">min</span><span class="token punctuation">(</span>528px<span class="token punctuation">,</span> <span class="token function">calc</span><span class="token punctuation">(</span>100% - 24px<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token property">grid-template-columns</span><span class="token punctuation">:</span> <span class="token function">repeat</span><span class="token punctuation">(</span><input class="cloze-in" data-n="10" data-answer="5" size="3" aria-label="Blank ⑩" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="token punctuation">,</span> 1fr<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span></span><span class="ln" data-n="15"><span class="token selector">.tab .tab-pill</span> <span class="token punctuation">{</span> <span class="token property">position</span><span class="token punctuation">:</span> absolute<span class="token punctuation">;</span> <span class="token property">inset</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span> <span class="token property">z-index</span><span class="token punctuation">:</span> <input class="cloze-in" data-n="11" data-answer="-1" size="3" aria-label="Blank ⑪" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="token punctuation">;</span> <span class="token punctuation">}</span></span></code></pre><textarea class="copy-src" hidden="">@media (prefers-color-scheme: &lt;input class="cloze-in" data-n="1" data-answer="dark" size="5" aria-label="Blank ①" autocomplete="off" autocapitalize="off" spellcheck="false"&gt;) {
+  :root:&lt;input class="cloze-in" data-n="2" data-answer="not" size="4" aria-label="Blank ②" autocomplete="off" autocapitalize="off" spellcheck="false"&gt;([data-theme="light"]) { color-scheme: dark; --bg: #0e0c0b; }
+}
+:root[data-theme="&lt;input class="cloze-in" data-n="3" data-answer="dark" size="5" aria-label="Blank ③" autocomplete="off" autocapitalize="off" spellcheck="false"&gt;"] { color-scheme: dark; --bg: #0e0c0b; }
+
+html { overflow-x: hidden; overflow-x: &lt;input class="cloze-in" data-n="4" data-answer="clip" size="5" aria-label="Blank ④" autocomplete="off" autocapitalize="off" spellcheck="false"&gt;; }
+body { min-height: 100&lt;input class="cloze-in" data-n="5" data-answer="dvh" size="4" aria-label="Blank ⑤" autocomplete="off" autocapitalize="off" spellcheck="false"&gt;; font: 400 16px/1.5 var(--font); }
+
+.shell { padding-bottom: calc(var(--tab-h) + 28px + env(&lt;input class="cloze-in" data-n="6" data-answer="safe-area-inset-bottom" size="23" aria-label="Blank ⑥" autocomplete="off" autocapitalize="off" spellcheck="false"&gt;)); }
+.topbar { position: &lt;input class="cloze-in" data-n="7" data-answer="sticky" size="7" aria-label="Blank ⑦" autocomplete="off" autocapitalize="off" spellcheck="false"&gt;; top: 0;
+  background: color-mix(in srgb, var(--bg) 82%, &lt;input class="cloze-in" data-n="8" data-answer="transparent" size="12" aria-label="Blank ⑧" autocomplete="off" autocapitalize="off" spellcheck="false"&gt;);
+  backdrop-filter: saturate(1.4) blur(14px); }
+.tabbar { position: fixed; left: 50%; transform: translateX(&lt;input class="cloze-in" data-n="9" data-answer="-50%" size="5" aria-label="Blank ⑨" autocomplete="off" autocapitalize="off" spellcheck="false"&gt;);
+  width: min(528px, calc(100% - 24px)); grid-template-columns: repeat(&lt;input class="cloze-in" data-n="10" data-answer="5" size="3" aria-label="Blank ⑩" autocomplete="off" autocapitalize="off" spellcheck="false"&gt;, 1fr); }
+.tab .tab-pill { position: absolute; inset: 0; z-index: &lt;input class="cloze-in" data-n="11" data-answer="-1" size="3" aria-label="Blank ⑪" autocomplete="off" autocapitalize="off" spellcheck="false"&gt;; }</textarea></div><div class="cloze-bar"><button type="button" class="btn sm primary" data-cz="check">Check</button><button type="button" class="btn sm" data-cz="show">Show answers</button><button type="button" class="btn sm ghost" data-cz="clear">Clear</button><span class="score" aria-live="polite"></span></div><p class="cloze-legend">Fill every blank from memory; <kbd>Tab</kbd> moves to the next. Spacing and capitals don’t matter.</p></div><details class="reveal cloze-answers"><summary>Answers<span class="rv-hint">reveal</span></summary><div class="rv-body">① <code>dark</code> ② <code>not</code> ③ <code>dark</code> ④ <code>clip</code> ⑤ <code>dvh</code> ⑥ <code>safe-area-inset-bottom</code> ⑦ <code>sticky</code> ⑧ <code>transparent</code> ⑨ <code>-50%</code> ⑩ <code>5</code> ⑪ <code>-1</code></div></details><p class="rung"><span class="rn">Rung 2</span>Blank page (20 min). No scrolling up</p><div class="drill" data-drill="l2-10a:drill1"><div class="drill-task"><span class="drill-rule">No scrolling up</span><p>In an empty <code>theme-lab.css</code>, write: a token block with at least <code>--bg</code>, <code>--surface</code>, <code>--ink</code>, <code>--muted</code>, <code>--border</code>, <code>--red</code>, <code>--primary</code>, <code>--on-primary</code>, <code>--tab-h</code>; the two dark copies; the reset; <code>.shell</code>; <code>.topbar</code> with the scrolled border; <code>.tabbar</code> and <code>.tab</code> with the pill.</p></div><label class="visually-hidden" for="l2-10a-drill1">Your blank page</label><textarea id="l2-10a-drill1" spellcheck="false" placeholder="Write it here from memory…"></textarea><div class="drill-bar"><button type="button" class="btn sm ghost" data-drill-clear="">Clear and retry</button><span class="saved" aria-live="polite">Saved on this device as you type</span></div><div class="selfcheck"><details class="reveal"><summary>Done? Compare with the self-check list<span class="rv-hint">reveal</span></summary><div class="rv-body">
+<ul class="checklist" data-list="l2-10a:c1"><li><label><input type="checkbox" data-check="l2-10a:c1:0"><span>Light values on <code>:root</code>, including <code>color-scheme: light</code></span></label></li><li><label><input type="checkbox" data-check="l2-10a:c1:1"><span>Dark values under <code>@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) }</code> <strong>and</strong> <code>:root[data-theme="dark"]</code>, each with <code>color-scheme: dark</code></span></label></li><li><label><input type="checkbox" data-check="l2-10a:c1:2"><span><code>--primary</code> / <code>--on-primary</code> both inverted in dark</span></label></li><li><label><input type="checkbox" data-check="l2-10a:c1:3"><span><code>box-sizing: border-box</code> on <code>*, *::before, *::after</code></span></label></li><li><label><input type="checkbox" data-check="l2-10a:c1:4"><span><code>overflow-x: hidden</code> then <code>clip</code>, on <code>html</code> and <code>body</code>; <code>overscroll-behavior</code></span></label></li><li><label><input type="checkbox" data-check="l2-10a:c1:5"><span><code>button, input { font: inherit; color: inherit }</code>; button reset; <code>:focus-visible</code> ring</span></label></li><li><label><input type="checkbox" data-check="l2-10a:c1:6"><span>Shell bottom padding = tab height + 28 px + bottom inset</span></label></li><li><label><input type="checkbox" data-check="l2-10a:c1:7"><span>Top bar: sticky, notch-aware top padding, negative margin + padding for full bleed, translucent <code>color-mix</code> + both <code>backdrop-filter</code> lines, transparent border that colours when <code>.scrolled</code></span></label></li><li><label><input type="checkbox" data-check="l2-10a:c1:8"><span>Tab bar: fixed, centred with <code>left: 50%</code> + <code>translateX(-50%)</code>, bottom inset, <code>min()</code> width, 5-column grid</span></label></li><li><label><input type="checkbox" data-check="l2-10a:c1:9"><span>Pill: absolute, <code>inset: 0</code>, <code>z-index: -1</code>, <code>--primary</code> background; active tab text <code>--on-primary</code></span></label></li></ul>
+</div></details></div></div></section>
+
+
+
+
+
+<section class="lsec" id="flashcards" aria-labelledby="flashcards-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">12</span><h2 id="flashcards-h">Flashcards</h2></div><div class="deck" data-deck="deck-l2-10a"><div class="deck-ui"></div><details class="reveal deck-list"><summary>See all 12 cards as a list<span class="rv-hint">for a quick scan</span></summary><div class="rv-body"><ol class="deck-src"><li data-card="17ioij8"><div class="q">What three selectors implement System / Light / Dark?</div><div class="a"><code>:root</code> (light); <code>@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) }</code>; <code>:root[data-theme="dark"]</code>.</div></li><li data-card="13usgak"><div class="q">Why does the dark block appear twice?</div><div class="a">CSS can't OR a media query with an attribute selector, so the same declarations go under both.</div></li><li data-card="1nii5p0"><div class="q">What does <code>color-scheme</code> change?</div><div class="a">The browser's built-in colours: scrollbars, form controls, default background.</div></li><li data-card="14qzea8"><div class="q">Why <code>color-mix(in srgb, var(--bg) 82%, transparent)</code> and not <code>rgba(var(--bg), .82)</code>?</div><div class="a"><code>--bg</code> is a hex string; <code>rgba()</code> needs separate channels. <code>color-mix</code> accepts any colour.</div></li><li data-card="1ay2w1o"><div class="q"><code>overflow-x: clip</code> vs <code>hidden</code>?</div><div class="a">Both hide overflow; only <code>hidden</code> makes a scroll container, which breaks <code>position: sticky</code> inside and can still be scrolled by code or touch.</div></li><li data-card="1mx93jb"><div class="q">Why write <code>overflow-x</code> twice in one rule?</div><div class="a">Fallback: browsers that don't know <code>clip</code> drop that line and keep <code>hidden</code>.</div></li><li data-card="egjrg4"><div class="q">What does <code>viewport-fit=cover</code> require from the CSS?</div><div class="a">Padding with <code>env(safe-area-inset-*)</code> so content clears the notch and home indicator.</div></li><li data-card="1yn7vv3"><div class="q"><code>100vh</code> vs <code>100dvh</code> on a phone?</div><div class="a"><code>vh</code> assumes the address bar is hidden (too tall while it shows); <code>dvh</code> follows the visible height.</div></li><li data-card="uthij8"><div class="q">Shell bottom padding formula?</div><div class="a"><code>--tab-h</code> + 28 px + <code>env(safe-area-inset-bottom)</code>.</div></li><li data-card="1p8b8nn"><div class="q">Why four red tokens?</div><div class="a">Brand red is 4.40:1 on cream (fails small text). Separate tokens for text (<code>--red-ink</code>), button fill (<code>--red-fill</code>) and tint (<code>--red-soft</code>).</div></li><li data-card="10nxkjy"><div class="q">Why does the brand link need <code>min-width: 0</code>?</div><div class="a">Flex items won't shrink below their content by default; on 280 px screens the header would overflow.</div></li><li data-card="kfh7iy"><div class="q">What does <code>.tnum</code> fix?</div><div class="a">Digits of different widths make timers and scores jiggle; tabular numerals are equal width.</div></li></ol></div></details></div></section>
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="lsec menu-board-sec" id="the-menu-board" aria-labelledby="the-menu-board-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">13</span><h2 id="the-menu-board-h">The menu board</h2></div><div class="board wide"><p class="board-title">The menu board</p><p class="board-sub">Everything on one screen</p><div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Theme cascade</td>
+<td><code>:root</code> light → media + <code>:not([data-theme=light])</code> dark → <code>[data-theme=dark]</code> dark (0-1-0 vs 0-2-0)</td>
+</tr>
+<tr>
+<td>Theme JS</td>
+<td>System = remove <code>data-theme</code>; Light/Dark = set it; update <code>&lt;meta theme-color&gt;</code></td>
+</tr>
+<tr>
+<td>Token families</td>
+<td>page · surfaces 1–3 · text (ink, muted, tab-ink, faint) · borders · 4 reds · feedback · medals · primary pair · mug · shadows · radius · <code>--tab-h</code> · font · ease</td>
+</tr>
+<tr>
+<td>Reset</td>
+<td>border-box; <code>font/color: inherit</code> on controls; button reset; block images; <code>:focus-visible</code> ring</td>
+</tr>
+<tr>
+<td>No sideways scroll</td>
+<td><code>overflow-x: hidden; overflow-x: clip</code> on <strong>html and body</strong>; <code>overscroll-behavior</code></td>
+</tr>
+<tr>
+<td>Safe areas</td>
+<td><code>viewport-fit=cover</code> + <code>env(safe-area-inset-top/bottom/left/right)</code></td>
+</tr>
+<tr>
+<td>Frosted glass</td>
+<td><code>color-mix(… 82–95%, transparent)</code> + <code>backdrop-filter</code> + <code>-webkit-</code> copy</td>
+</tr>
+<tr>
+<td>Shell</td>
+<td>max 560 px, centred, <code>min-height: 100dvh</code>, bottom padding = tab + 28 + inset</td>
+</tr>
+<tr>
+<td>Tab bar</td>
+<td>fixed, <code>left 50% / translateX(-50%)</code>, bottom 12 + inset, <code>min(528px, 100% − 24px)</code>, 5 cols, pill <code>inset 0; z-index −1</code></td>
+</tr>
+</tbody>
+</table></div></div></section>
+
+<section class="lsec" id="glossary" aria-labelledby="glossary-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">14</span><h2 id="glossary-h">Glossary</h2></div><dl class="glossary wide"><div class="term"><dt>Backdrop filter</dt><dd>a filter applied to what is behind an element.</dd></div><div class="term"><dt>Box-sizing</dt><dd>whether <code>width</code> includes padding and border.</dd></div><div class="term"><dt>Cascade</dt><dd>the rules for choosing which declaration wins.</dd></div><div class="term"><dt><code>color-mix()</code></dt><dd>mixes two colours in a colour space; with <code>transparent</code> it makes a translucent colour.</dd></div><div class="term"><dt><code>color-scheme</code></dt><dd>tells the browser which built-in palette to use.</dd></div><div class="term"><dt>Custom property / token</dt><dd>a <code>--name</code> variable holding a design decision.</dd></div><div class="term"><dt><code>dvh</code></dt><dd>dynamic viewport height, follows the visible area.</dd></div><div class="term"><dt>Fallback declaration</dt><dd>an earlier line a browser keeps when it doesn't understand a later one.</dd></div><div class="term"><dt>Full bleed</dt><dd>a background that reaches the screen edges inside a padded container.</dd></div><div class="term"><dt>Safe area</dt><dd>the part of the screen not covered by the notch or home indicator.</dd></div><div class="term"><dt>Scroll container</dt><dd>a box whose overflow can be scrolled.</dd></div><div class="term"><dt>Specificity</dt><dd>a selector's weight (ids-classes-types).</dd></div><div class="term"><dt>Stacking context</dt><dd>a group of elements whose z-indexes are compared only with each other.</dd></div><div class="term"><dt>Sticky positioning</dt><dd>normal flow until a threshold, then fixed within its scroll container.</dd></div><div class="term"><dt>Tabular numerals</dt><dd>digits with equal widths.</dd></div><div class="term"><dt>Variable font</dt><dd>one font file with continuous axes such as weight and width.</dd></div></dl></section>
+
+<section class="lsec" id="go-further" aria-labelledby="go-further-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">15</span><h2 id="go-further-h">Go further</h2></div><ul class="resources"><li><span class="r-title"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties" rel="noopener">MDN: Using CSS custom properties</a></span><span class="r-type">Docs</span><span class="r-why">Inheritance and <code>var()</code> fallbacks, exactly as used here</span><span class="r-meta">Read: "Inheritance of custom properties", "Custom property fallback values" · 15 min</span></li><li><span class="r-title"><a href="https://web.dev/articles/prefers-color-scheme" rel="noopener">web.dev: prefers-color-scheme</a></span><span class="r-type">Article</span><span class="r-why">Dark-mode best practice, <code>color-scheme</code>, and avoiding flashes</span><span class="r-meta">Read: Whole article · 20 min</span></li><li><span class="r-title"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow" rel="noopener">MDN: overflow</a></span><span class="r-type">Docs</span><span class="r-why">The precise difference between <code>hidden</code> and <code>clip</code></span><span class="r-meta">Read: The <code>clip</code> value and the "Description" section · 10 min</span></li><li><span class="r-title"><a href="https://webkit.org/blog/7929/designing-websites-for-iphone-x/" rel="noopener">WebKit blog: Designing websites for iPhone X</a></span><span class="r-type">Article</span><span class="r-why">Where <code>viewport-fit=cover</code> and safe-area insets came from</span><span class="r-meta">Read: Whole post (written for <code>constant()</code>, now <code>env()</code>) · 10 min</span></li><li><span class="r-title"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/color-mix" rel="noopener">MDN: color-mix()</a></span><span class="r-type">Docs</span><span class="r-why">Syntax and colour spaces</span><span class="r-meta">Read: "Syntax", "Examples" · 10 min</span></li></ul></section>
+
+
+
+
+    <div class="complete-box"><div class="txt"><strong>Finished L2.10a?</strong><span>Mark it complete once you have done its blank-page drill. The hub, the menu and the plan all update.</span></div><button class="btn primary complete" type="button" data-complete="l2-10a" aria-pressed="false">Mark lesson complete</button></div>
+  </main>
+</div>
+<nav class="pager" aria-label="Lesson pager"><a class="prev" href="l2-09c-results-leaderboard.html"><span class="dir">← Previous</span><span class="t">L2.09c The ranked test III: results and leaderboard</span></a><a class="next" href="l2-10b-component-styles.html"><span class="dir">Next →</span><span class="t"><span>L2.10b</span> Styling II: every component</span></a></nav>
+<footer class="site-foot"><p>Coffee aur Code · <a href="index.html">the study series</a> for the <i>Psychology of Learning</i> app · generated 2026-10-17 from build sessions 1 and 2</p></footer>
+<button class="btn sections-fab" type="button" data-open="sections" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg><span>Sections</span></button>
+<div class="drawer" id="sections" role="dialog" aria-modal="true" aria-labelledby="sections-title"><div class="scrim" data-close></div><div class="panel"><header><h2 id="sections-title">L2.10a · sections</h2><button class="icon-btn" type="button" data-close aria-label="Close sections"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header><div class="body"><nav class="toc-drawer" aria-label="Sections"><ol><li><a href="#warm-up"><span class="n">1</span><span>Warm-up: pull it from memory</span></a></li><li><a href="#the-problem-this-solves"><span class="n">2</span><span>The problem this solves</span></a></li><li><a href="#concepts"><span class="n">3</span><span>Concepts</span></a></li><li><a href="#reading-the-real-code"><span class="n">4</span><span>Reading the real code</span></a></li><li><a href="#worked-traces"><span class="n">5</span><span>Worked traces</span></a></li><li><a href="#running-and-testing"><span class="n">6</span><span>Running and testing</span></a></li><li><a href="#bug-journal"><span class="n">7</span><span>Bug journal</span></a></li><li><a href="#why-this-design"><span class="n">8</span><span>Why this design</span></a></li><li><a href="#check-yourself"><span class="n">9</span><span>Check yourself</span></a></li><li><a href="#practice"><span class="n">10</span><span>Practice</span></a></li><li><a href="#from-memory"><span class="n">11</span><span>From memory</span></a></li><li><a href="#flashcards"><span class="n">12</span><span>Flashcards</span></a></li><li><a href="#the-menu-board"><span class="n">13</span><span>The menu board</span></a></li><li><a href="#glossary"><span class="n">14</span><span>Glossary</span></a></li><li><a href="#go-further"><span class="n">15</span><span>Go further</span></a></li></ol></nav><div class="toc-done"><button class="btn sm complete" type="button" data-complete="l2-10a" aria-pressed="false">Mark complete</button></div></div></div></div>
+<div class="drawer" id="menu" role="dialog" aria-modal="true" aria-labelledby="menu-title"><div class="scrim" data-close></div><div class="panel">
+<header><h2 id="menu-title">The menu</h2><button class="icon-btn" type="button" data-close aria-label="Close menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header>
+<div class="body"><input class="menu-search" type="search" placeholder="Find a lesson or concept…" aria-label="Find a lesson or concept">
+<div class="menu-extra"><a class="btn sm" href="index.html">Hub</a><a class="btn sm" href="plan.html">Study plan</a><a class="btn sm" href="mastery.html">Mastery</a></div>
+<div class="menu-level"><h3>Level 1 · Foundations <span>5 lessons · 5 h 35 min</span></h3><ul class="menu-list"><li data-search="l1.01 what we built, the map, and the build log architecture spa supabase build log"><a href="l1-01-what-we-built.html"><span class="tick" data-done="l1-01"></span><span class="id">L1.01</span><span>What we built, the map, and the build log</span><span class="min">45′</span></a></li><li data-search="l1.02 prerequisites i: the web platform css dom events http history api"><a href="l1-02-web-platform.html"><span class="tick" data-done="l1-02"></span><span class="id">L1.02</span><span>Prerequisites I: the web platform</span><span class="min">70′</span></a></li><li data-search="l1.03 prerequisites ii: typescript and react typescript hooks effects context"><a href="l1-03-typescript-react.html"><span class="tick" data-done="l1-03"></span><span class="id">L1.03</span><span>Prerequisites II: TypeScript and React</span><span class="min">75′</span></a></li><li data-search="l1.04 prerequisites iii: sql, auth, keys and hosting sql rls jwt otp env"><a href="l1-04-data-auth-hosting.html"><span class="tick" data-done="l1-04"></span><span class="id">L1.04</span><span>Prerequisites III: SQL, auth, keys and hosting</span><span class="min">70′</span></a></li><li data-search="l1.05 setup and the first working slice node vite tsconfig checkpoint"><a href="l1-05-setup-first-slice.html"><span class="tick" data-done="l1-05"></span><span class="id">L1.05</span><span>Setup and the first working slice</span><span class="min">75′</span></a></li></ul></div><div class="menu-level"><h3>Level 2 · Build it <span>18 lessons · 21 h 35 min</span></h3><ul class="menu-list"><li data-search="l2.01 from pdfs to 130 questions pdftotext data model sql escaping"><a href="l2-01-data-pipeline.html"><span class="tick" data-done="l2-01"></span><span class="id">L2.01</span><span>From PDFs to 130 questions</span><span class="min">60′</span></a></li><li data-search="l2.02 the database i: tables and rls ddl constraints rls indexes"><a href="l2-02-tables-and-rls.html"><span class="tick" data-done="l2-02"></span><span class="id">L2.02</span><span>The database I: tables and RLS</span><span class="min">70′</span></a></li><li data-search="l2.03 the database ii: server-side grading pl/pgsql security definer rank()"><a href="l2-03-server-grading.html"><span class="tick" data-done="l2-03"></span><span class="id">L2.03</span><span>The database II: server-side grading</span><span class="min">75′</span></a></li><li data-search="l2.04 entry point, config and the small libraries vite seo head fisher–yates"><a href="l2-04-entry-config-libs.html"><span class="tick" data-done="l2-04"></span><span class="id">L2.04</span><span>Entry point, config and the small libraries</span><span class="min">70′</span></a></li><li data-search="l2.05 the app shell react router animatepresence layoutid"><a href="l2-05-app-shell.html"><span class="tick" data-done="l2-05"></span><span class="id">L2.05</span><span>The app shell</span><span class="min">75′</span></a></li><li data-search="l2.06a the ui kit drag springs svg rings raf"><a href="l2-06a-ui-kit.html"><span class="tick" data-done="l2-06a"></span><span class="id">L2.06a</span><span>The UI kit</span><span class="min">75′</span></a></li><li data-search="l2.06b the mug, icons and home svg keyframes stats"><a href="l2-06b-mug-icons-home.html"><span class="tick" data-done="l2-06b"></span><span class="id">L2.06b</span><span>The mug, icons and Home</span><span class="min">70′</span></a></li><li data-search="l2.07a auth state and email-code sign-in otp auth state validation"><a href="l2-07a-auth-sign-in.html"><span class="tick" data-done="l2-07a"></span><span class="id">L2.07a</span><span>Auth state and email-code sign-in</span><span class="min">70′</span></a></li><li data-search="l2.07c google sign-in, line by line oauth redirects pkce dashboards"><a href="l2-07c-google-sign-in.html"><span class="tick" data-done="l2-07c"></span><span class="id">L2.07c</span><span>Google sign-in, line by line</span><span class="min">80′</span></a></li><li data-search="l2.07b names, account and progress sync upsert merge newest wins"><a href="l2-07b-account-progress.html"><span class="tick" data-done="l2-07b"></span><span class="id">L2.07b</span><span>Names, account and progress sync</span><span class="min">75′</span></a></li><li data-search="l2.08a flashcards i: the deck and the flip usemotionvalue drag 3d"><a href="l2-08a-flashcard-deck.html"><span class="tick" data-done="l2-08a"></span><span class="id">L2.08a</span><span>Flashcards I: the deck and the flip</span><span class="min">75′</span></a></li><li data-search="l2.08b flashcards ii: quiz and list state machines search highlight"><a href="l2-08b-quiz-and-list.html"><span class="tick" data-done="l2-08b"></span><span class="id">L2.08b</span><span>Flashcards II: quiz and list</span><span class="min">70′</span></a></li><li data-search="l2.09a the ranked test i: intro and start localstorage routes rpc"><a href="l2-09a-test-intro.html"><span class="tick" data-done="l2-09a"></span><span class="id">L2.09a</span><span>The ranked test I: intro and start</span><span class="min">60′</span></a></li><li data-search="l2.09b the ranked test ii: the runner runner state beforeunload"><a href="l2-09b-test-runner.html"><span class="tick" data-done="l2-09b"></span><span class="id">L2.09b</span><span>The ranked test II: the runner</span><span class="min">75′</span></a></li><li data-search="l2.09c the ranked test iii: results and leaderboard ring maths ties visibilitychange"><a href="l2-09c-results-leaderboard.html"><span class="tick" data-done="l2-09c"></span><span class="id">L2.09c</span><span>The ranked test III: results and leaderboard</span><span class="min">75′</span></a></li><li data-search="l2.10a styling i: tokens, themes and the shell custom properties color-mix clip"><a href="l2-10a-tokens-base-shell.html" aria-current="page"><span class="tick" data-done="l2-10a"></span><span class="id">L2.10a</span><span>Styling I: tokens, themes and the shell</span><span class="min">70′</span></a></li><li data-search="l2.10b styling ii: every component grid stacking touch-action"><a href="l2-10b-component-styles.html"><span class="tick" data-done="l2-10b"></span><span class="id">L2.10b</span><span>Styling II: every component</span><span class="min">75′</span></a></li><li data-search="l2.10c styling iii: the responsive layer media queries dvh @supports checkpoint"><a href="l2-10c-responsive.html"><span class="tick" data-done="l2-10c"></span><span class="id">L2.10c</span><span>Styling III: the responsive layer</span><span class="min">75′</span></a></li></ul></div><div class="menu-level"><h3>Level 3 · Under the hood <span>6 lessons · 7 h 05 min</span></h3><ul class="menu-list"><li data-search="l3.01 the security model rls internals grants jwt threat model"><a href="l3-01-security-model.html"><span class="tick" data-done="l3-01"></span><span class="id">L3.01</span><span>The security model</span><span class="min">70′</span></a></li><li data-search="l3.02 ranking maths and sql internals window functions probability explain"><a href="l3-02-ranking-sql.html"><span class="tick" data-done="l3-02"></span><span class="id">L3.02</span><span>Ranking maths and SQL internals</span><span class="min">65′</span></a></li><li data-search="l3.03 gestures, springs, 3d and scrolling pointer events ζ perspective"><a href="l3-03-gestures-3d.html"><span class="tick" data-done="l3-03"></span><span class="id">L3.03</span><span>Gestures, springs, 3D and scrolling</span><span class="min">75′</span></a></li><li data-search="l3.04 viewports, contrast and accessibility dvh luminance compositing axe"><a href="l3-04-viewports-contrast.html"><span class="tick" data-done="l3-04"></span><span class="id">L3.04</span><span>Viewports, contrast and accessibility</span><span class="min">70′</span></a></li><li data-search="l3.05 performance and lighthouse lcp cls caching fonts checkpoint"><a href="l3-05-performance.html"><span class="tick" data-done="l3-05"></span><span class="id">L3.05</span><span>Performance and Lighthouse</span><span class="min">70′</span></a></li><li data-search="l3.06 oauth, pkce, and why sign-up timed out 504 smtp pkce sha-256 psl"><a href="l3-06-oauth-pkce-504.html"><span class="tick" data-done="l3-06"></span><span class="id">L3.06</span><span>OAuth, PKCE, and why sign-up timed out</span><span class="min">75′</span></a></li></ul></div><div class="menu-level"><h3>Level 4 · Test it and ship it <span>9 lessons · 10 h 55 min</span></h3><ul class="menu-list"><li data-search="l4.01 testing strategy and data tests node:test regex mutation"><a href="l4-01-testing-strategy-data.html"><span class="tick" data-done="l4-01"></span><span class="id">L4.01</span><span>Testing strategy and data tests</span><span class="min">70′</span></a></li><li data-search="l4.02 database tests in pglite pglite set role rls matrix"><a href="l4-02-database-tests.html"><span class="tick" data-done="l4-02"></span><span class="id">L4.02</span><span>Database tests in PGlite</span><span class="min">75′</span></a></li><li data-search="l4.03 playwright foundations playwright webserver secrets scan"><a href="l4-03-playwright-foundations.html"><span class="tick" data-done="l4-03"></span><span class="id">L4.03</span><span>Playwright foundations</span><span class="min">75′</span></a></li><li data-search="l4.04 ui tests: navigation, layout, flashcards locators expect.poll cdp touch"><a href="l4-04-ui-tests-nav-cards.html"><span class="tick" data-done="l4-04"></span><span class="id">L4.04</span><span>UI tests: navigation, layout, flashcards</span><span class="min">75′</span></a></li><li data-search="l4.05 ui tests: quiz, list, runner, results state injection transitions"><a href="l4-05-ui-tests-quiz-runner.html"><span class="tick" data-done="l4-05"></span><span class="id">L4.05</span><span>UI tests: quiz, list, runner, results</span><span class="min">70′</span></a></li><li data-search="l4.06 live security and the signed-in journey admin api route mocking cleanup"><a href="l4-06-live-security-auth.html"><span class="tick" data-done="l4-06"></span><span class="id">L4.06</span><span>Live security and the signed-in journey</span><span class="min">75′</span></a></li><li data-search="l4.07 accessibility, lighthouse, flaky tests axe lighthouse forensics"><a href="l4-07-a11y-lighthouse-flaky.html"><span class="tick" data-done="l4-07"></span><span class="id">L4.07</span><span>Accessibility, Lighthouse, flaky tests</span><span class="min">65′</span></a></li><li data-search="l4.08 ship it: deploy from git and operate vercel seo supabase checkpoint"><a href="l4-08-deploy-operate.html"><span class="tick" data-done="l4-08"></span><span class="id">L4.08</span><span>Ship it: deploy from Git and operate</span><span class="min">75′</span></a></li><li data-search="l4.09 a sign-in you can't automate, and a live incident boundary tests route runbook"><a href="l4-09-auth-tests-incident-ops.html"><span class="tick" data-done="l4-09"></span><span class="id">L4.09</span><span>A sign-in you can't automate, and a live incident</span><span class="min">75′</span></a></li></ul></div>
+<div class="menu-level"><h3>Mastery <span>195′</span></h3><ul class="menu-list"><li data-search="mastery checkpoint rebuild from memory"><a href="mastery.html"><span class="tick" data-done="mastery"></span><span class="id">★</span><span>Mastery checkpoint: rebuild from memory</span><span class="min">195′</span></a></li></ul></div>
+</div></div></div>
+<script src="assets/dlm-core.js"></script>
+<script src="assets/series.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

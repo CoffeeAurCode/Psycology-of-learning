@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="dlm-series" content="psych-learning-build">
+<meta name="description" content="The curriculum blueprint: mastery spec, knowledge inventory, level plan with minutes, visual plan and design brief.">
+<title>The outline: the blueprint behind the series · Coffee aur Code</title>
+<script>(function(){try{var t=localStorage.getItem('dlm:psych-learning-build:theme');if(t){t=JSON.parse(t);if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+<link rel="stylesheet" href="assets/lib/katex/katex.min.css">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cpath%20d%3D%22M7%2016h22v9a9%209%200%200%201-9%209h-4a9%209%200%200%201-9-9z%22%20fill%3D%22%2317110e%22%2F%3E%3Cpath%20d%3D%22M29%2019h2.5a4%204%200%200%201%200%208H28%22%20fill%3D%22none%22%20stroke%3D%22%2317110e%22%20stroke-width%3D%222.6%22%2F%3E%3Cpath%20d%3D%22M15%204c-2%203%202%205%200%208M21%203c-2%203%202%205%200%208%22%20fill%3D%22none%22%20stroke%3D%22%23d7262f%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
+</head>
+<body data-lesson="outline">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="Coffee aur Code study series: home"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M15 4c-2 3 2 5 0 8M21 3c-2 3 2 5 0 8" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round"/><path d="M7 16h22v9a9 9 0 0 1-9 9h-4a9 9 0 0 1-9-9z" fill="var(--ink)"/><path d="M29 19h2.5a4 4 0 0 1 0 8H28" fill="none" stroke="var(--ink)" stroke-width="2.6"/><path d="M12 22.5l-2.5 2.5 2.5 2.5M18 22.5l2.5 2.5-2.5 2.5" fill="none" stroke="var(--bg)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="brand-name">Coffee aur Code<small>Build it from memory</small></span></a>
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Hub</a><span class="sep">/</span><span class="here">The outline: the blueprint behind the series</span></nav>
+  <span class="spacer"></span>
+  <div class="actions">
+    <a class="btn ghost sm label-wide" href="plan.html">Plan</a>
+    <button class="btn sm" type="button" data-open="menu" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span class="label-wide">Lessons</span></button>
+    <button class="icon-btn theme-toggle" type="button" aria-label="Switch colour theme"><svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+  </div>
+  <div class="read-progress" aria-hidden="true"></div>
+</header>
+<div class="layout">
+  <aside class="toc" aria-label="On this page">
+    <p class="toc-label">On this page</p>
+    <ol><li><a href="#mastery-spec"><span class="n">1</span><span>Mastery spec</span></a></li><li><a href="#knowledge-inventory"><span class="n">2</span><span>Knowledge inventory</span></a></li><li><a href="#level-plan-minutes-study-practice-1-3-buffer-rounded-to-5"><span class="n">3</span><span>Level plan (minutes = study + practice, ×1.3 buffer, rounded to 5)</span></a></li><li><a href="#visual-plan-markdown-edition"><span class="n">4</span><span>Visual plan (Markdown edition)</span></a></li><li><a href="#design-brief-markdown-edition"><span class="n">5</span><span>Design brief (Markdown edition)</span></a></li></ol>
+    
+  </aside>
+  <main class="lesson" id="main">
+    <div class="eyebrow"><span class="lvl">Series reference</span><span>Curriculum blueprint</span><span>about 20 min to read</span></div>
+    <div class="lesson-title"><span class="lesson-num">§</span><h1>The outline: the blueprint behind the series</h1></div>
+    
+    <p class="lede"><strong>In two sentences:</strong> This is the plan the series was written from: what you should be able to do at the end, every concept and where it is taught, the lessons with their ids and minutes, and the visual and design decisions. Use it to see the whole course at once, or to find which lesson teaches a concept.</p>
+    
+<p>Series: <strong><code>psych-learning-build</code></strong> · Mode: <strong>Session</strong> (turning the build of the <em>Psychology of Learning · Coffee aur Code</em> app into lessons) · Format: <strong>Markdown only</strong> (user request).</p>
+<p><strong>Extended 2026-10-17 with session 2</strong> (sign-up returned HTTP 504 → Google-only sign-in). New ids: <code>l2-07c</code>, <code>l3-06</code>, <code>l4-09</code>; no old id was renumbered. Superseded content in older lessons carries a "Session 2 update" note instead of being rewritten, so the history and its bug stories stay intact.</p>
+
+<aside class="callout">
+<p><strong>HTML edition (2026-10-17).</strong> This blueprint was written for a Markdown-only series. The lessons are now HTML pages: Mermaid blocks render as SVG figures (several redrawn by hand), all maths is typeset, the step-through frame tables became steppers, and some lessons gained interactive figures (swipe thresholds, deck height, test coverage, spring damping, contrast, PKCE). Sections 4 and 5 are kept as written, as the record of the plan.</p>
+</aside>
+
+<section class="lsec" id="mastery-spec" aria-labelledby="mastery-spec-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">1</span><h2 id="mastery-spec-h">Mastery spec</h2></div><p>When you finish, you can do all of this <strong>with an editor and a terminal, and no notes, docs or AI</strong>:</p><ol>
+<li><strong>Extract the data.</strong> Turn 12 assignment PDFs plus a saved SWAYAM page into <code>src/data/questions.json</code>: 130 questions, ids <code>week*100 + n</code>, 0-based answer indexes. Then regenerate <code>supabase/seed.sql</code> and <code>supabase/setup.sql</code> from it with a script.</li>
+<li><strong>Write the database.</strong> Write <code>supabase/schema.sql</code> from a blank file: 4 tables, row-level security (RLS) on all of them, the 8 policies, and the 4 functions (<code>start_test</code>, <code>submit_test</code>, <code>get_leaderboard</code>, <code>get_my_stats</code>) with the right <code>security definer</code>, <code>search_path</code> and grants. Explain why a student cannot forge a score.</li>
+<li><strong>Scaffold the app.</strong> Create a Vite + React + TypeScript app by hand (<code>package.json</code>, <code>tsconfig.json</code>, <code>vite.config.ts</code>, <code>index.html</code>, <code>main.tsx</code>), with no generator.</li>
+<li><strong>Build the shell.</strong> Providers (theme, auth, progress), router, animated page transitions, a tab bar that becomes a side rail on laptops, a first-load splash, and an error boundary.</li>
+<li><strong>Build Google sign-in.</strong> Configure the Google Cloud OAuth client (branding, authorised domains as top private domains, audience, redirect URI = Supabase callback) and Supabase (Google provider, Site URL, redirect allow-list, Email off). Write <code>SignIn</code> with <code>signInWithOAuth</code> and a <code>redirectTo</code> that keeps <code>?next</code>, the client options <code>detectSessionInUrl: true</code> + <code>flowType: "pkce"</code>, and the <code>?error</code> return. A "choose a leaderboard name" step and an account page follow. Flashcard progress syncs local ↔ cloud with "newest wins". <em>(Session 1 built email-code sign-in; it is kept in L2.07a as history.)</em></li>
+<li><strong>Build the flashcards.</strong> A deck with swipe right/left (got it / again), a 3D flip that works in Safari, undo, hide-mastered, shuffle, a quiz mode and a searchable list.</li>
+<li><strong>Build the ranked test.</strong> 100 random questions with a server-side start time, auto-advance, flags, a question grid, resume after reload, a submit sheet, results with an animated ring, and a podium leaderboard.</li>
+<li><strong>Style it for every screen.</strong> A token-based light/dark design that works from a 280 px Galaxy Fold to a 1920 px desktop, with safe areas, <code>dvh</code>, and fallbacks for old Safari. Pass axe accessibility checks.</li>
+<li><strong>Test it.</strong> Explain the test pyramid used here, then write from blank files: (a) data-integrity tests that check every answer against the PDFs and prove they can fail (mutation check); (b) PGlite database tests that simulate Supabase's <code>anon</code>/<code>authenticated</code> roles to prove RLS and grading; (c) a Playwright config with 11 device/browser projects and a local production-build server; (d) UI tests that wait correctly for animations; (e) live security tests and a signed-in journey that injects a real session (no emails, no Google UI) and deletes only its own users, plus a Google hand-off test at the Supabase boundary; (f) axe accessibility scans in both themes. Run Lighthouse and read its metrics, and diagnose a failing or flaky test from its report.</li>
+<li><strong>Ship it.</strong> Git hygiene for secrets, Vercel deploy from Git with env vars, <code>vercel.json</code> rewrites/redirects/headers, domains, SEO files, analytics, and the Supabase and Google Cloud dashboard settings for sign-in.</li>
+<li><strong>Debug from symptoms.</strong> Diagnose every bug story in this series from its symptom alone (session 2 added ten).</li>
+<li><strong>Run an incident.</strong> Given "users get HTTP 504 on sign-up", find the failing hop with five probes (timed status checks, auth settings, the endpoint itself, a masked user listing, the dependency's port), explain the cause (504 vs 502/503/429; dropped vs refused connections), and prove a fix is live by fingerprinting the bundle. Explain PKCE with its formula and numbers.</li>
+</ol></section>
+
+
+<section class="lsec" id="knowledge-inventory" aria-labelledby="knowledge-inventory-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">2</span><h2 id="knowledge-inventory-h">Knowledge inventory</h2></div><div class="table-wrap wide" tabindex="0"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Tag</th>
+<th>Taught in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTML document, <code>&lt;head&gt;</code> meta, viewport, module scripts</td>
+<td>prerequisite</td>
+<td><a href="l1-02-web-platform.html">L1.02</a></td>
+</tr>
+<tr>
+<td>CSS cascade, custom properties, media queries, flex/grid, transforms</td>
+<td>prerequisite</td>
+<td><a href="l1-02-web-platform.html">L1.02</a>, <a href="l2-10a-tokens-base-shell.html">L2.10a</a></td>
+</tr>
+<tr>
+<td>DOM events: click, pointer, touch, keyboard, <code>beforeunload</code></td>
+<td>prerequisite</td>
+<td><a href="l1-02-web-platform.html">L1.02</a>, <a href="l3-03-gestures-3d.html">L3.03</a></td>
+</tr>
+<tr>
+<td><code>localStorage</code> / <code>sessionStorage</code>, JSON</td>
+<td>prerequisite</td>
+<td><a href="l1-02-web-platform.html">L1.02</a>, <a href="l2-04-entry-config-libs.html">L2.04</a></td>
+</tr>
+<tr>
+<td>HTTP, REST, JSON APIs, status codes, CORS-free same-origin</td>
+<td>prerequisite</td>
+<td><a href="l1-02-web-platform.html">L1.02</a></td>
+</tr>
+<tr>
+<td>SPA routing, History API, URL query strings</td>
+<td>prerequisite</td>
+<td><a href="l1-02-web-platform.html">L1.02</a>, <a href="l2-05-app-shell.html">L2.05</a></td>
+</tr>
+<tr>
+<td>TypeScript types, unions, generics, <code>as</code>, non-null <code>!</code></td>
+<td>prerequisite</td>
+<td><a href="l1-03-typescript-react.html">L1.03</a></td>
+</tr>
+<tr>
+<td>ES modules, <code>import</code>/<code>export</code>, JSON imports</td>
+<td>prerequisite</td>
+<td><a href="l1-03-typescript-react.html">L1.03</a></td>
+</tr>
+<tr>
+<td>React: JSX, components, props, <code>useState</code>, <code>useEffect</code>, <code>useRef</code>, <code>useMemo</code>, <code>useCallback</code>, context, keys, StrictMode</td>
+<td>prerequisite</td>
+<td><a href="l1-03-typescript-react.html">L1.03</a></td>
+</tr>
+<tr>
+<td>SQL: tables, primary/foreign keys, constraints, indexes, <code>insert … on conflict</code></td>
+<td>prerequisite</td>
+<td><a href="l1-04-data-auth-hosting.html">L1.04</a></td>
+</tr>
+<tr>
+<td>Postgres functions, PL/pgSQL, arrays, JSON</td>
+<td>core</td>
+<td><a href="l1-04-data-auth-hosting.html">L1.04</a>, <a href="l2-03-server-grading.html">L2.03</a></td>
+</tr>
+<tr>
+<td>Row-level security, roles <code>anon</code>/<code>authenticated</code>, grants</td>
+<td>core</td>
+<td><a href="l1-04-data-auth-hosting.html">L1.04</a>, <a href="l2-02-tables-and-rls.html">L2.02</a>, <a href="l3-01-security-model.html">L3.01</a></td>
+</tr>
+<tr>
+<td>Auth: sessions, JWT, OTP email codes, publishable vs secret keys</td>
+<td>prerequisite</td>
+<td><a href="l1-04-data-auth-hosting.html">L1.04</a>, <a href="l2-07a-auth-sign-in.html">L2.07a</a></td>
+</tr>
+<tr>
+<td>Environment variables, <code>.env</code>, <code>import.meta.env</code>, <code>VITE_</code> prefix</td>
+<td>prerequisite</td>
+<td><a href="l1-04-data-auth-hosting.html">L1.04</a>, <a href="l2-04-entry-config-libs.html">L2.04</a></td>
+</tr>
+<tr>
+<td>Git, <code>.gitignore</code>, static hosting/CDN, Vercel</td>
+<td>prerequisite</td>
+<td><a href="l1-04-data-auth-hosting.html">L1.04</a>, <a href="l4-03-playwright-foundations.html">L4.03</a></td>
+</tr>
+<tr>
+<td>Node/npm, <code>package.json</code> scripts, pinned versions, lockfile</td>
+<td>prerequisite</td>
+<td><a href="l1-05-setup-first-slice.html">L1.05</a></td>
+</tr>
+<tr>
+<td>Vite dev server, build, preview, chunks</td>
+<td>core</td>
+<td><a href="l1-05-setup-first-slice.html">L1.05</a>, <a href="l2-04-entry-config-libs.html">L2.04</a>, <a href="l3-05-performance.html">L3.05</a></td>
+</tr>
+<tr>
+<td><code>pdftotext</code>, reading images, data ids <code>week*100+n</code></td>
+<td>core</td>
+<td><a href="l2-01-data-pipeline.html">L2.01</a></td>
+</tr>
+<tr>
+<td>Seed generation, SQL string escaping <code>''</code></td>
+<td>core</td>
+<td><a href="l2-01-data-pipeline.html">L2.01</a></td>
+</tr>
+<tr>
+<td><code>security definer</code>, <code>set search_path</code>, <code>auth.uid()</code></td>
+<td>core</td>
+<td><a href="l2-03-server-grading.html">L2.03</a>, <a href="l3-01-security-model.html">L3.01</a></td>
+</tr>
+<tr>
+<td><code>distinct on</code>, <code>rank() over</code>, <code>generate_subscripts</code>, <code>for update</code></td>
+<td>deep</td>
+<td><a href="l2-03-server-grading.html">L2.03</a>, <a href="l3-02-ranking-sql.html">L3.02</a></td>
+</tr>
+<tr>
+<td>React Router 7 (<code>BrowserRouter</code>, <code>Routes</code>, <code>NavLink</code>, <code>useSearchParams</code>)</td>
+<td>core</td>
+<td><a href="l2-05-app-shell.html">L2.05</a></td>
+</tr>
+<tr>
+<td>Motion (<code>motion</code>, <code>AnimatePresence</code>, <code>layoutId</code>, <code>useMotionValue</code>, <code>useTransform</code>, <code>useSpring</code>, drag)</td>
+<td>core</td>
+<td><a href="l2-05-app-shell.html">L2.05</a>, <a href="l2-06a-ui-kit.html">L2.06a</a>, <a href="l2-08a-flashcard-deck.html">L2.08a</a>, <a href="l3-03-gestures-3d.html">L3.03</a></td>
+</tr>
+<tr>
+<td>Error boundaries (class components)</td>
+<td>core</td>
+<td><a href="l2-05-app-shell.html">L2.05</a></td>
+</tr>
+<tr>
+<td>SVG drawing and CSS keyframe animation (the mug)</td>
+<td>core</td>
+<td><a href="l2-06b-mug-icons-home.html">L2.06b</a></td>
+</tr>
+<tr>
+<td>Supabase JS: <code>createClient</code>, <code>rpc</code>, <code>from().select/upsert/delete</code>, <code>auth.signInWithOtp/verifyOtp/onAuthStateChange</code></td>
+<td>core</td>
+<td><a href="l2-04-entry-config-libs.html">L2.04</a>, <a href="l2-07a-auth-sign-in.html">L2.07a</a>, <a href="l2-07b-account-progress.html">L2.07b</a></td>
+</tr>
+<tr>
+<td>Optimistic local state + cloud merge ("newest wins")</td>
+<td>core</td>
+<td><a href="l2-07b-account-progress.html">L2.07b</a></td>
+</tr>
+<tr>
+<td>Fisher–Yates shuffle</td>
+<td>core</td>
+<td><a href="l2-04-entry-config-libs.html">L2.04</a></td>
+</tr>
+<tr>
+<td>Swipe gesture thresholds (offset/velocity), 3D flip</td>
+<td>core</td>
+<td><a href="l2-08a-flashcard-deck.html">L2.08a</a>, <a href="l3-03-gestures-3d.html">L3.03</a></td>
+</tr>
+<tr>
+<td>Test runner state machine, resume via storage</td>
+<td>core</td>
+<td><a href="l2-09a-test-intro.html">L2.09a</a>, <a href="l2-09b-test-runner.html">L2.09b</a></td>
+</tr>
+<tr>
+<td>Design tokens, theming with <code>prefers-color-scheme</code> + <code>data-theme</code></td>
+<td>core</td>
+<td><a href="l2-10a-tokens-base-shell.html">L2.10a</a></td>
+</tr>
+<tr>
+<td>Responsive breakpoints, <code>dvh</code>, safe-area insets, <code>@supports</code> fallbacks</td>
+<td>core</td>
+<td><a href="l2-10c-responsive.html">L2.10c</a>, <a href="l3-04-viewports-contrast.html">L3.04</a></td>
+</tr>
+<tr>
+<td>WCAG contrast ratio maths, axe</td>
+<td>deep</td>
+<td><a href="l3-04-viewports-contrast.html">L3.04</a></td>
+</tr>
+<tr>
+<td><code>overflow: clip</code> vs <code>hidden</code>, sticky, <code>overscroll-behavior</code></td>
+<td>deep</td>
+<td><a href="l3-03-gestures-3d.html">L3.03</a></td>
+</tr>
+<tr>
+<td><code>backface-visibility</code> and WebKit</td>
+<td>deep</td>
+<td><a href="l3-03-gestures-3d.html">L3.03</a></td>
+</tr>
+<tr>
+<td>Lighthouse metrics (FCP, LCP, CLS, TBT), fonts, image sizing, cache headers</td>
+<td>deep</td>
+<td><a href="l3-05-performance.html">L3.05</a></td>
+</tr>
+<tr>
+<td>Test pyramid, what each layer proves</td>
+<td>core</td>
+<td><a href="l4-01-testing-strategy-data.html">L4.01</a></td>
+</tr>
+<tr>
+<td><code>node:test</code>, mutation check</td>
+<td>core</td>
+<td><a href="l4-01-testing-strategy-data.html">L4.01</a></td>
+</tr>
+<tr>
+<td>PGlite, role simulation, <code>set role</code></td>
+<td>core</td>
+<td><a href="l4-02-database-tests.html">L4.02</a></td>
+</tr>
+<tr>
+<td>Playwright projects, devices, <code>webServer</code>, locators, auto-waiting, <code>expect.poll</code></td>
+<td>core</td>
+<td><a href="l4-03-playwright-foundations.html">L4.03</a>, <a href="l4-04-ui-tests-nav-cards.html">L4.04</a></td>
+</tr>
+<tr>
+<td>Waiting out animations, realistic gestures, CDP touch, flaky-test diagnosis</td>
+<td>deep</td>
+<td><a href="l4-04-ui-tests-nav-cards.html">L4.04</a>, <a href="l4-05-ui-tests-quiz-runner.html">L4.05</a>, <a href="l4-07-a11y-lighthouse-flaky.html">L4.07</a></td>
+</tr>
+<tr>
+<td>Route mocking (<code>page.route</code>), live API tests with supabase-js</td>
+<td>core</td>
+<td><a href="l4-06-live-security-auth.html">L4.06</a></td>
+</tr>
+<tr>
+<td>Supabase admin API (<code>createUser</code>, <code>generateLink</code>, <code>deleteUser</code>), per-file cleanup</td>
+<td>core</td>
+<td><a href="l4-06-live-security-auth.html">L4.06</a></td>
+</tr>
+<tr>
+<td>axe-core accessibility scans, Lighthouse CLI</td>
+<td>core</td>
+<td><a href="l4-07-a11y-lighthouse-flaky.html">L4.07</a></td>
+</tr>
+<tr>
+<td>Vercel CLI (device login, link, env, deploy, API), Git integration, framework preset</td>
+<td>core</td>
+<td><a href="l4-08-deploy-operate.html">L4.08</a></td>
+</tr>
+<tr>
+<td><code>vercel.json</code> rewrites/redirects/headers, <code>.vercelignore</code>, domains</td>
+<td>core</td>
+<td><a href="l4-08-deploy-operate.html">L4.08</a></td>
+</tr>
+<tr>
+<td>SEO: title/description, canonical, OG, JSON-LD, robots, sitemap; Vercel Analytics</td>
+<td>core</td>
+<td><a href="l4-08-deploy-operate.html">L4.08</a></td>
+</tr>
+<tr>
+<td><em>Session 2:</em> HTTP 5xx family and 429; gateways and upstreams; probing hop by hop</td>
+<td>core</td>
+<td><a href="l3-06-oauth-pkce-504.html">L3.06</a>, <a href="l4-09-auth-tests-incident-ops.html">L4.09</a></td>
+</tr>
+<tr>
+<td><em>Session 2:</em> SMTP, ports 25/465/587, implicit TLS vs STARTTLS, refused vs timed-out connections, sender domains</td>
+<td>deep</td>
+<td><a href="l3-06-oauth-pkce-504.html">L3.06</a></td>
+</tr>
+<tr>
+<td><em>Session 2:</em> OAuth 2.0 authorisation code flow, public vs confidential clients, <code>state</code>, redirect URIs, front vs back channel</td>
+<td>core</td>
+<td><a href="l2-07c-google-sign-in.html">L2.07c</a>, <a href="l3-06-oauth-pkce-504.html">L3.06</a></td>
+</tr>
+<tr>
+<td><em>Session 2:</em> PKCE (verifier, S256 challenge, base64url, entropy), supabase-js verifier storage</td>
+<td>deep</td>
+<td><a href="l2-07c-google-sign-in.html">L2.07c</a>, <a href="l3-06-oauth-pkce-504.html">L3.06</a></td>
+</tr>
+<tr>
+<td><em>Session 2:</em> Supabase <code>signInWithOAuth</code>, <code>detectSessionInUrl</code>, <code>flowType</code>, Site URL and Redirect URLs</td>
+<td>core</td>
+<td><a href="l2-07c-google-sign-in.html">L2.07c</a></td>
+</tr>
+<tr>
+<td><em>Session 2:</em> Google Cloud OAuth client: branding, authorised domains, audience, redirect URI; the Public Suffix List</td>
+<td>core</td>
+<td><a href="l2-07c-google-sign-in.html">L2.07c</a>, <a href="l3-06-oauth-pkce-504.html">L3.06</a></td>
+</tr>
+<tr>
+<td><em>Session 2:</em> boundary tests, route interception of navigations, session injection, <code>toHaveCount(0)</code></td>
+<td>core</td>
+<td><a href="l4-09-auth-tests-incident-ops.html">L4.09</a></td>
+</tr>
+<tr>
+<td><em>Session 2:</em> incident probes, bundle fingerprints, allow-list redaction, <code>&lt; /dev/null</code> + <code>timeout</code></td>
+<td>core</td>
+<td><a href="l4-09-auth-tests-incident-ops.html">L4.09</a></td>
+</tr>
+</tbody>
+</table></div></section>
+
+<section class="lsec" id="level-plan-minutes-study-practice-1-3-buffer-rounded-to-5" aria-labelledby="level-plan-minutes-study-practice-1-3-buffer-rounded-to-5-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">3</span><h2 id="level-plan-minutes-study-practice-1-3-buffer-rounded-to-5-h">Level plan (minutes = study + practice, ×1.3 buffer, rounded to 5)</h2></div><div class="table-wrap wide" tabindex="0"><table>
+<thead>
+<tr>
+<th>Id</th>
+<th>File</th>
+<th>Title</th>
+<th>Min</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>setup</td>
+<td>(l1-05)</td>
+<td>Install Node, Git, a browser; clone and run the finished app</td>
+<td>30</td>
+</tr>
+<tr>
+<td>l1-01</td>
+<td><a href="l1-01-what-we-built.html">l1-01-what-we-built.html</a></td>
+<td>What we built, the map, and the build log</td>
+<td>45</td>
+</tr>
+<tr>
+<td>l1-02</td>
+<td><a href="l1-02-web-platform.html">l1-02-web-platform.html</a></td>
+<td>Prerequisites I: the web platform an app stands on</td>
+<td>70</td>
+</tr>
+<tr>
+<td>l1-03</td>
+<td><a href="l1-03-typescript-react.html">l1-03-typescript-react.html</a></td>
+<td>Prerequisites II: TypeScript and React, enough to read every line</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l1-04</td>
+<td><a href="l1-04-data-auth-hosting.html">l1-04-data-auth-hosting.html</a></td>
+<td>Prerequisites III: SQL, auth, keys and hosting</td>
+<td>70</td>
+</tr>
+<tr>
+<td>l1-05</td>
+<td><a href="l1-05-setup-first-slice.html">l1-05-setup-first-slice.html</a></td>
+<td>Setup and the first working slice (+ Level 1 checkpoint)</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l2-01</td>
+<td><a href="l2-01-data-pipeline.html">l2-01-data-pipeline.html</a></td>
+<td>From PDFs to 130 questions: the data pipeline</td>
+<td>60</td>
+</tr>
+<tr>
+<td>l2-02</td>
+<td><a href="l2-02-tables-and-rls.html">l2-02-tables-and-rls.html</a></td>
+<td>The database I: tables, constraints and row-level security</td>
+<td>70</td>
+</tr>
+<tr>
+<td>l2-03</td>
+<td><a href="l2-03-server-grading.html">l2-03-server-grading.html</a></td>
+<td>The database II: server-side grading and the leaderboard</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l2-04</td>
+<td><a href="l2-04-entry-config-libs.html">l2-04-entry-config-libs.html</a></td>
+<td>Entry point, config and the small libraries</td>
+<td>70</td>
+</tr>
+<tr>
+<td>l2-05</td>
+<td><a href="l2-05-app-shell.html">l2-05-app-shell.html</a></td>
+<td>The app shell: providers, routes, navigation, splash, error boundary</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l2-06a</td>
+<td><a href="l2-06a-ui-kit.html">l2-06a-ui-kit.html</a></td>
+<td>The UI kit: sheets, switches, segmented control, rings, confetti</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l2-06b</td>
+<td><a href="l2-06b-mug-icons-home.html">l2-06b-mug-icons-home.html</a></td>
+<td>The animated mug, the icon set and the Home page</td>
+<td>70</td>
+</tr>
+<tr>
+<td>l2-07a</td>
+<td><a href="l2-07a-auth-sign-in.html">l2-07a-auth-sign-in.html</a></td>
+<td>Auth state and email-code sign-in</td>
+<td>70</td>
+</tr>
+<tr>
+<td>l2-07c</td>
+<td><a href="l2-07c-google-sign-in.html">l2-07c-google-sign-in.html</a></td>
+<td>Google sign-in, line by line (session 2)</td>
+<td>80</td>
+</tr>
+<tr>
+<td>l2-07b</td>
+<td><a href="l2-07b-account-progress.html">l2-07b-account-progress.html</a></td>
+<td>Leaderboard names, the account page and progress sync</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l2-08a</td>
+<td><a href="l2-08a-flashcard-deck.html">l2-08a-flashcard-deck.html</a></td>
+<td>Flashcards I: the deck, the swipe card and the flip</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l2-08b</td>
+<td><a href="l2-08b-quiz-and-list.html">l2-08b-quiz-and-list.html</a></td>
+<td>Flashcards II: deck finished, quiz mode and the searchable list</td>
+<td>70</td>
+</tr>
+<tr>
+<td>l2-09a</td>
+<td><a href="l2-09a-test-intro.html">l2-09a-test-intro.html</a></td>
+<td>The ranked test I: intro, attempt storage and starting a test</td>
+<td>60</td>
+</tr>
+<tr>
+<td>l2-09b</td>
+<td><a href="l2-09b-test-runner.html">l2-09b-test-runner.html</a></td>
+<td>The ranked test II: the runner</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l2-09c</td>
+<td><a href="l2-09c-results-leaderboard.html">l2-09c-results-leaderboard.html</a></td>
+<td>The ranked test III: results and the leaderboard</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l2-10a</td>
+<td><a href="l2-10a-tokens-base-shell.html">l2-10a-tokens-base-shell.html</a></td>
+<td>Styling I: tokens, themes, base and the shell</td>
+<td>70</td>
+</tr>
+<tr>
+<td>l2-10b</td>
+<td><a href="l2-10b-component-styles.html">l2-10b-component-styles.html</a></td>
+<td>Styling II: every component</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l2-10c</td>
+<td><a href="l2-10c-responsive.html">l2-10c-responsive.html</a></td>
+<td>Styling III: the responsive layer (+ Level 2 checkpoint)</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l3-01</td>
+<td><a href="l3-01-security-model.html">l3-01-security-model.html</a></td>
+<td>Under the hood: the security model</td>
+<td>70</td>
+</tr>
+<tr>
+<td>l3-02</td>
+<td><a href="l3-02-ranking-sql.html">l3-02-ranking-sql.html</a></td>
+<td>Under the hood: ranking maths and SQL internals</td>
+<td>65</td>
+</tr>
+<tr>
+<td>l3-03</td>
+<td><a href="l3-03-gestures-3d.html">l3-03-gestures-3d.html</a></td>
+<td>Under the hood: gestures, springs, 3D and scrolling</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l3-04</td>
+<td><a href="l3-04-viewports-contrast.html">l3-04-viewports-contrast.html</a></td>
+<td>Under the hood: viewports, contrast maths and accessibility</td>
+<td>70</td>
+</tr>
+<tr>
+<td>l3-05</td>
+<td><a href="l3-05-performance.html">l3-05-performance.html</a></td>
+<td>Under the hood: performance and Lighthouse (+ Level 3 checkpoint)</td>
+<td>70</td>
+</tr>
+<tr>
+<td>l3-06</td>
+<td><a href="l3-06-oauth-pkce-504.html">l3-06-oauth-pkce-504.html</a></td>
+<td>Under the hood: OAuth, PKCE, and why sign-up timed out (session 2; + Level 3 checkpoint addendum)</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l4-01</td>
+<td><a href="l4-01-testing-strategy-data.html">l4-01-testing-strategy-data.html</a></td>
+<td>Test it I: testing strategy and the data-integrity tests</td>
+<td>70</td>
+</tr>
+<tr>
+<td>l4-02</td>
+<td><a href="l4-02-database-tests.html">l4-02-database-tests.html</a></td>
+<td>Test it II: database tests in PGlite with simulated Supabase roles</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l4-03</td>
+<td><a href="l4-03-playwright-foundations.html">l4-03-playwright-foundations.html</a></td>
+<td>Test it III: Playwright foundations: config, helpers, teardown, HTTP checks</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l4-04</td>
+<td><a href="l4-04-ui-tests-nav-cards.html">l4-04-ui-tests-nav-cards.html</a></td>
+<td>Test it IV: UI tests for navigation, layout and flashcards</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l4-05</td>
+<td><a href="l4-05-ui-tests-quiz-runner.html">l4-05-ui-tests-quiz-runner.html</a></td>
+<td>Test it V: UI tests for quiz, list, theme, test runner and results</td>
+<td>70</td>
+</tr>
+<tr>
+<td>l4-06</td>
+<td><a href="l4-06-live-security-auth.html">l4-06-live-security-auth.html</a></td>
+<td>Test it VI: live security tests and the signed-in journey</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l4-07</td>
+<td><a href="l4-07-a11y-lighthouse-flaky.html">l4-07-a11y-lighthouse-flaky.html</a></td>
+<td>Test it VII: accessibility audits, Lighthouse and flaky-test forensics</td>
+<td>65</td>
+</tr>
+<tr>
+<td>l4-08</td>
+<td><a href="l4-08-deploy-operate.html">l4-08-deploy-operate.html</a></td>
+<td>Ship it: deploy from Git and operate (+ Level 4 checkpoint)</td>
+<td>75</td>
+</tr>
+<tr>
+<td>l4-09</td>
+<td><a href="l4-09-auth-tests-incident-ops.html">l4-09-auth-tests-incident-ops.html</a></td>
+<td>Test it and run it: a sign-in you can't automate, and a live incident (session 2; + Level 4 checkpoint addendum)</td>
+<td>75</td>
+</tr>
+<tr>
+<td>mastery</td>
+<td><a href="mastery.html">mastery.html</a></td>
+<td>Mastery checkpoint: rebuild from memory</td>
+<td>195</td>
+</tr>
+</tbody>
+</table></div><p>Level totals: <strong>L1 365</strong> (incl. setup 30) · <strong>L2 1,295</strong> · <strong>L3 425</strong> · <strong>L4 655</strong> · <strong>Mastery 195</strong> → <strong>2,935 min of new material (48 h 55 min)</strong>. Spaced reviews (4 × 10 min per lesson) are added on top in <a href="plan.html">plan.html</a>. <a href="plan.html">plan.html</a> also schedules 12 outside-reading items (240 min) from the hub's reading path, so the plan's new-material total is 3,175 min (52 h 55 min), and 4,695 min (78 h 15 min) with the 152 reviews. <em>(Session 1 totals were L2 1,215 · L3 350 · L4 580 · Mastery 180; session 2 added 230 lesson minutes, 40 reading minutes and 15 mastery minutes. L2.07c is 80 minutes because it also walks two dashboards; by this series' calibration, lessons of its size run 75–85.)</em></p><p>Rates used: prose 150 wpm; annotated TS/SQL 1 min per 4 lines; annotated CSS 1 min per 8 lines (one declaration per line, many lines are repetitive); quizzes 1 min; cloze 5; blank-page 10–20; flashcards 0.5 each; exercises 10/20/40; checkpoint 20. Buffer ×1.3. The 1,749-line <code>styles.css</code> and 674-line <code>responsive.css</code> are walked in full across l2-10a/b/c.</p></section>
+
+
+
+<section class="lsec" id="visual-plan-markdown-edition" aria-labelledby="visual-plan-markdown-edition-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">4</span><h2 id="visual-plan-markdown-edition-h">Visual plan (Markdown edition)</h2></div><p>Markdown cannot run JavaScript, so the series uses:</p><ul>
+<li><strong>Mermaid</strong> diagrams (flowcharts, sequence diagrams, state machines, ER diagrams), which GitHub, VS Code and Obsidian render as SVG. These are never ASCII art.</li>
+<li><strong>LaTeX math</strong> in <code>$…$</code> and <code>$$…$$</code>, which GitHub renders.</li>
+<li><strong>Step-through frames.</strong> A numbered table where each row is one frame of the animation: the code line that ran, the state after it, and a "predict" question before the reveal. This replaces animated steppers.</li>
+<li><strong><code>&lt;details&gt;</code> reveals</strong> for every answer, hint and solution, to keep the effort in recall.</li>
+</ul><div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th>Lesson</th>
+<th>Visuals</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="l1-01-what-we-built.html">L1.01</a></td>
+<td>Architecture flowchart; sequence diagram of one test attempt end to end; build-log timeline</td>
+</tr>
+<tr>
+<td><a href="l1-02-web-platform.html">L1.02</a></td>
+<td>Request/response sequence; event propagation flowchart; SPA routing flowchart</td>
+</tr>
+<tr>
+<td><a href="l1-03-typescript-react.html">L1.03</a></td>
+<td>React render → commit → effect cycle state diagram; step frames of <code>useState</code> updates</td>
+</tr>
+<tr>
+<td><a href="l1-04-data-auth-hosting.html">L1.04</a></td>
+<td>ER diagram of the 4 tables; RLS decision flowchart; OTP sign-in sequence</td>
+</tr>
+<tr>
+<td><a href="l1-05-setup-first-slice.html">L1.05</a></td>
+<td>File-dependency flowchart of the first slice; step frames of the flip</td>
+</tr>
+<tr>
+<td><a href="l2-01-data-pipeline.html">L2.01</a></td>
+<td>Pipeline flowchart PDF → JSON → SQL; step frames of the answer-line parser</td>
+</tr>
+<tr>
+<td><a href="l2-02-tables-and-rls.html">L2.02</a></td>
+<td>ER diagram with policies; RLS decision per role</td>
+</tr>
+<tr>
+<td><a href="l2-03-server-grading.html">L2.03</a></td>
+<td>Sequence diagram start → submit; step frames of grading a 5-question toy attempt with real numbers</td>
+</tr>
+<tr>
+<td><a href="l2-04-entry-config-libs.html">L2.04</a></td>
+<td>Module graph; theme resolution state diagram</td>
+</tr>
+<tr>
+<td><a href="l2-05-app-shell.html">L2.05</a></td>
+<td>Provider tree; route transition state diagram; splash phase state machine</td>
+</tr>
+<tr>
+<td><a href="l2-06a-ui-kit.html">L2.06a</a></td>
+<td>Sheet drag state diagram; ring maths (circumference/offset)</td>
+</tr>
+<tr>
+<td><a href="l2-06b-mug-icons-home.html">L2.06b</a></td>
+<td>SVG coordinate sketch as Mermaid block; steam keyframe timeline</td>
+</tr>
+<tr>
+<td><a href="l2-07a-auth-sign-in.html">L2.07a</a></td>
+<td>OTP state machine (email → code → name → me); auth state sequence</td>
+</tr>
+<tr>
+<td><a href="l2-07b-account-progress.html">L2.07b</a></td>
+<td>Merge algorithm step frames with real timestamps</td>
+</tr>
+<tr>
+<td><a href="l2-08a-flashcard-deck.html">L2.08a</a></td>
+<td>Swipe decision flowchart; step frames of a drag; flip angle → face visibility table</td>
+</tr>
+<tr>
+<td><a href="l2-08b-quiz-and-list.html">L2.08b</a></td>
+<td>Quiz state machine; search highlight frames</td>
+</tr>
+<tr>
+<td><a href="l2-09a-test-intro.html">L2.09a</a> · <a href="l2-09b-test-runner.html">L2.09b</a> · <a href="l2-09c-results-leaderboard.html">L2.09c</a></td>
+<td>Test runner state machine; auto-advance timing sequence; ring offset maths; podium ordering frames</td>
+</tr>
+<tr>
+<td><a href="l2-10a-tokens-base-shell.html">L2.10a</a> · <a href="l2-10b-component-styles.html">L2.10b</a> · <a href="l2-10c-responsive.html">L2.10c</a></td>
+<td>Token cascade flowchart; breakpoint map; deck-height derivation</td>
+</tr>
+<tr>
+<td><a href="l3-01-security-model.html">L3.01</a></td>
+<td>Threat model flowchart; RLS + definer sequence</td>
+</tr>
+<tr>
+<td><a href="l3-02-ranking-sql.html">L3.02</a></td>
+<td><code>distinct on</code> + <code>rank()</code> frames on 6 sample rows</td>
+</tr>
+<tr>
+<td><a href="l3-03-gestures-3d.html">L3.03</a></td>
+<td>Pointer event sequence; spring damping maths; AnimatePresence lifecycle; backface frames</td>
+</tr>
+<tr>
+<td><a href="l3-04-viewports-contrast.html">L3.04</a></td>
+<td>Contrast ratio derivation with our real colours</td>
+</tr>
+<tr>
+<td><a href="l3-05-performance.html">L3.05</a></td>
+<td>Critical rendering path flowchart; byte maths for the images</td>
+</tr>
+<tr>
+<td><a href="l4-01-testing-strategy-data.html">L4.01</a></td>
+<td>Test pyramid flowchart; mutation-check step frames</td>
+</tr>
+<tr>
+<td><a href="l4-02-database-tests.html">L4.02</a></td>
+<td>PGlite role-switch sequence; RLS test matrix</td>
+</tr>
+<tr>
+<td><a href="l4-03-playwright-foundations.html">L4.03</a></td>
+<td>Playwright project matrix; webServer lifecycle sequence</td>
+</tr>
+<tr>
+<td><a href="l4-04-ui-tests-nav-cards.html">L4.04</a></td>
+<td>"wait for the transition" timing sequence; swipe event frames</td>
+</tr>
+<tr>
+<td><a href="l4-05-ui-tests-quiz-runner.html">L4.05</a></td>
+<td>Runner test step frames</td>
+</tr>
+<tr>
+<td><a href="l4-06-live-security-auth.html">L4.06</a></td>
+<td>Auth journey sequence with route mocking; cleanup isolation race (sequence)</td>
+</tr>
+<tr>
+<td><a href="l4-07-a11y-lighthouse-flaky.html">L4.07</a></td>
+<td>axe/Lighthouse pipeline; flaky-test decision flowchart</td>
+</tr>
+<tr>
+<td><a href="l4-08-deploy-operate.html">L4.08</a></td>
+<td>Deploy pipeline flowchart; alias redirect sequence</td>
+</tr>
+<tr>
+<td><a href="l2-07c-google-sign-in.html">L2.07c</a></td>
+<td>Before/after flowchart (SMTP → Google); six-hop sequence diagram with the real 302; step frames of a new student's sign-in</td>
+</tr>
+<tr>
+<td><a href="l3-06-oauth-pkce-504.html">L3.06</a></td>
+<td>Four-machine flowchart of the 504; SMTP sequence; nested OAuth flows; PKCE derivation (LaTeX) with real numbers; probe-by-probe step frames</td>
+</tr>
+<tr>
+<td><a href="l4-09-auth-tests-incident-ops.html">L4.09</a></td>
+<td>Boundary flowchart (what each test covers); step frames of the hand-off test</td>
+</tr>
+</tbody>
+</table></div></section>
+
+
+
+<section class="lsec" id="design-brief-markdown-edition" aria-labelledby="design-brief-markdown-edition-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">5</span><h2 id="design-brief-markdown-edition-h">Design brief (Markdown edition)</h2></div><ul>
+<li><strong>Design read.</strong> A self-taught builder reading in VS Code or on GitHub. Markdown has no custom fonts or colours, so the design lives in structure and voice.</li>
+<li><strong>Visual world: the café menu of Coffee aur Code.</strong> Every lesson opens with a <strong>recipe card</strong> (a table: time, you need, you'll produce). Bug stories are <strong>incident tickets</strong> with a fixed field order (Symptom · Diagnosis · Root cause · Fix · Lesson). Cheat sheets are titled <strong>"The menu board"</strong>.</li>
+<li><strong>Signature element.</strong> The <strong>step-through frame table</strong>: one row per moment, a predict question hidden above the reveal. It is the Markdown stand-in for animation and is used in every Level 2 lesson.</li>
+<li><strong>Content types.</strong> Annotated code is a fenced block, then a numbered "line notes" list keyed by line ranges (what · why · what breaks if changed). Quizzes are numbered questions with options and a <code>&lt;details&gt;</code> answer that explains every wrong option. Flashcards are <code>Q:</code>/<code>A:</code> pairs inside <code>&lt;details&gt;</code>. Cloze is a code block with <code>___</code> blanks and the answer in <code>&lt;details&gt;</code>. Blank-page drills have a "No scrolling up" rule and a checkbox self-check list.</li>
+<li><strong>Navigation.</strong> Every lesson ends with ← previous · <a href="index.html">Hub</a> · next →. The hub <code>README.md</code> renders as the folder landing page on GitHub.</li>
+<li><strong>Different from other series.</strong> This is the first series in this workspace.</li>
+<li><strong>Session 2 extension.</strong> Same café-menu world and section order. New lessons are tagged <em>Session 2</em> under their level line; older lessons get a "Session 2 update" blockquote right after their two-sentence summary.</li>
+</ul></section>
+
+
+    
+  </main>
+</div>
+<nav class="pager" aria-label="Lesson pager"><a class="prev" href="index.html"><span class="dir">← Back to</span><span class="t">The hub</span></a><a class="next" href="l1-01-what-we-built.html"><span class="dir">Next →</span><span class="t"><span>L1.01</span> What we built, the map, and the build log</span></a></nav>
+<footer class="site-foot"><p>Coffee aur Code · <a href="index.html">the study series</a> for the <i>Psychology of Learning</i> app · generated 2026-10-17 from build sessions 1 and 2</p></footer>
+<button class="btn sections-fab" type="button" data-open="sections" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg><span>Sections</span></button>
+<div class="drawer" id="sections" role="dialog" aria-modal="true" aria-labelledby="sections-title"><div class="scrim" data-close></div><div class="panel"><header><h2 id="sections-title">Outline · sections</h2><button class="icon-btn" type="button" data-close aria-label="Close sections"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header><div class="body"><nav class="toc-drawer" aria-label="Sections"><ol><li><a href="#mastery-spec"><span class="n">1</span><span>Mastery spec</span></a></li><li><a href="#knowledge-inventory"><span class="n">2</span><span>Knowledge inventory</span></a></li><li><a href="#level-plan-minutes-study-practice-1-3-buffer-rounded-to-5"><span class="n">3</span><span>Level plan (minutes = study + practice, ×1.3 buffer, rounded to 5)</span></a></li><li><a href="#visual-plan-markdown-edition"><span class="n">4</span><span>Visual plan (Markdown edition)</span></a></li><li><a href="#design-brief-markdown-edition"><span class="n">5</span><span>Design brief (Markdown edition)</span></a></li></ol></nav></div></div></div>
+<div class="drawer" id="menu" role="dialog" aria-modal="true" aria-labelledby="menu-title"><div class="scrim" data-close></div><div class="panel">
+<header><h2 id="menu-title">The menu</h2><button class="icon-btn" type="button" data-close aria-label="Close menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header>
+<div class="body"><input class="menu-search" type="search" placeholder="Find a lesson or concept…" aria-label="Find a lesson or concept">
+<div class="menu-extra"><a class="btn sm" href="index.html">Hub</a><a class="btn sm" href="plan.html">Study plan</a><a class="btn sm" href="mastery.html">Mastery</a></div>
+<div class="menu-level"><h3>Level 1 · Foundations <span>5 lessons · 5 h 35 min</span></h3><ul class="menu-list"><li data-search="l1.01 what we built, the map, and the build log architecture spa supabase build log"><a href="l1-01-what-we-built.html"><span class="tick" data-done="l1-01"></span><span class="id">L1.01</span><span>What we built, the map, and the build log</span><span class="min">45′</span></a></li><li data-search="l1.02 prerequisites i: the web platform css dom events http history api"><a href="l1-02-web-platform.html"><span class="tick" data-done="l1-02"></span><span class="id">L1.02</span><span>Prerequisites I: the web platform</span><span class="min">70′</span></a></li><li data-search="l1.03 prerequisites ii: typescript and react typescript hooks effects context"><a href="l1-03-typescript-react.html"><span class="tick" data-done="l1-03"></span><span class="id">L1.03</span><span>Prerequisites II: TypeScript and React</span><span class="min">75′</span></a></li><li data-search="l1.04 prerequisites iii: sql, auth, keys and hosting sql rls jwt otp env"><a href="l1-04-data-auth-hosting.html"><span class="tick" data-done="l1-04"></span><span class="id">L1.04</span><span>Prerequisites III: SQL, auth, keys and hosting</span><span class="min">70′</span></a></li><li data-search="l1.05 setup and the first working slice node vite tsconfig checkpoint"><a href="l1-05-setup-first-slice.html"><span class="tick" data-done="l1-05"></span><span class="id">L1.05</span><span>Setup and the first working slice</span><span class="min">75′</span></a></li></ul></div><div class="menu-level"><h3>Level 2 · Build it <span>18 lessons · 21 h 35 min</span></h3><ul class="menu-list"><li data-search="l2.01 from pdfs to 130 questions pdftotext data model sql escaping"><a href="l2-01-data-pipeline.html"><span class="tick" data-done="l2-01"></span><span class="id">L2.01</span><span>From PDFs to 130 questions</span><span class="min">60′</span></a></li><li data-search="l2.02 the database i: tables and rls ddl constraints rls indexes"><a href="l2-02-tables-and-rls.html"><span class="tick" data-done="l2-02"></span><span class="id">L2.02</span><span>The database I: tables and RLS</span><span class="min">70′</span></a></li><li data-search="l2.03 the database ii: server-side grading pl/pgsql security definer rank()"><a href="l2-03-server-grading.html"><span class="tick" data-done="l2-03"></span><span class="id">L2.03</span><span>The database II: server-side grading</span><span class="min">75′</span></a></li><li data-search="l2.04 entry point, config and the small libraries vite seo head fisher–yates"><a href="l2-04-entry-config-libs.html"><span class="tick" data-done="l2-04"></span><span class="id">L2.04</span><span>Entry point, config and the small libraries</span><span class="min">70′</span></a></li><li data-search="l2.05 the app shell react router animatepresence layoutid"><a href="l2-05-app-shell.html"><span class="tick" data-done="l2-05"></span><span class="id">L2.05</span><span>The app shell</span><span class="min">75′</span></a></li><li data-search="l2.06a the ui kit drag springs svg rings raf"><a href="l2-06a-ui-kit.html"><span class="tick" data-done="l2-06a"></span><span class="id">L2.06a</span><span>The UI kit</span><span class="min">75′</span></a></li><li data-search="l2.06b the mug, icons and home svg keyframes stats"><a href="l2-06b-mug-icons-home.html"><span class="tick" data-done="l2-06b"></span><span class="id">L2.06b</span><span>The mug, icons and Home</span><span class="min">70′</span></a></li><li data-search="l2.07a auth state and email-code sign-in otp auth state validation"><a href="l2-07a-auth-sign-in.html"><span class="tick" data-done="l2-07a"></span><span class="id">L2.07a</span><span>Auth state and email-code sign-in</span><span class="min">70′</span></a></li><li data-search="l2.07c google sign-in, line by line oauth redirects pkce dashboards"><a href="l2-07c-google-sign-in.html"><span class="tick" data-done="l2-07c"></span><span class="id">L2.07c</span><span>Google sign-in, line by line</span><span class="min">80′</span></a></li><li data-search="l2.07b names, account and progress sync upsert merge newest wins"><a href="l2-07b-account-progress.html"><span class="tick" data-done="l2-07b"></span><span class="id">L2.07b</span><span>Names, account and progress sync</span><span class="min">75′</span></a></li><li data-search="l2.08a flashcards i: the deck and the flip usemotionvalue drag 3d"><a href="l2-08a-flashcard-deck.html"><span class="tick" data-done="l2-08a"></span><span class="id">L2.08a</span><span>Flashcards I: the deck and the flip</span><span class="min">75′</span></a></li><li data-search="l2.08b flashcards ii: quiz and list state machines search highlight"><a href="l2-08b-quiz-and-list.html"><span class="tick" data-done="l2-08b"></span><span class="id">L2.08b</span><span>Flashcards II: quiz and list</span><span class="min">70′</span></a></li><li data-search="l2.09a the ranked test i: intro and start localstorage routes rpc"><a href="l2-09a-test-intro.html"><span class="tick" data-done="l2-09a"></span><span class="id">L2.09a</span><span>The ranked test I: intro and start</span><span class="min">60′</span></a></li><li data-search="l2.09b the ranked test ii: the runner runner state beforeunload"><a href="l2-09b-test-runner.html"><span class="tick" data-done="l2-09b"></span><span class="id">L2.09b</span><span>The ranked test II: the runner</span><span class="min">75′</span></a></li><li data-search="l2.09c the ranked test iii: results and leaderboard ring maths ties visibilitychange"><a href="l2-09c-results-leaderboard.html"><span class="tick" data-done="l2-09c"></span><span class="id">L2.09c</span><span>The ranked test III: results and leaderboard</span><span class="min">75′</span></a></li><li data-search="l2.10a styling i: tokens, themes and the shell custom properties color-mix clip"><a href="l2-10a-tokens-base-shell.html"><span class="tick" data-done="l2-10a"></span><span class="id">L2.10a</span><span>Styling I: tokens, themes and the shell</span><span class="min">70′</span></a></li><li data-search="l2.10b styling ii: every component grid stacking touch-action"><a href="l2-10b-component-styles.html"><span class="tick" data-done="l2-10b"></span><span class="id">L2.10b</span><span>Styling II: every component</span><span class="min">75′</span></a></li><li data-search="l2.10c styling iii: the responsive layer media queries dvh @supports checkpoint"><a href="l2-10c-responsive.html"><span class="tick" data-done="l2-10c"></span><span class="id">L2.10c</span><span>Styling III: the responsive layer</span><span class="min">75′</span></a></li></ul></div><div class="menu-level"><h3>Level 3 · Under the hood <span>6 lessons · 7 h 05 min</span></h3><ul class="menu-list"><li data-search="l3.01 the security model rls internals grants jwt threat model"><a href="l3-01-security-model.html"><span class="tick" data-done="l3-01"></span><span class="id">L3.01</span><span>The security model</span><span class="min">70′</span></a></li><li data-search="l3.02 ranking maths and sql internals window functions probability explain"><a href="l3-02-ranking-sql.html"><span class="tick" data-done="l3-02"></span><span class="id">L3.02</span><span>Ranking maths and SQL internals</span><span class="min">65′</span></a></li><li data-search="l3.03 gestures, springs, 3d and scrolling pointer events ζ perspective"><a href="l3-03-gestures-3d.html"><span class="tick" data-done="l3-03"></span><span class="id">L3.03</span><span>Gestures, springs, 3D and scrolling</span><span class="min">75′</span></a></li><li data-search="l3.04 viewports, contrast and accessibility dvh luminance compositing axe"><a href="l3-04-viewports-contrast.html"><span class="tick" data-done="l3-04"></span><span class="id">L3.04</span><span>Viewports, contrast and accessibility</span><span class="min">70′</span></a></li><li data-search="l3.05 performance and lighthouse lcp cls caching fonts checkpoint"><a href="l3-05-performance.html"><span class="tick" data-done="l3-05"></span><span class="id">L3.05</span><span>Performance and Lighthouse</span><span class="min">70′</span></a></li><li data-search="l3.06 oauth, pkce, and why sign-up timed out 504 smtp pkce sha-256 psl"><a href="l3-06-oauth-pkce-504.html"><span class="tick" data-done="l3-06"></span><span class="id">L3.06</span><span>OAuth, PKCE, and why sign-up timed out</span><span class="min">75′</span></a></li></ul></div><div class="menu-level"><h3>Level 4 · Test it and ship it <span>9 lessons · 10 h 55 min</span></h3><ul class="menu-list"><li data-search="l4.01 testing strategy and data tests node:test regex mutation"><a href="l4-01-testing-strategy-data.html"><span class="tick" data-done="l4-01"></span><span class="id">L4.01</span><span>Testing strategy and data tests</span><span class="min">70′</span></a></li><li data-search="l4.02 database tests in pglite pglite set role rls matrix"><a href="l4-02-database-tests.html"><span class="tick" data-done="l4-02"></span><span class="id">L4.02</span><span>Database tests in PGlite</span><span class="min">75′</span></a></li><li data-search="l4.03 playwright foundations playwright webserver secrets scan"><a href="l4-03-playwright-foundations.html"><span class="tick" data-done="l4-03"></span><span class="id">L4.03</span><span>Playwright foundations</span><span class="min">75′</span></a></li><li data-search="l4.04 ui tests: navigation, layout, flashcards locators expect.poll cdp touch"><a href="l4-04-ui-tests-nav-cards.html"><span class="tick" data-done="l4-04"></span><span class="id">L4.04</span><span>UI tests: navigation, layout, flashcards</span><span class="min">75′</span></a></li><li data-search="l4.05 ui tests: quiz, list, runner, results state injection transitions"><a href="l4-05-ui-tests-quiz-runner.html"><span class="tick" data-done="l4-05"></span><span class="id">L4.05</span><span>UI tests: quiz, list, runner, results</span><span class="min">70′</span></a></li><li data-search="l4.06 live security and the signed-in journey admin api route mocking cleanup"><a href="l4-06-live-security-auth.html"><span class="tick" data-done="l4-06"></span><span class="id">L4.06</span><span>Live security and the signed-in journey</span><span class="min">75′</span></a></li><li data-search="l4.07 accessibility, lighthouse, flaky tests axe lighthouse forensics"><a href="l4-07-a11y-lighthouse-flaky.html"><span class="tick" data-done="l4-07"></span><span class="id">L4.07</span><span>Accessibility, Lighthouse, flaky tests</span><span class="min">65′</span></a></li><li data-search="l4.08 ship it: deploy from git and operate vercel seo supabase checkpoint"><a href="l4-08-deploy-operate.html"><span class="tick" data-done="l4-08"></span><span class="id">L4.08</span><span>Ship it: deploy from Git and operate</span><span class="min">75′</span></a></li><li data-search="l4.09 a sign-in you can't automate, and a live incident boundary tests route runbook"><a href="l4-09-auth-tests-incident-ops.html"><span class="tick" data-done="l4-09"></span><span class="id">L4.09</span><span>A sign-in you can't automate, and a live incident</span><span class="min">75′</span></a></li></ul></div>
+<div class="menu-level"><h3>Mastery <span>195′</span></h3><ul class="menu-list"><li data-search="mastery checkpoint rebuild from memory"><a href="mastery.html"><span class="tick" data-done="mastery"></span><span class="id">★</span><span>Mastery checkpoint: rebuild from memory</span><span class="min">195′</span></a></li></ul></div>
+</div></div></div>
+<script src="assets/dlm-core.js"></script>
+<script src="assets/series.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

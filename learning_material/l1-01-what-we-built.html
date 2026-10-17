@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="dlm-series" content="psych-learning-build">
+<meta name="description" content="The finished app, its architecture, the build in the order it happened, and a preview of every bug">
+<title>L1.01 What we built, the map, and the build log · Coffee aur Code</title>
+<script>(function(){try{var t=localStorage.getItem('dlm:psych-learning-build:theme');if(t){t=JSON.parse(t);if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+<link rel="stylesheet" href="assets/lib/katex/katex.min.css">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cpath%20d%3D%22M7%2016h22v9a9%209%200%200%201-9%209h-4a9%209%200%200%201-9-9z%22%20fill%3D%22%2317110e%22%2F%3E%3Cpath%20d%3D%22M29%2019h2.5a4%204%200%200%201%200%208H28%22%20fill%3D%22none%22%20stroke%3D%22%2317110e%22%20stroke-width%3D%222.6%22%2F%3E%3Cpath%20d%3D%22M15%204c-2%203%202%205%200%208M21%203c-2%203%202%205%200%208%22%20fill%3D%22none%22%20stroke%3D%22%23d7262f%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
+</head>
+<body data-lesson="l1-01">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="Coffee aur Code study series: home"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M15 4c-2 3 2 5 0 8M21 3c-2 3 2 5 0 8" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round"/><path d="M7 16h22v9a9 9 0 0 1-9 9h-4a9 9 0 0 1-9-9z" fill="var(--ink)"/><path d="M29 19h2.5a4 4 0 0 1 0 8H28" fill="none" stroke="var(--ink)" stroke-width="2.6"/><path d="M12 22.5l-2.5 2.5 2.5 2.5M18 22.5l2.5 2.5-2.5 2.5" fill="none" stroke="var(--bg)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="brand-name">Coffee aur Code<small>Build it from memory</small></span></a>
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Hub</a><span class="sep">/</span><a href="index.html#level-1">Level 1 · Foundations</a><span class="sep">/</span><span class="here">L1.01 What we built, the map, and the build log</span></nav>
+  <span class="spacer"></span>
+  <div class="actions">
+    <a class="btn ghost sm label-wide" href="plan.html">Plan</a>
+    <button class="btn sm" type="button" data-open="menu" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span class="label-wide">Lessons</span></button>
+    <button class="icon-btn theme-toggle" type="button" aria-label="Switch colour theme"><svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+  </div>
+  <div class="read-progress" aria-hidden="true"></div>
+</header>
+<div class="layout">
+  <aside class="toc" aria-label="On this page">
+    <p class="toc-label">On this page</p>
+    <ol><li><a href="#the-finished-result-first"><span class="n">1</span><span>The finished result first</span></a></li><li><a href="#the-problem-this-solves"><span class="n">2</span><span>The problem this solves</span></a></li><li><a href="#the-map"><span class="n">3</span><span>The map: every part and who talks to whom</span></a></li><li><a href="#one-test-attempt-end-to-end"><span class="n">4</span><span>One test attempt, end to end</span></a></li><li><a href="#the-code-by-folder"><span class="n">5</span><span>The code, by folder</span></a></li><li><a href="#the-build-log-in-the-order-it-happened"><span class="n">6</span><span>The build log, in the order it happened</span></a></li><li><a href="#every-bug-in-this-series-preview"><span class="n">7</span><span>Every bug in this series (preview)</span></a></li><li><a href="#vocabulary-you-will-meet-in-every-lesson"><span class="n">8</span><span>Vocabulary you will meet in every lesson</span></a></li><li><a href="#check-yourself"><span class="n">9</span><span>Check yourself</span></a></li><li><a href="#practice"><span class="n">10</span><span>Practice</span></a></li><li><a href="#from-memory"><span class="n">11</span><span>From memory</span></a></li><li><a href="#flashcards"><span class="n">12</span><span>Flashcards</span></a></li><li><a href="#the-menu-board-one-screen-summary"><span class="n">13</span><span>The menu board (one-screen summary)</span></a></li><li><a href="#glossary"><span class="n">14</span><span>Glossary</span></a></li><li><a href="#go-further"><span class="n">15</span><span>Go further</span></a></li></ol>
+    <div class="toc-done"><button class="btn sm complete" type="button" data-complete="l1-01" aria-pressed="false">Mark complete</button></div>
+  </aside>
+  <main class="lesson" id="main">
+    <div class="eyebrow"><span class="lvl">Level 1 · Foundations</span><span>Lesson 1 of 5</span><span>45 min</span></div>
+    <div class="lesson-title"><span class="lesson-num">L1.01</span><h1>What we built, the map, and the build log</h1></div>
+    <div class="recipe"><div class="recipe-head"><span class="t">Recipe card</span><span class="time">45 min</span></div><dl><dt>You need</dt><dd>Nothing yet. A browser to open the live site.</dd><dt>You'll produce</dt><dd>A hand-drawn map of the whole system and a one-paragraph explanation of how a test score gets onto the leaderboard</dd></dl></div>
+    <p class="lede"><strong>In two sentences:</strong> We turned 13 weeks of NPTEL assignment PDFs into a phone-first web app where students study flashcards, take a timed 100-question test and appear on a live leaderboard. This lesson shows the finished thing, draws the map of its parts and lists every step we took, so the rest of the series has a skeleton to hang on.</p>
+    
+
+
+
+<aside class="callout s2"><span class="callout-tag">Session 2 update</span>
+<p> Sign-in is now <strong>Google-only</strong>: a sign-up returned HTTP 504 because email delivery was misconfigured, so email codes were removed and the Supabase Email provider switched off. Where this lesson says "email one-time codes", read "Google sign-in"; the build log (§6) and the bug list (§7) now include session 2. New lessons: <a href="l2-07c-google-sign-in.html">L2.07c</a>, <a href="l3-06-oauth-pkce-504.html">L3.06</a>, <a href="l4-09-auth-tests-incident-ops.html">L4.09</a>.</p>
+</aside>
+
+
+
+<h2 class="objectives-h" id="objectives">By the end, without notes, you can</h2><ol class="objectives">
+<li>Name the five screens of the app and what each one is for.</li>
+<li>Draw the architecture: browser app, Vercel, Supabase Auth, Supabase Postgres, and which talks to which.</li>
+<li>Explain, in order, what happens from "Start test" to your name appearing on the leaderboard.</li>
+<li>Explain why the <em>server</em> grades the test and not the browser.</li>
+<li>List the major build phases in order and say which lesson teaches each.</li>
+</ol><section class="lsec" id="the-finished-result-first" aria-labelledby="the-finished-result-first-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">1</span><h2 id="the-finished-result-first-h">The finished result first</h2></div><p>Open <strong>https://psychology-of-learning-nptel.vercel.app</strong> on your phone, then on a laptop. Spend five minutes clicking everything. Here is what you are looking at.</p><div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th>Screen</th>
+<th>Route</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Home</strong></td>
+<td><code>/</code></td>
+<td>Greeting, your stats (cards mastered, best score, rank), shortcuts, and 13 week tiles with progress bars</td>
+</tr>
+<tr>
+<td><strong>Study</strong></td>
+<td><code>/study</code></td>
+<td>Three modes: <strong>Cards</strong> (swipe right = "got it", left = "again", tap to flip), <strong>Quiz</strong> (instant right/wrong), <strong>List</strong> (search every question)</td>
+</tr>
+<tr>
+<td><strong>Test</strong></td>
+<td><code>/test</code></td>
+<td>Intro → <strong>runner</strong> (<code>/test/run</code>, 100 random questions, timer, flags, grid) → <strong>results</strong> (<code>/test/result</code>)</td>
+</tr>
+<tr>
+<td><strong>Ranks</strong></td>
+<td><code>/ranks</code></td>
+<td>Leaderboard: podium for the top 3, then everyone else. Best attempt per player, ranked by score, then by time</td>
+</tr>
+<tr>
+<td><strong>Me</strong></td>
+<td><code>/me</code></td>
+<td>Sign in with an emailed code, choose a leaderboard name, theme, reset progress, sign out</td>
+</tr>
+</tbody>
+</table></div><p>On a phone the five screens sit in a <strong>bottom tab bar</strong>. On a laptop (1024 px and wider) the same links move into a <strong>side rail</strong>. That is one of many responsive decisions you will learn in <a href="l2-10c-responsive.html">L2.10c</a>.</p><aside class="callout">
+<p><strong>Try it now (2 min).</strong> On the Study page, swipe a card right. Go to Home: "Cards mastered" went from 0 to 1. Reload the page. It is still 1. <em>Where</em> was that remembered? Hold your guess; <a href="l2-07b-account-progress.html">L2.07b</a> answers it (browser storage first, then the cloud if you are signed in).</p>
+</aside></section>
+
+
+
+
+<section class="lsec" id="the-problem-this-solves" aria-labelledby="the-problem-this-solves-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">2</span><h2 id="the-problem-this-solves-h">The problem this solves</h2></div><p>The course only gives you PDFs: twelve assignment files plus a SWAYAM web page for week 12. The exam asks <em>only</em> questions from these assignments. So the naive study method is to open twelve PDFs and reread them. That has three problems:</p><ol>
+<li><strong>Rereading is the weakest way to remember.</strong> Recalling an answer before you see it builds memory far better. This is called <em>retrieval practice</em>, and flashcards and quizzes are built on it.</li>
+<li><strong>Nothing tracks what you already know</strong>, so you waste time on cards you have mastered.</li>
+<li><strong>There is no exam rehearsal.</strong> A timed, mixed, 100-question run is the closest thing to the real exam, and a leaderboard adds motivation.</li>
+</ol><p>The app fixes all three. Building it needed a front end (the screens), a back end (accounts, scores, leaderboard), a deployment, and a test suite to prove it all works on every phone.</p></section>
+
+
+
+<section class="lsec" id="the-map" aria-labelledby="the-map-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">3</span><h2 id="the-map-h">The map: every part and who talks to whom</h2></div><figure class="fig wide" id="fig-1"><div class="fig-tools"><button class="btn ghost sm fig-zoom" type="button" aria-label="Open figure 1 full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg><span>Enlarge</span></button></div><div class="fig-frame"><svg class="dg dg-hand" id="fig-l1-01-1" viewBox="0 0 960 420" width="960" height="420" style="--w:960" role="img" aria-labelledby="fig-l1-01-1-title" xmlns="http://www.w3.org/2000/svg"><title id="fig-l1-01-1-title">Figure 1: The browser only ever holds the public key. Everything that must be trusted (grading, timing, ranking) happens in SQL functions inside Supabase.</title><defs><marker id="fig-l1-01-1-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-ah" d="M0,1 L9,5 L0,9 z"></path></marker></defs><rect class="dg-g dg-g0" x="20" y="40" width="210" height="250" rx="14"></rect><text class="dg-gt" x="34" y="62">Vercel</text><text class="dg-t dg-sub" x="102.07149799999999" y="62">static host + CDN</text><g class="dg-node"><rect class="dg-n" x="36" y="84" width="178" height="76" rx="10"></rect><text class="dg-t dg-b" x="125" y="105" text-anchor="middle" dominant-baseline="central">dist/ files</text><text class="dg-t dg-small" x="125" y="122" text-anchor="middle" dominant-baseline="central">index.html · assets/*.js</text><text class="dg-t dg-small" x="125" y="139" text-anchor="middle" dominant-baseline="central">*.css · brand/*.webp</text></g><g class="dg-node"><rect class="dg-n" x="36" y="196" width="178" height="54" rx="10"></rect><text class="dg-t dg-b" x="125" y="214.5" text-anchor="middle" dominant-baseline="central">Web Analytics</text><text class="dg-t dg-small" x="125" y="231.5" text-anchor="middle" dominant-baseline="central">page views</text></g><g class="dg-node"><rect class="dg-n" x="56" y="352" width="138" height="50" rx="10"></rect><text class="dg-t dg-b" x="125" y="377" text-anchor="middle" dominant-baseline="central">GitHub repo</text></g><path class="dg-e" d="M125,352 L125,290" marker-end="url(#fig-l1-01-1-a)"></path><rect class="dg-el" x="77.5" y="311" width="95" height="22" rx="5"></rect><text class="dg-t dg-elt" x="125" y="322" text-anchor="middle" dominant-baseline="central">push = deploy</text><rect class="dg-g dg-g0" x="300" y="40" width="220" height="362" rx="14"></rect><text class="dg-gt" x="314" y="62">Student's browser</text><text class="dg-t dg-sub" x="487.608696" y="62">phone or laptop</text><g class="dg-node"><rect class="dg-n" x="316" y="84" width="188" height="76" rx="10"></rect><text class="dg-t dg-b" x="410" y="105" text-anchor="middle" dominant-baseline="central">React app</text><text class="dg-t dg-small" x="410" y="122" text-anchor="middle" dominant-baseline="central">Vite build:</text><text class="dg-t dg-small" x="410" y="139" text-anchor="middle" dominant-baseline="central">HTML + JS + CSS</text></g><g class="dg-node"><path class="dg-n" d="M316,278 A94,8 0 0 1 504,278 V362 A94,8 0 0 1 316,362 Z"></path><path class="dg-n-line" d="M316,278 A94,8 0 0 0 504,278"></path><text class="dg-t dg-b" x="410" y="308" text-anchor="middle" dominant-baseline="central">localStorage</text><text class="dg-t dg-small" x="410" y="325" text-anchor="middle" dominant-baseline="central">theme · marks</text><text class="dg-t dg-small" x="410" y="342" text-anchor="middle" dominant-baseline="central">attempt · last result</text></g><path class="dg-e" d="M410,160 L410,270" marker-end="url(#fig-l1-01-1-a)" marker-start="url(#fig-l1-01-1-a)"></path><rect class="dg-g dg-g0" x="640" y="40" width="300" height="362" rx="14"></rect><text class="dg-gt" x="654" y="62">Supabase project</text><g class="dg-node"><rect class="dg-n" x="656" y="80" width="268" height="70" rx="10"></rect><text class="dg-t dg-b" x="790" y="98" text-anchor="middle" dominant-baseline="central">Auth</text><text class="dg-t dg-small" x="790" y="115" text-anchor="middle" dominant-baseline="central">Google sign-in (PKCE)</text><text class="dg-t dg-small" x="790" y="132" text-anchor="middle" dominant-baseline="central">email codes until session 2</text></g><g class="dg-node dg-hl"><rect class="dg-n" x="656" y="178" width="268" height="70" rx="10"></rect><text class="dg-t dg-b" x="790" y="196" text-anchor="middle" dominant-baseline="central">SQL functions</text><text class="dg-t dg-small" x="790" y="213" text-anchor="middle" dominant-baseline="central">start_test · submit_test</text><text class="dg-t dg-small" x="790" y="230" text-anchor="middle" dominant-baseline="central">get_leaderboard · get_my_stats</text></g><g class="dg-node"><path class="dg-n" d="M656,288 A134,8 0 0 1 924,288 V372 A134,8 0 0 1 656,372 Z"></path><path class="dg-n-line" d="M656,288 A134,8 0 0 0 924,288"></path><text class="dg-t dg-b" x="790" y="318" text-anchor="middle" dominant-baseline="central">Postgres</text><text class="dg-t dg-small" x="790" y="335" text-anchor="middle" dominant-baseline="central">questions · profiles</text><text class="dg-t dg-small" x="790" y="352" text-anchor="middle" dominant-baseline="central">test_attempts · card_progress</text></g><path class="dg-e" d="M790,248 L790,280" marker-end="url(#fig-l1-01-1-a)"></path><path class="dg-e" d="M214,118 L316,118" marker-end="url(#fig-l1-01-1-a)"></path><rect class="dg-el" x="222" y="99" width="86" height="38" rx="5"></rect><text class="dg-t dg-elt" x="265" y="110" text-anchor="middle" dominant-baseline="central">1 · download</text><text class="dg-t dg-elt" x="265" y="126" text-anchor="middle" dominant-baseline="central">the app</text><path class="dg-e" d="M504,104 L656,104" marker-end="url(#fig-l1-01-1-a)"></path><rect class="dg-el" x="546.7" y="93" width="66.7" height="22" rx="5"></rect><text class="dg-t dg-elt" x="580" y="104" text-anchor="middle" dominant-baseline="central">2 · sign in</text><path class="dg-e" d="M504,128 L594,128 Q604,128 604,138 L604,203 Q604,213 614,213 L656,213" marker-end="url(#fig-l1-01-1-a)"></path><rect class="dg-el" x="552.5" y="153" width="103" height="38" rx="5"></rect><text class="dg-t dg-elt" x="604" y="164" text-anchor="middle" dominant-baseline="central">3 · RPC with</text><text class="dg-t dg-elt" x="604" y="180" text-anchor="middle" dominant-baseline="central">the user's token</text><path class="dg-e" d="M504,150 L544,150 Q554,150 554,160 L554,326 Q554,336 564,336 L656,336" marker-end="url(#fig-l1-01-1-a)"></path><rect class="dg-el" x="548" y="317" width="83.9" height="38" rx="5"></rect><text class="dg-t dg-elt" x="590" y="328" text-anchor="middle" dominant-baseline="central">4 · own rows</text><text class="dg-t dg-elt" x="590" y="344" text-anchor="middle" dominant-baseline="central">(RLS)</text><path class="dg-e dg-dash" d="M316,146 L274,146 Q264,146 264,156 L264,213 Q264,223 254,223 L214,223" marker-end="url(#fig-l1-01-1-a)"></path><rect class="dg-el" x="242.5" y="171" width="43.1" height="38" rx="5"></rect><text class="dg-t dg-elt" x="264" y="182" text-anchor="middle" dominant-baseline="central">page</text><text class="dg-t dg-elt" x="264" y="198" text-anchor="middle" dominant-baseline="central">views</text></svg></div><figcaption><b class="fig-n">Figure 1.</b> The browser only ever holds the <strong>public</strong> key. Everything that must be trusted (grading, timing, ranking) happens in SQL functions inside Supabase.</figcaption></figure><p>Read the arrows in order:</p><ol>
+<li>The browser downloads the built app from <strong>Vercel</strong>, a static host. A <em>CDN</em> (content delivery network) keeps copies near the user, so files arrive fast.</li>
+<li>To sign in, the app sends your email to <strong>Supabase Auth</strong>. Auth emails you an 8-digit code, and you type it back. Auth then gives the browser a <strong>session</strong>: a signed token that says "this is user 3f9c…".</li>
+<li>To start or submit a test, the app calls <strong>SQL functions</strong> (an <em>RPC</em>, remote procedure call, means "run this function on the server") and sends that token along.</li>
+<li>For simple reads and writes of <em>your own</em> rows (your profile, your flashcard marks), the app talks to the tables directly. <strong>Row-level security</strong> (RLS) rules inside Postgres decide which rows each user may touch.</li>
+</ol><p>GitHub sits on the left because deploying is a <code>git push</code>. Vercel watches the repo and rebuilds on every push (<a href="l4-08-deploy-operate.html">L4.08</a>).</p></section>
+
+
+
+
+
+<section class="lsec" id="one-test-attempt-end-to-end" aria-labelledby="one-test-attempt-end-to-end-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">4</span><h2 id="one-test-attempt-end-to-end-h">One test attempt, end to end</h2></div><p>This trace is the spine of the project. Every later lesson zooms into one arrow of it.</p><figure class="fig wide" id="fig-2"><div class="fig-tools"><button class="btn ghost sm fig-zoom" type="button" aria-label="Open figure 2 full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg><span>Enlarge</span></button></div><div class="fig-frame"><svg class="dg dg-seq" id="fig-l1-01-2" viewBox="0 0 1149 1108" width="1149" height="1108" style="--w:1149" role="img" aria-labelledby="fig-l1-01-2-title" xmlns="http://www.w3.org/2000/svg"><title id="fig-l1-01-2-title">Figure 2: The browser never decides the score or the time. It only sends choices. The server stamps the start time, owns the answer key and does the grading.</title><defs>
+<marker id="fig-l1-01-2-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-ah" d="M0,1 L9,5 L0,9 z"></path></marker>
+<marker id="fig-l1-01-2-ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-aho" d="M1,1 L9,5 L1,9"></path></marker>
+<marker id="fig-l1-01-2-x" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path class="dg-aho" d="M1,1 L9,9 M9,1 L1,9"></path></marker>
+<marker id="fig-l1-01-2-c" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><circle class="dg-ah" cx="5" cy="5" r="4"></circle></marker>
+<marker id="fig-l1-01-2-one" viewBox="0 0 20 20" refX="19" refY="10" markerWidth="16" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M12,3 V17 M16,3 V17"></path></marker>
+<marker id="fig-l1-01-2-zone" viewBox="0 0 24 20" refX="23" refY="10" markerWidth="19" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M18,3 V17"></path><circle class="dg-hole" cx="9" cy="10" r="4"></circle></marker>
+<marker id="fig-l1-01-2-many" viewBox="0 0 24 20" refX="23" refY="10" markerWidth="19" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M23,3 L14,10 L23,17 M14,10 H23"></path><circle class="dg-hole" cx="8" cy="10" r="4"></circle></marker>
+<marker id="fig-l1-01-2-omany" viewBox="0 0 24 20" refX="23" refY="10" markerWidth="19" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M23,3 L14,10 L23,17 M10,3 V17"></path></marker>
+</defs><g class="dg-node"><rect class="dg-n dg-part" x="982.2" y="2" width="149.9" height="56" rx="10"></rect><text class="dg-t dg-b" x="1057.2" y="30" text-anchor="middle" dominant-baseline="central">test_attempts table</text></g><g class="dg-node"><rect class="dg-n dg-part" x="680.5" y="2" width="172.7" height="56" rx="10"></rect><text class="dg-t dg-b" x="766.8" y="21" text-anchor="middle" dominant-baseline="central">start_test / submit_test</text><text class="dg-t dg-b" x="766.8" y="39" text-anchor="middle" dominant-baseline="central">(Postgres functions)</text></g><g class="dg-node"><rect class="dg-n dg-part" x="547.5" y="2" width="107" height="56" rx="10"></rect><text class="dg-t dg-b" x="601" y="30" text-anchor="middle" dominant-baseline="central">localStorage</text></g><g class="dg-node"><rect class="dg-n dg-part" x="243.1" y="2" width="155.5" height="56" rx="10"></rect><text class="dg-t dg-b" x="320.8" y="30" text-anchor="middle" dominant-baseline="central">React app (browser)</text></g><g class="dg-node"><rect class="dg-n dg-part dg-actor" x="10" y="2" width="99.9" height="56" rx="10"></rect><circle class="dg-actor-i" cx="26" cy="23" r="4.5"></circle><path class="dg-actor-i" d="M19,41 Q19,30 26,30 Q33,30 33,41"></path><text class="dg-t dg-b" x="71" y="30" text-anchor="middle" dominant-baseline="central">Student</text></g><rect class="dg-blk" x="4" y="415" width="667" height="141" rx="8"></rect><path class="dg-blktag" d="M4,437 V423 Q4,415 12,415 H44.7 V429 L36.7,437 Z"></path><text class="dg-blktt" x="12" y="426" dominant-baseline="central">loop</text><text class="dg-t dg-blkl" x="52.7" y="426" dominant-baseline="central">[100 questions]</text><path class="dg-life" d="M60,64 V1048"></path><path class="dg-life" d="M320.8,64 V1048"></path><path class="dg-life" d="M601,64 V1048"></path><path class="dg-life" d="M766.8,64 V1048"></path><path class="dg-life" d="M1057.2,64 V1048"></path><path class="dg-e dg-msg" d="M62,105 H317.8" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="153" y="81" width="100.9" height="19" rx="4"></rect><text class="dg-t dg-msgt" x="203.4" y="90.5" text-anchor="middle" dominant-baseline="central">taps "Start test"</text><circle class="dg-num" cx="140" cy="90.5" r="10"></circle><text class="dg-numt" x="140" y="90.5" text-anchor="middle" dominant-baseline="central">1</text><path class="dg-e dg-msg" d="M322.8,150 H763.8" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="467.4" y="126" width="178.9" height="19" rx="4"></rect><text class="dg-t dg-msgt" x="556.8" y="135.5" text-anchor="middle" dominant-baseline="central">rpc("start_test") + user token</text><circle class="dg-num" cx="454.4" cy="135.5" r="10"></circle><text class="dg-numt" x="454.4" y="135.5" text-anchor="middle" dominant-baseline="central">2</text><path class="dg-e dg-msg" d="M766.8,204 H800.8 Q808.8,204 808.8,212 V218 Q808.8,226 800.8,226 H769.8" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="813.8" y="167" width="213.9" height="36" rx="4"></rect><text class="dg-t dg-msgt" x="838.8" y="176.5" text-anchor="start" dominant-baseline="central">auth.uid() → who is calling? has</text><text class="dg-t dg-msgt" x="838.8" y="193.5" text-anchor="start" dominant-baseline="central">a profile?</text><circle class="dg-num" cx="825.8" cy="176.5" r="9"></circle><text class="dg-numt" x="825.8" y="176.5" text-anchor="middle" dominant-baseline="central">3</text><path class="dg-e dg-msg" d="M768.8,303 H1054.2" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="806.8" y="245" width="236.3" height="53" rx="4"></rect><text class="dg-t dg-msgt" x="925" y="254.5" text-anchor="middle" dominant-baseline="central">delete my unsubmitted attempts, then</text><text class="dg-t dg-msgt" x="925" y="271.5" text-anchor="middle" dominant-baseline="central">insert a new row (100 random ids,</text><text class="dg-t dg-msgt" x="925" y="288.5" text-anchor="middle" dominant-baseline="central">started_at = now())</text><circle class="dg-num" cx="793.8" cy="254.5" r="10"></circle><text class="dg-numt" x="793.8" y="254.5" text-anchor="middle" dominant-baseline="central">4</text><path class="dg-e dg-msg dg-dash" d="M764.8,348 H323.8" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="425" y="324" width="263.6" height="19" rx="4"></rect><text class="dg-t dg-msgt" x="556.8" y="333.5" text-anchor="middle" dominant-baseline="central">{ attempt_id, question_ids[100], started_at }</text><circle class="dg-num" cx="412" cy="333.5" r="10"></circle><text class="dg-numt" x="412" y="333.5" text-anchor="middle" dominant-baseline="central">5</text><path class="dg-e dg-msg" d="M322.8,393 H598" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="360.8" y="369" width="226.2" height="19" rx="4"></rect><text class="dg-t dg-msgt" x="473.9" y="378.5" text-anchor="middle" dominant-baseline="central">save attempt (answers all null, pos 0)</text><circle class="dg-num" cx="347.8" cy="378.5" r="10"></circle><text class="dg-numt" x="347.8" y="378.5" text-anchor="middle" dominant-baseline="central">6</text><path class="dg-e dg-msg" d="M62,468 H317.8" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="156.3" y="444" width="94.3" height="19" rx="4"></rect><text class="dg-t dg-msgt" x="203.4" y="453.5" text-anchor="middle" dominant-baseline="central">taps an option</text><circle class="dg-num" cx="143.3" cy="453.5" r="10"></circle><text class="dg-numt" x="143.3" y="453.5" text-anchor="middle" dominant-baseline="central">7</text><path class="dg-e dg-msg" d="M322.8,530 H598" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="361.8" y="489" width="224.3" height="36" rx="4"></rect><text class="dg-t dg-msgt" x="473.9" y="498.5" text-anchor="middle" dominant-baseline="central">save answer, auto-advance after 320</text><text class="dg-t dg-msgt" x="473.9" y="515.5" text-anchor="middle" dominant-baseline="central">ms</text><circle class="dg-num" cx="348.8" cy="498.5" r="10"></circle><text class="dg-numt" x="348.8" y="498.5" text-anchor="middle" dominant-baseline="central">8</text><path class="dg-e dg-msg" d="M62,591 H317.8" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="147.6" y="567" width="111.7" height="19" rx="4"></rect><text class="dg-t dg-msgt" x="203.4" y="576.5" text-anchor="middle" dominant-baseline="central">"Submit at 12:39"</text><circle class="dg-num" cx="134.6" cy="576.5" r="10"></circle><text class="dg-numt" x="134.6" y="576.5" text-anchor="middle" dominant-baseline="central">9</text><path class="dg-e dg-msg" d="M322.8,653 H763.8" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="410.1" y="612" width="293.5" height="36" rx="4"></rect><text class="dg-t dg-msgt" x="556.8" y="621.5" text-anchor="middle" dominant-baseline="central">rpc("submit_test", attempt_id, answers[100] with</text><text class="dg-t dg-msgt" x="556.8" y="638.5" text-anchor="middle" dominant-baseline="central">-1 = skipped)</text><circle class="dg-num" cx="397.1" cy="621.5" r="10"></circle><text class="dg-numt" x="397.1" y="621.5" text-anchor="middle" dominant-baseline="central">10</text><path class="dg-e dg-msg" d="M768.8,715 H1054.2" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="816.6" y="674" width="216.8" height="36" rx="4"></rect><text class="dg-t dg-msgt" x="925" y="683.5" text-anchor="middle" dominant-baseline="central">lock row (for update), check owner,</text><text class="dg-t dg-msgt" x="925" y="700.5" text-anchor="middle" dominant-baseline="central">not submitted, &lt; 3 h, 100 answers</text><circle class="dg-num" cx="803.6" cy="683.5" r="10"></circle><text class="dg-numt" x="803.6" y="683.5" text-anchor="middle" dominant-baseline="central">11</text><path class="dg-e dg-msg" d="M766.8,786 H800.8 Q808.8,786 808.8,794 V800 Q808.8,808 800.8,808 H769.8" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="813.8" y="732" width="204.4" height="53" rx="4"></rect><text class="dg-t dg-msgt" x="838.8" y="741.5" text-anchor="start" dominant-baseline="central">score = count(answers[i] =</text><text class="dg-t dg-msgt" x="838.8" y="758.5" text-anchor="start" dominant-baseline="central">questions.answer), duration =</text><text class="dg-t dg-msgt" x="838.8" y="775.5" text-anchor="start" dominant-baseline="central">now() - started_at</text><circle class="dg-num" cx="825.8" cy="741.5" r="9"></circle><text class="dg-numt" x="825.8" y="741.5" text-anchor="middle" dominant-baseline="central">12</text><path class="dg-e dg-msg" d="M768.8,868 H1054.2" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="819.8" y="827" width="210.5" height="36" rx="4"></rect><text class="dg-t dg-msgt" x="925" y="836.5" text-anchor="middle" dominant-baseline="central">save submitted_at, answers, score,</text><text class="dg-t dg-msgt" x="925" y="853.5" text-anchor="middle" dominant-baseline="central">duration</text><circle class="dg-num" cx="806.8" cy="836.5" r="10"></circle><text class="dg-numt" x="806.8" y="836.5" text-anchor="middle" dominant-baseline="central">13</text><path class="dg-e dg-msg dg-dash" d="M764.8,913 H323.8" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="403.6" y="889" width="306.5" height="19" rx="4"></rect><text class="dg-t dg-msgt" x="556.8" y="898.5" text-anchor="middle" dominant-baseline="central">{ score, total, duration_ms, correct[], rank, players }</text><circle class="dg-num" cx="390.6" cy="898.5" r="10"></circle><text class="dg-numt" x="390.6" y="898.5" text-anchor="middle" dominant-baseline="central">14</text><path class="dg-e dg-msg" d="M322.8,958 H598" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="395.7" y="934" width="156.5" height="19" rx="4"></rect><text class="dg-t dg-msgt" x="473.9" y="943.5" text-anchor="middle" dominant-baseline="central">save result, clear attempt</text><circle class="dg-num" cx="382.7" cy="943.5" r="10"></circle><text class="dg-numt" x="382.7" y="943.5" text-anchor="middle" dominant-baseline="central">15</text><path class="dg-e dg-msg dg-dash" d="M318.8,1020 H63" marker-end="url(#fig-l1-01-2-a)"></path><rect class="dg-el" x="100" y="979" width="206.9" height="36" rx="4"></rect><text class="dg-t dg-msgt" x="203.4" y="988.5" text-anchor="middle" dominant-baseline="central">results page: ring animates to the</text><text class="dg-t dg-msgt" x="203.4" y="1005.5" text-anchor="middle" dominant-baseline="central">score</text><circle class="dg-num" cx="87" cy="988.5" r="10"></circle><text class="dg-numt" x="87" y="988.5" text-anchor="middle" dominant-baseline="central">16</text><g class="dg-node"><rect class="dg-n dg-part dg-actor" x="10" y="1048" width="99.9" height="56" rx="10"></rect><circle class="dg-actor-i" cx="26" cy="1069" r="4.5"></circle><path class="dg-actor-i" d="M19,1087 Q19,1076 26,1076 Q33,1076 33,1087"></path><text class="dg-t dg-b" x="71" y="1076" text-anchor="middle" dominant-baseline="central">Student</text></g><g class="dg-node"><rect class="dg-n dg-part" x="243.1" y="1048" width="155.5" height="56" rx="10"></rect><text class="dg-t dg-b" x="320.8" y="1076" text-anchor="middle" dominant-baseline="central">React app (browser)</text></g><g class="dg-node"><rect class="dg-n dg-part" x="547.5" y="1048" width="107" height="56" rx="10"></rect><text class="dg-t dg-b" x="601" y="1076" text-anchor="middle" dominant-baseline="central">localStorage</text></g><g class="dg-node"><rect class="dg-n dg-part" x="680.5" y="1048" width="172.7" height="56" rx="10"></rect><text class="dg-t dg-b" x="766.8" y="1067" text-anchor="middle" dominant-baseline="central">start_test / submit_test</text><text class="dg-t dg-b" x="766.8" y="1085" text-anchor="middle" dominant-baseline="central">(Postgres functions)</text></g><g class="dg-node"><rect class="dg-n dg-part" x="982.2" y="1048" width="149.9" height="56" rx="10"></rect><text class="dg-t dg-b" x="1057.2" y="1076" text-anchor="middle" dominant-baseline="central">test_attempts table</text></g></svg></div><figcaption><b class="fig-n">Figure 2.</b> The browser never decides the score or the time. It only sends choices. The server stamps the start time, owns the answer key and does the grading.</figcaption></figure><p>Why grade on the server? Anything that runs in the browser can be changed by the person holding the phone. If the browser computed <code>score = 100</code> and sent it, anyone could open DevTools and send 100. In our design:</p><ul>
+<li>The <code>questions</code> table (which holds the answer key) <strong>cannot be read</strong> by the browser at all. RLS is on, with no read policy.</li>
+<li><code>test_attempts</code> <strong>cannot be written</strong> by the browser either. There are no insert or update policies, so the only way in is through <code>start_test</code> and <code>submit_test</code>, which run as the database owner (<code>security definer</code>).</li>
+<li>The <strong>time</strong> is <code>now()</code> at start minus <code>now()</code> at submit, both on the server's clock, so changing the phone's clock does nothing.</li>
+</ul><p>You will write all of this in <a href="l2-02-tables-and-rls.html">L2.02</a> and <a href="l2-03-server-grading.html">L2.03</a>, and attack it in <a href="l3-01-security-model.html">L3.01</a>.</p><aside class="callout">
+<p><strong>But wait:</strong> the flashcards <em>show</em> the answers. Doesn't that leak the key? Yes, on purpose. Studying the answers is the whole point. What the design prevents is <strong>forging a score</strong>, not knowing answers. A student who memorises all 130 answers <em>deserves</em> 100/100. The threat is a fake "100 in 3 seconds" row, and that cannot be inserted.</p>
+</aside></section>
+
+
+
+
+
+
+
+<section class="lsec" id="the-code-by-folder" aria-labelledby="the-code-by-folder-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">5</span><h2 id="the-code-by-folder-h">The code, by folder</h2></div><figure class="fig wide" id="fig-3"><div class="fig-tools"><button class="btn ghost sm fig-zoom" type="button" aria-label="Open figure 3 full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg><span>Enlarge</span></button></div><div class="fig-frame"><svg class="dg dg-flow" id="fig-l1-01-3" viewBox="0 0 815 805" width="815" height="805" style="--w:815" role="img" aria-labelledby="fig-l1-01-3-title" xmlns="http://www.w3.org/2000/svg"><title id="fig-l1-01-3-title">Figure 3: The app lives in src/, the database in supabase/, the proof in tests/; everything at the root is configuration.</title><defs>
+<marker id="fig-l1-01-3-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-ah" d="M0,1 L9,5 L0,9 z"></path></marker>
+<marker id="fig-l1-01-3-ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-aho" d="M1,1 L9,5 L1,9"></path></marker>
+<marker id="fig-l1-01-3-x" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path class="dg-aho" d="M1,1 L9,9 M9,1 L1,9"></path></marker>
+<marker id="fig-l1-01-3-c" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><circle class="dg-ah" cx="5" cy="5" r="4"></circle></marker>
+<marker id="fig-l1-01-3-one" viewBox="0 0 20 20" refX="19" refY="10" markerWidth="16" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M12,3 V17 M16,3 V17"></path></marker>
+<marker id="fig-l1-01-3-zone" viewBox="0 0 24 20" refX="23" refY="10" markerWidth="19" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M18,3 V17"></path><circle class="dg-hole" cx="9" cy="10" r="4"></circle></marker>
+<marker id="fig-l1-01-3-many" viewBox="0 0 24 20" refX="23" refY="10" markerWidth="19" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M23,3 L14,10 L23,17 M14,10 H23"></path><circle class="dg-hole" cx="8" cy="10" r="4"></circle></marker>
+<marker id="fig-l1-01-3-omany" viewBox="0 0 24 20" refX="23" refY="10" markerWidth="19" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M23,3 L14,10 L23,17 M10,3 V17"></path></marker>
+</defs><path class="dg-e" d="M187.3,575 L200.3,575 Q209.3,575 209.3,566 L209.3,217 Q209.3,208 218.3,208 L320.9,208" marker-end="url(#fig-l1-01-3-a)"></path><path class="dg-e" d="M187.3,582 L214.3,582 Q223.3,582 223.3,573 L223.3,493 Q223.3,484 232.3,484 L255.4,484" marker-end="url(#fig-l1-01-3-a)"></path><path class="dg-e" d="M187.3,588 L305.3,588" marker-end="url(#fig-l1-01-3-a)"></path><path class="dg-e" d="M187.3,594 L214.3,594 Q223.3,594 223.3,603 L223.3,656 Q223.3,665 232.3,665 L245.3,665" marker-end="url(#fig-l1-01-3-a)"></path><path class="dg-e" d="M187.3,601 L200.3,601 Q209.3,601 209.3,610 L209.3,751 Q209.3,760 218.3,760 L245.3,760" marker-end="url(#fig-l1-01-3-a)"></path><path class="dg-e" d="M474,195 L502.1,195 Q511.1,195 511.1,186 L511.1,45 Q511.1,36 520.1,36 L547.1,36" marker-end="url(#fig-l1-01-3-a)"></path><path class="dg-e" d="M474,202 L516.1,202 Q525.1,202 525.1,193 L525.1,131 Q525.1,122 534.1,122 L547.1,122" marker-end="url(#fig-l1-01-3-a)"></path><path class="dg-e" d="M474,208 L547.1,208" marker-end="url(#fig-l1-01-3-a)"></path><path class="dg-e" d="M474,214 L516.1,214 Q525.1,214 525.1,223 L525.1,285 Q525.1,294 534.1,294 L547.1,294" marker-end="url(#fig-l1-01-3-a)"></path><path class="dg-e" d="M474,221 L502.1,221 Q511.1,221 511.1,230 L511.1,371 Q511.1,380 520.1,380 L547.1,380" marker-end="url(#fig-l1-01-3-a)"></path><path class="dg-e" d="M478.9,484 L547.1,484" marker-end="url(#fig-l1-01-3-a)"></path><path class="dg-e" d="M469,579 L547.1,579" marker-end="url(#fig-l1-01-3-a)"></path><path class="dg-e" d="M469,588 L516.1,588 Q525.1,588 525.1,597 L525.1,638 Q525.1,647 534.1,647 L547.1,647" marker-end="url(#fig-l1-01-3-a)"></path><path class="dg-e" d="M469,598 L502.1,598 Q511.1,598 511.1,607 L511.1,715 Q511.1,724 520.1,724 L547.1,724" marker-end="url(#fig-l1-01-3-a)"></path><g class="dg-node"><rect class="dg-n" x="8" y="569" width="179.3" height="38" rx="9"></rect><text class="dg-t" x="97.6" y="588" text-anchor="middle" dominant-baseline="central">MOOC Exam/ (git repo)</text></g><g class="dg-node"><rect class="dg-n" x="320.9" y="189" width="153.1" height="38" rx="9"></rect><text class="dg-t" x="397.4" y="208" text-anchor="middle" dominant-baseline="central">src/ (the React app)</text></g><g class="dg-node"><rect class="dg-n" x="255.4" y="456" width="223.5" height="56" rx="9"></rect><text class="dg-t" x="367.2" y="475" text-anchor="middle" dominant-baseline="central">supabase/ (SQL you paste into</text><text class="dg-t" x="367.2" y="493" text-anchor="middle" dominant-baseline="central">Supabase)</text></g><g class="dg-node"><rect class="dg-n" x="305.3" y="569" width="163.7" height="38" rx="9"></rect><text class="dg-t" x="387.2" y="588" text-anchor="middle" dominant-baseline="central">tests/ (unit · db · e2e)</text></g><g class="dg-node"><rect class="dg-n" x="245.3" y="637" width="243.8" height="56" rx="9"></rect><text class="dg-t" x="367.2" y="656" text-anchor="middle" dominant-baseline="central">public/ (copied as-is: icons, logos,</text><text class="dg-t" x="367.2" y="674" text-anchor="middle" dominant-baseline="central">robots, sitemap)</text></g><g class="dg-node"><rect class="dg-n" x="245.3" y="723" width="231.3" height="74" rx="9"></rect><text class="dg-t" x="360.9" y="742" text-anchor="middle" dominant-baseline="central">index.html · package.json ·</text><text class="dg-t" x="360.9" y="760" text-anchor="middle" dominant-baseline="central">vite.config.ts · tsconfig.json ·</text><text class="dg-t" x="360.9" y="778" text-anchor="middle" dominant-baseline="central">vercel.json · playwright.config.ts</text></g><g class="dg-node"><rect class="dg-n" x="547.1" y="8" width="229" height="56" rx="9"></rect><text class="dg-t" x="661.6" y="27" text-anchor="middle" dominant-baseline="central">data/ questions.json (130 Qs) +</text><text class="dg-t" x="661.6" y="45" text-anchor="middle" dominant-baseline="central">questions.ts (types)</text></g><g class="dg-node"><rect class="dg-n" x="547.1" y="94" width="227.4" height="56" rx="9"></rect><text class="dg-t" x="660.8" y="113" text-anchor="middle" dominant-baseline="central">lib/ supabase · auth · progress ·</text><text class="dg-t" x="660.8" y="131" text-anchor="middle" dominant-baseline="central">theme · storage · format</text></g><g class="dg-node"><rect class="dg-n" x="547.1" y="180" width="259.8" height="56" rx="9"></rect><text class="dg-t" x="677" y="199" text-anchor="middle" dominant-baseline="central">components/ Ui · CoffeeMug · Icon ·</text><text class="dg-t" x="677" y="217" text-anchor="middle" dominant-baseline="central">ErrorBoundary</text></g><g class="dg-node"><rect class="dg-n" x="547.1" y="266" width="207.3" height="56" rx="9"></rect><text class="dg-t" x="650.7" y="285" text-anchor="middle" dominant-baseline="central">pages/ Home · Study · Test ·</text><text class="dg-t" x="650.7" y="303" text-anchor="middle" dominant-baseline="central">Leaderboard · Account</text></g><g class="dg-node"><rect class="dg-n" x="547.1" y="352" width="239.1" height="56" rx="9"></rect><text class="dg-t" x="666.6" y="371" text-anchor="middle" dominant-baseline="central">styles.css (design system) +</text><text class="dg-t" x="666.6" y="389" text-anchor="middle" dominant-baseline="central">responsive.css (every screen size)</text></g><g class="dg-node"><rect class="dg-n" x="547.1" y="438" width="258.4" height="92" rx="9"></rect><text class="dg-t" x="676.3" y="457" text-anchor="middle" dominant-baseline="central">schema.sql · seed.sql · setup.sql (=</text><text class="dg-t" x="676.3" y="475" text-anchor="middle" dominant-baseline="central">schema + seed)</text><text class="dg-t" x="676.3" y="493" text-anchor="middle" dominant-baseline="central">(email-otp-template.html deleted in</text><text class="dg-t" x="676.3" y="511" text-anchor="middle" dominant-baseline="central">session 2)</text></g><g class="dg-node"><rect class="dg-n" x="547.1" y="560" width="250.3" height="38" rx="9"></rect><text class="dg-t" x="672.2" y="579" text-anchor="middle" dominant-baseline="central">unit/data.test.mjs: answers vs PDFs</text></g><g class="dg-node"><rect class="dg-n" x="547.1" y="628" width="241.9" height="38" rx="9"></rect><text class="dg-t" x="668" y="647" text-anchor="middle" dominant-baseline="central">db/schema.test.mjs: SQL in PGlite</text></g><g class="dg-node"><rect class="dg-n" x="547.1" y="696" width="223.9" height="56" rx="9"></rect><text class="dg-t" x="659" y="715" text-anchor="middle" dominant-baseline="central">e2e/*.spec.ts: Playwright on 11</text><text class="dg-t" x="659" y="733" text-anchor="middle" dominant-baseline="central">devices</text></g></svg></div><figcaption><b class="fig-n">Figure 3.</b> The app lives in <code>src/</code>, the database in <code>supabase/</code>, the proof in <code>tests/</code>; everything at the root is configuration.</figcaption></figure><p>Sizes, to set expectations. The final app is about <strong>2,600 lines of TypeScript/TSX</strong>, <strong>2,400 lines of CSS</strong>, <strong>240 lines of SQL</strong> and <strong>1,100 lines of tests</strong>. Level 2 walks through every line of it.</p></section>
+
+
+
+<section class="lsec" id="the-build-log-in-the-order-it-happened" aria-labelledby="the-build-log-in-the-order-it-happened-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">6</span><h2 id="the-build-log-in-the-order-it-happened-h">The build log, in the order it happened</h2></div><p>A session is chronological; this series is conceptual. Here is the chronological path, so you can replay it.</p><div class="table-wrap wide" tabindex="0"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>What we did</th>
+<th>Why at that moment</th>
+<th>Taught in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Extracted 12 PDFs to text with <code>pdftotext -layout</code>; hand-checked the 120 questions and answers</td>
+<td>The data is everything; nothing else matters if it is wrong</td>
+<td><a href="l2-01-data-pipeline.html">L2.01</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Built a first <strong>single-file HTML</strong> flashcard page (vanilla JS: cards, quiz, list)</td>
+<td>Useful immediately, before any infrastructure</td>
+<td><a href="l2-01-data-pipeline.html">L2.01</a> §history</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Added week 12 from a saved SWAYAM page: questions were <strong>images</strong>, answers came from "Accepted answer is X"</td>
+<td>No PDF existed for week 12</td>
+<td><a href="l2-01-data-pipeline.html">L2.01</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Connected the folder to GitHub (<code>git init</code>, <code>git remote add</code>), with no commits by the assistant</td>
+<td>Version control before the real build</td>
+<td><a href="l1-04-data-auth-hosting.html">L1.04</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Looked for design inspiration; processed the Coffee aur Code logos (removed white backgrounds, kept the largest shape); redrew the mug in <strong>SVG</strong> so its steam could animate</td>
+<td>A brand to design around</td>
+<td><a href="l2-06b-mug-icons-home.html">L2.06b</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Decided: Vite + React + TypeScript; email one-time codes; tests of 100 random from 130</td>
+<td>The user chose from three options each</td>
+<td><a href="l1-05-setup-first-slice.html">L1.05</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Read the Supabase keys; derived the project URL from the anon JWT's <code>ref</code>; git-ignored the keys; wrote <code>.env.local</code></td>
+<td>Never commit secrets</td>
+<td><a href="l1-04-data-auth-hosting.html">L1.04</a>, <a href="l4-08-deploy-operate.html">L4.08</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Wrote <code>schema.sql</code> with server-side grading; verified it in <strong>PGlite</strong> before the user ran it</td>
+<td>Correctness before UI</td>
+<td><a href="l2-02-tables-and-rls.html">L2.02</a>, <a href="l2-03-server-grading.html">L2.03</a>, <a href="l4-02-database-tests.html">L4.02</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Built the app: shell, UI kit, flashcards, quiz, list, test runner, results, leaderboard, account</td>
+<td>The product</td>
+<td>L2.04 → L2.09c</td>
+</tr>
+<tr>
+<td>10</td>
+<td>First browser run: blank page (<strong><code>useEffect</code> returned a Promise</strong>), then a flood of first-run bugs</td>
+<td>Real browsers find real bugs</td>
+<td><a href="l2-05-app-shell.html">L2.05</a> bug journal</td>
+</tr>
+<tr>
+<td>11</td>
+<td>First deploy with the Vercel CLI; chose the memorable, searchable domain <code>psychology-of-learning-nptel</code></td>
+<td>Ship early</td>
+<td><a href="l4-08-deploy-operate.html">L4.08</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Responsive pass: side rail on laptops, 11 device sizes, old-Safari fallbacks; SEO files</td>
+<td>"Every screen size, even iPhones and all Androids"</td>
+<td><a href="l2-10c-responsive.html">L2.10c</a>, <a href="l4-08-deploy-operate.html">L4.08</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td>Switched deploys to <strong>Git</strong> (<code>vercel git connect</code>, deploy from <code>main</code> via the API, set framework = Vite)</td>
+<td>Easy to maintain: push = deploy</td>
+<td><a href="l4-08-deploy-operate.html">L4.08</a></td>
+</tr>
+<tr>
+<td>14</td>
+<td>Thorough testing: data, DB, live security, Playwright on 11 devices, axe, Lighthouse. It found <strong>9 real bugs</strong>, including "nobody can sign in" (8-digit codes)</td>
+<td>Untested code is unknown code</td>
+<td>Level 4</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Added Vercel Web Analytics and a "what we store" privacy note</td>
+<td>User request</td>
+<td><a href="l4-08-deploy-operate.html">L4.08</a></td>
+</tr>
+<tr>
+<td></td>
+<td><em><strong>Session 2 · 2026-10-16</strong></em></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>16</td>
+<td>"what http 504": a friend's sign-up timed out. Probed every hop: Supabase fast and up, sign-up <code>429</code> (email limit), 0 users, then the SMTP host turned out to be the website; ports 465/587 timed out</td>
+<td>Find which box waits on whom before changing anything</td>
+<td><a href="l3-06-oauth-pkce-504.html">L3.06</a></td>
+</tr>
+<tr>
+<td>17</td>
+<td>Weighed fixing SMTP (Brevo, Gmail) against Google sign-in; the user chose Google. Set up the Google Cloud client and the Supabase provider; wrote <code>SignIn</code> with <code>signInWithOAuth</code>, <code>detectSessionInUrl: true</code>, PKCE; email kept as a fallback</td>
+<td>Remove the dependency that broke</td>
+<td><a href="l2-07c-google-sign-in.html">L2.07c</a></td>
+</tr>
+<tr>
+<td>18</td>
+<td>The fallback still failed ("Sign-in is having trouble right now"), so email was removed everywhere, and the Email provider switched off in Supabase</td>
+<td>Only ship paths you've seen work</td>
+<td><a href="l2-07c-google-sign-in.html">L2.07c</a></td>
+</tr>
+<tr>
+<td>19</td>
+<td>Tests reworked: a Google hand-off test at the Supabase boundary, session injection for the journey; full suite 246 passed, 1 flaky</td>
+<td>Test what's ours; inject what isn't</td>
+<td><a href="l4-09-auth-tests-incident-ops.html">L4.09</a></td>
+</tr>
+<tr>
+<td>20</td>
+<td>"Access blocked" for one friend; authorised domains rejected <code>supabase.co</code> and <code>vercel.app</code> (public suffixes) and took the full hostnames; the friend retried and got in; 8 Google users that day</td>
+<td>Compare with users it works for; get the provider's error details</td>
+<td><a href="l2-07c-google-sign-in.html">L2.07c</a>, <a href="l4-09-auth-tests-incident-ops.html">L4.09</a></td>
+</tr>
+</tbody>
+</table></div></section>
+
+
+<section class="lsec" id="every-bug-in-this-series-preview" aria-labelledby="every-bug-in-this-series-preview-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">7</span><h2 id="every-bug-in-this-series-preview-h">Every bug in this series (preview)</h2></div><p>Bugs are the best teachers, so each gets a full incident ticket in the lesson where it lived. Here are the titles, so you can feel the shape of what is coming.</p><div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th>App bugs</th>
+<th>Lesson</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blank page: <code>destroy is not a function</code> (an effect returned <code>window.scrollTo</code>'s Promise)</td>
+<td>L2.05</td>
+</tr>
+<tr>
+<td>Splash never disappears in a background tab</td>
+<td>L2.05</td>
+</tr>
+<tr>
+<td>Logo cut-outs included pieces of neighbouring stickers</td>
+<td>L2.06b</td>
+</tr>
+<tr>
+<td><strong>Nobody could sign in</strong>: 8-digit codes cut to 6</td>
+<td>L2.07a</td>
+</tr>
+<tr>
+<td>The browser's own email check hid the app's message</td>
+<td>L2.07a</td>
+</tr>
+<tr>
+<td>Signing out crashed the whole app to a blank page</td>
+<td>L2.07b</td>
+</tr>
+<tr>
+<td>A swipe triggered "go back" in the browser</td>
+<td>L2.08a</td>
+</tr>
+<tr>
+<td>Touch swipes were swallowed by the scrollable options area</td>
+<td>L2.08a</td>
+</tr>
+<tr>
+<td><strong>iPhones showed the answer before the flip</strong> (mirrored)</td>
+<td>L2.08a</td>
+</tr>
+<tr>
+<td>Backspace (undo) navigated away in Safari</td>
+<td>L2.08a</td>
+</tr>
+<tr>
+<td>Quiz shuffled twice when opened; the first question swapped under your finger</td>
+<td>L2.08b</td>
+</tr>
+<tr>
+<td>iPhones could scroll the page sideways during slide animations</td>
+<td>L2.10a</td>
+</tr>
+<tr>
+<td>Card buttons hidden under the tab bar on short phones</td>
+<td>L2.10c</td>
+</tr>
+<tr>
+<td>Hero heading ran under the mug on small laptops</td>
+<td>L2.10c</td>
+</tr>
+<tr>
+<td>11 contrast failures (axe)</td>
+<td>L3.04</td>
+</tr>
+<tr>
+<td>Vercel built from Git with no framework set</td>
+<td>L4.08</td>
+</tr>
+<tr>
+<td><code>vercel link</code> silently git-ignored <code>.env.example</code></td>
+<td>L4.08</td>
+</tr>
+<tr>
+<td><em>Session 2:</em> sign-up returned <strong>HTTP 504</strong> (SMTP host was the website)</td>
+<td>L3.06</td>
+</tr>
+<tr>
+<td><em>Session 2:</em> the email fallback kept failing behind a friendlier message</td>
+<td>L2.07c</td>
+</tr>
+<tr>
+<td><em>Session 2:</em> "Access blocked: Error 400: invalid_request" for one account</td>
+<td>L2.07c</td>
+</tr>
+<tr>
+<td><em>Session 2:</em> "Invalid domain: must be a top private domain"</td>
+<td>L2.07c</td>
+</tr>
+</tbody>
+</table></div><div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th>Test bugs (bugs in the tests themselves)</th>
+<th>Lesson</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pdftotext -v</code> exits non-zero, so all PDF checks were skipped</td>
+<td>L4.01</td>
+</tr>
+<tr>
+<td>Git Bash rewrote <code>/study</code> into <code>C:/Program Files/Git/study</code></td>
+<td>L4.03</td>
+</tr>
+<tr>
+<td>The secret scanner flagged the Supabase library's own source</td>
+<td>L4.03</td>
+</tr>
+<tr>
+<td>HTTP tests silently hit production instead of the local build</td>
+<td>L4.03</td>
+</tr>
+<tr>
+<td>A swipe fired in one millisecond failed in WebKit</td>
+<td>L4.04</td>
+</tr>
+<tr>
+<td>The sideways-scroll check measured a proxy, once, at the wrong moment</td>
+<td>L4.04</td>
+</tr>
+<tr>
+<td>The quiz test read the card that was sliding <em>out</em></td>
+<td>L4.05</td>
+</tr>
+<tr>
+<td>One worker's cleanup deleted another worker's user mid-test</td>
+<td>L4.06</td>
+</tr>
+<tr>
+<td>An extra "Next" click skipped a question on slow WebKit</td>
+<td>L4.06</td>
+</tr>
+<tr>
+<td>Vite's reload loop plus background-tab throttling looked like a frozen app</td>
+<td>L4.07</td>
+</tr>
+<tr>
+<td><em>Session 2:</em> a scripted edit silently did nothing (CRLF line endings)</td>
+<td>L2.07c</td>
+</tr>
+<tr>
+<td><em>Session 2:</em> a probe command hung on stdin; a redaction filter leaked a token; a flaky iPhone run; a predicted breakage that didn't happen</td>
+<td>L4.09</td>
+</tr>
+</tbody>
+</table></div></section>
+
+
+
+<section class="lsec" id="vocabulary-you-will-meet-in-every-lesson" aria-labelledby="vocabulary-you-will-meet-in-every-lesson-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">8</span><h2 id="vocabulary-you-will-meet-in-every-lesson-h">Vocabulary you will meet in every lesson</h2></div><div class="table-wrap wide" tabindex="0"><table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Plain meaning</th>
+<th>Analogy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Front end</strong></td>
+<td>The code that runs in the user's browser</td>
+<td>The café's counter and menu</td>
+</tr>
+<tr>
+<td><strong>Back end</strong></td>
+<td>Code and data on servers you control</td>
+<td>The kitchen</td>
+</tr>
+<tr>
+<td><strong>SPA</strong> (single-page app)</td>
+<td>One HTML page; JavaScript swaps the screens without reloading</td>
+<td>Changing the menu board without rebuilding the café</td>
+</tr>
+<tr>
+<td><strong>Build</strong></td>
+<td>Turning source (TSX, modern CSS) into plain files a browser runs (<code>dist/</code>)</td>
+<td>Prepping ingredients into dishes</td>
+</tr>
+<tr>
+<td><strong>Static host / CDN</strong></td>
+<td>Serves files as-is from servers close to users</td>
+<td>Pre-made sandwiches in fridges in every neighbourhood</td>
+</tr>
+<tr>
+<td><strong>Postgres</strong></td>
+<td>The database Supabase gives you</td>
+<td>The pantry with labelled shelves</td>
+</tr>
+<tr>
+<td><strong>RLS</strong></td>
+<td>Rules inside the database deciding which <em>rows</em> each user can see or change</td>
+<td>A pantry where each shelf only opens for its owner's key</td>
+</tr>
+<tr>
+<td><strong>RPC</strong></td>
+<td>Calling a function that lives on the server</td>
+<td>Ordering a dish; the kitchen cooks it, you don't</td>
+</tr>
+<tr>
+<td><strong>Session / token</strong></td>
+<td>Proof of who you are, sent with every request</td>
+<td>A wristband at an event</td>
+</tr>
+<tr>
+<td><strong>OTP</strong></td>
+<td>One-time password: the code emailed to you</td>
+<td>A cloakroom ticket that works once</td>
+</tr>
+<tr>
+<td><strong>Publishable (anon) key</strong></td>
+<td>Public identifier for your Supabase project; safe in the browser</td>
+<td>The café's street address</td>
+</tr>
+<tr>
+<td><strong>Secret / service-role key</strong></td>
+<td>Bypasses all rules; must never reach a browser</td>
+<td>The master key to every room</td>
+</tr>
+<tr>
+<td><strong>E2E test</strong></td>
+<td>Drives a real browser like a user would</td>
+<td>A mystery shopper</td>
+</tr>
+</tbody>
+</table></div></section>
+
+<section class="lsec" id="check-yourself" aria-labelledby="check-yourself-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">9</span><h2 id="check-yourself-h">Check yourself</h2></div><p class="quiz-intro">Answer each one before you look. Multiple-choice questions mark your pick and let you try again; for open questions, answer aloud, then reveal and grade yourself honestly.</p><div class="quiz mcq" data-quiz="l1-01:q1"><div class="quiz-q"><span class="qn">Q1</span><div class="qt">A student opens DevTools and calls <code>supabase.from("test_attempts").insert({ score: 100, … })</code>. What happens?</div></div><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-letter="A"><span class="L">A</span><span class="ot">The row is inserted, because they are signed in</span><span class="mark"></span></button></li><li><button type="button" class="quiz-opt" data-letter="B" data-correct="1"><span class="L">B</span><span class="ot">The insert fails: there is no insert policy on <code>test_attempts</code>, so RLS blocks it</span><span class="mark"></span></button></li><li><button type="button" class="quiz-opt" data-letter="C"><span class="L">C</span><span class="ot">It works, but only for their own <code>user_id</code></span><span class="mark"></span></button></li><li><button type="button" class="quiz-opt" data-letter="D"><span class="L">D</span><span class="ot">The database crashes</span><span class="mark"></span></button></li></ul>
+<div class="quiz-fb" role="status" aria-live="polite" hidden=""></div>
+<div class="quiz-actions"><button type="button" class="btn sm ghost" data-giveup="">Show the answer</button></div>
+<div class="quiz-answer" hidden=""><p><strong>B.</strong> RLS is enabled and <code>test_attempts</code> has only a <em>select</em> policy (read your own rows). With RLS on, anything not explicitly allowed is denied. <strong>A</strong> confuses "authenticated" with "authorised": being signed in only means the database knows who you are, not that you may do anything. <strong>C</strong> would be true only if we had written an insert policy with <code>auth.uid() = user_id</code>, which we deliberately did not, so that grading stays server-side. <strong>D</strong>: denials are normal errors, not crashes.</p></div></div><div class="quiz mcq" data-quiz="l1-01:q2"><div class="quiz-q"><span class="qn">Q2</span><div class="qt">Which value is computed on the <strong>phone</strong>?</div></div><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-letter="A"><span class="L">A</span><span class="ot">The test duration</span><span class="mark"></span></button></li><li><button type="button" class="quiz-opt" data-letter="B"><span class="L">B</span><span class="ot">The score</span><span class="mark"></span></button></li><li><button type="button" class="quiz-opt" data-letter="C" data-correct="1"><span class="L">C</span><span class="ot">The timer shown at the top of the runner</span><span class="mark"></span></button></li><li><button type="button" class="quiz-opt" data-letter="D"><span class="L">D</span><span class="ot">The rank</span><span class="mark"></span></button></li></ul>
+<div class="quiz-fb" role="status" aria-live="polite" hidden=""></div>
+<div class="quiz-actions"><button type="button" class="btn sm ghost" data-giveup="">Show the answer</button></div>
+<div class="quiz-answer" hidden=""><p><strong>C.</strong> The on-screen timer is cosmetic: <code>Date.now() - client_started</code>. The <em>ranked</em> duration is <code>now() - started_at</code> on the server. <strong>A</strong> is the classic misconception: if the phone's time counted, changing the clock would cheat. Score (<strong>B</strong>) and rank (<strong>D</strong>) come back from <code>submit_test</code>.</p></div></div><div class="quiz mcq" data-quiz="l1-01:q3"><div class="quiz-q"><span class="qn">Q3</span><div class="qt">You swipe a card right while <strong>signed out</strong>, then sign in on the same phone. What happens to that mark?</div></div><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-letter="A"><span class="L">A</span><span class="ot">It is lost</span><span class="mark"></span></button></li><li><button type="button" class="quiz-opt" data-letter="B"><span class="L">B</span><span class="ot">It stays only on this phone forever</span><span class="mark"></span></button></li><li><button type="button" class="quiz-opt" data-letter="C" data-correct="1"><span class="L">C</span><span class="ot">It is merged into the cloud: newest timestamp wins per card</span><span class="mark"></span></button></li><li><button type="button" class="quiz-opt" data-letter="D"><span class="L">D</span><span class="ot">The cloud overwrites it</span><span class="mark"></span></button></li></ul>
+<div class="quiz-fb" role="status" aria-live="polite" hidden=""></div>
+<div class="quiz-actions"><button type="button" class="btn sm ghost" data-giveup="">Show the answer</button></div>
+<div class="quiz-answer" hidden=""><p><strong>C.</strong> On sign-in, <code>ProgressProvider</code> downloads your cloud marks, merges them with local ones by timestamp, and uploads anything local that is newer. <strong>D</strong> is a common naive sync design. It would silently destroy offline work. Details in <a href="l2-07b-account-progress.html">L2.07b</a>.</p></div></div><div class="quiz mcq" data-quiz="l1-01:q4"><div class="quiz-q"><span class="qn">Q4</span><div class="qt">Why does deploying the app need <em>no</em> server code of our own?</div></div><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-letter="A"><span class="L">A</span><span class="ot">Vercel runs our React code on its servers</span><span class="mark"></span></button></li><li><button type="button" class="quiz-opt" data-letter="B" data-correct="1"><span class="L">B</span><span class="ot">The app is static files; dynamic work happens in Supabase (Auth + SQL functions)</span><span class="mark"></span></button></li><li><button type="button" class="quiz-opt" data-letter="C"><span class="L">C</span><span class="ot">We use serverless functions</span><span class="mark"></span></button></li><li><button type="button" class="quiz-opt" data-letter="D"><span class="L">D</span><span class="ot">It does need a server; we just didn't mention it</span><span class="mark"></span></button></li></ul>
+<div class="quiz-fb" role="status" aria-live="polite" hidden=""></div>
+<div class="quiz-actions"><button type="button" class="btn sm ghost" data-giveup="">Show the answer</button></div>
+<div class="quiz-answer" hidden=""><p><strong>B.</strong> <code>vite build</code> outputs plain files. Supabase provides auth, the database and the functions. <strong>A</strong>: Vercel serves our files; it does not render React on the server in this project. <strong>C</strong>: we wrote no Vercel functions.</p></div></div><div class="quiz-score"><span>Right so far: <strong class="qs-right">0</strong> of <strong>4</strong></span><button type="button" class="btn sm ghost" data-quiz-reset="">Reset these questions</button></div></section>
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="lsec" id="practice" aria-labelledby="practice-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">10</span><h2 id="practice-h">Practice</h2></div><div class="practice"><div class="practice-head"><span class="level-chip easy">Easy</span><span class="mins">10 min</span></div><p> Open the live site on a phone. Find all five screens, and on the Study page use all three modes. Write one sentence per screen describing its job.
+<em>Done when:</em> you have five sentences without looking at this lesson.</p></div><div class="practice"><div class="practice-head"><span class="level-chip medium">Medium</span><span class="mins">20 min</span></div><p> Without scrolling up, redraw the architecture diagram on paper. Include the browser, localStorage, Vercel, Auth, Postgres tables, SQL functions, GitHub and the arrows labelled 1–4.</p><details class="reveal"><summary>Hint<span class="rv-hint">reveal</span></summary><div class="rv-body">Start with three boxes: browser, Vercel, Supabase. Then ask: who sends the app? Who checks identity? Who stores rows? Who decides the score?</div></details><details class="reveal"><summary>Self-check<span class="rv-hint">reveal</span></summary><div class="rv-body">
+<ul class="checklist" data-list="l1-01:c1"><li><label><input type="checkbox" data-check="l1-01:c1:0"><span>Browser holds only the publishable key</span></label></li><li><label><input type="checkbox" data-check="l1-01:c1:1"><span>Vercel → browser: files (once)</span></label></li><li><label><input type="checkbox" data-check="l1-01:c1:2"><span>Browser → Auth: email + code; gets a session</span></label></li><li><label><input type="checkbox" data-check="l1-01:c1:3"><span>Browser → functions: start/submit with the token</span></label></li><li><label><input type="checkbox" data-check="l1-01:c1:4"><span>Browser → tables: only own profile and own progress (RLS)</span></label></li><li><label><input type="checkbox" data-check="l1-01:c1:5"><span>GitHub → Vercel: push triggers a deploy</span></label></li></ul>
+</div></details></div><div class="practice"><div class="practice-head"><span class="level-chip hard">Hard</span><span class="mins">40 min</span></div><p> Write a one-page threat model in your own words: three ways a student might try to cheat the leaderboard, and which part of the design stops each one.</p><details class="reveal"><summary>One good answer<span class="rv-hint">reveal</span></summary><div class="rv-body">
+<ol>
+<li><em>Insert a fake attempt</em> → no insert policy on <code>test_attempts</code>; only <code>start_test</code>/<code>submit_test</code> write it.</li>
+<li><em>Fake a fast time by changing the phone clock</em> → duration uses the server's <code>now()</code> at start and at submit.</li>
+<li><em>Read the answer key during the test</em> → the <code>questions</code> table has RLS with no read policy. (They could study the flashcards beforehand, and that's allowed: it's learning.)</li>
+<li><em>Submit someone else's attempt id</em> → <code>submit_test</code> matches <code>user_id = auth.uid()</code>, otherwise "Test attempt not found".</li>
+<li><em>Submit twice to try again</em> → <code>submitted_at is not null</code> → "already submitted".</li>
+</ol>
+</div></details></div></section>
+
+
+
+
+
+
+<section class="lsec" id="from-memory" aria-labelledby="from-memory-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">11</span><h2 id="from-memory-h">From memory</h2></div><p class="rung"><span class="rn">Rung 1</span>Cloze</p><p> Fill the blanks (answers below).</p><div class="cloze" data-cloze="l1-01:cloze1"><div class="cloze-math cloze-prose"><aside class="callout">
+<p>The browser downloads static files from <input class="cloze-in" data-n="1" data-answer="Vercel" size="7" aria-label="Blank ①" autocomplete="off" autocapitalize="off" spellcheck="false">. It signs in by sending an email to <input class="cloze-in" data-n="2" data-answer="Supabase Auth" size="14" aria-label="Blank ②" autocomplete="off" autocapitalize="off" spellcheck="false">, which emails an <input class="cloze-in" data-n="3" data-answer="8 (6–10 supported)" size="19" aria-label="Blank ③" autocomplete="off" autocapitalize="off" spellcheck="false">-digit code. To start a test it calls the SQL function <input class="cloze-in" data-n="4" data-answer="start_test" size="11" aria-label="Blank ④" autocomplete="off" autocapitalize="off" spellcheck="false">, which stamps <code>started_at = <input class="cloze-in" data-n="5" data-answer="now()" size="6" aria-label="Blank ⑤" autocomplete="off" autocapitalize="off" spellcheck="false"></code> on the server. Scores are computed in <input class="cloze-in" data-n="6" data-answer="submit_test" size="12" aria-label="Blank ⑥" autocomplete="off" autocapitalize="off" spellcheck="false"> by comparing each answer with <code>questions.<input class="cloze-in" data-n="7" data-answer="answer" size="7" aria-label="Blank ⑦" autocomplete="off" autocapitalize="off" spellcheck="false"></code>. The browser cannot read the <code>questions</code> table because <input class="cloze-in" data-n="8" data-answer="row-level security (RLS)" size="25" aria-label="Blank ⑧" autocomplete="off" autocapitalize="off" spellcheck="false"> is enabled with no read policy.</p>
+</aside></div><div class="cloze-bar"><button type="button" class="btn sm primary" data-cz="check">Check</button><button type="button" class="btn sm" data-cz="show">Show answers</button><button type="button" class="btn sm ghost" data-cz="clear">Clear</button><span class="score" aria-live="polite"></span></div><p class="cloze-legend">Fill every blank from memory; <kbd>Tab</kbd> moves to the next. Spacing and capitals don’t matter.</p></div><details class="reveal cloze-answers"><summary>Answers<span class="rv-hint">reveal</span></summary><div class="rv-body">① Vercel ② Supabase Auth ③ 8 (6–10 supported) ④ <code>start_test</code> ⑤ <code>now()</code> ⑥ <code>submit_test</code> ⑦ <code>answer</code> ⑧ row-level security (RLS)</div></details><p class="rung"><span class="rn">Rung 2</span>Blank page (15 min)</p><div class="drill" data-drill="l1-01:drill1"><div class="drill-task"><span class="drill-rule">No scrolling up</span><p>On a blank page, write:</p><ol>
+<li>The five screens and their routes.</li>
+<li>The architecture map.</li>
+<li>The 10-step sequence of one test attempt.</li>
+</ol></div><label class="visually-hidden" for="l1-01-drill1">Your blank page</label><textarea id="l1-01-drill1" spellcheck="false" placeholder="Write it here from memory…"></textarea><div class="drill-bar"><button type="button" class="btn sm ghost" data-drill-clear="">Clear and retry</button><span class="saved" aria-live="polite">Saved on this device as you type</span></div><div class="selfcheck"><details class="reveal"><summary>Done? Compare with the self-check list<span class="rv-hint">reveal</span></summary><div class="rv-body">
+<ul class="checklist" data-list="l1-01:c2"><li><label><input type="checkbox" data-check="l1-01:c2:0"><span>Routes: <code>/</code>, <code>/study</code>, <code>/test</code> (+ <code>/test/run</code>, <code>/test/result</code>), <code>/ranks</code>, <code>/me</code></span></label></li><li><label><input type="checkbox" data-check="l1-01:c2:1"><span>Map has the four Supabase parts: Auth, tables, functions, and RLS between browser and tables</span></label></li><li><label><input type="checkbox" data-check="l1-01:c2:2"><span>Sequence: start_test checks profile → deletes unsubmitted → inserts 100 random ids → app saves the attempt locally → answers saved locally → submit_test locks the row and checks owner/submitted/expiry/count → grades → saves → returns score/rank → app shows results</span></label></li><li><label><input type="checkbox" data-check="l1-01:c2:3"><span>You said <em>why</em> grading is server-side</span></label></li></ul>
+</div></details></div></div></section>
+
+
+
+
+
+
+<section class="lsec" id="flashcards" aria-labelledby="flashcards-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">12</span><h2 id="flashcards-h">Flashcards</h2></div><div class="deck" data-deck="deck-l1-01"><div class="deck-ui"></div><details class="reveal deck-list"><summary>See all 8 cards as a list<span class="rv-hint">for a quick scan</span></summary><div class="rv-body"><ol class="deck-src"><li data-card="1ayrp27"><div class="q">Why does the server, not the browser, compute the score?</div><div class="a">Anything in the browser can be changed by the user. The answer key and the grading live in Postgres, where the client cannot read the key or write attempts directly.</div></li><li data-card="ema0qf"><div class="q">Which two tables can a signed-in user write directly?</div><div class="a"><code>profiles</code> (own row) and <code>card_progress</code> (own rows). <code>test_attempts</code> is written only by functions; <code>questions</code> by nobody from the browser.</div></li><li data-card="wt5nqg"><div class="q">What makes the ranked time cheat-proof?</div><div class="a">It is <code>now() − started_at</code>, both on the database server's clock.</div></li><li data-card="1ydco4b"><div class="q">What does the publishable key let a stranger do?</div><div class="a">Only what RLS and grants allow anonymous users: read the leaderboard function and attempt sign-in. Nothing private.</div></li><li data-card="svn2zg"><div class="q">How many questions are in the pool, and how many in a test?</div><div class="a">130 in the pool (weeks 0–12 × 10); each test draws 100 at random on the server.</div></li><li data-card="15cht09"><div class="q">How does the app get deployed now?</div><div class="a"><code>git push</code> to <code>main</code>; Vercel's Git integration builds with Vite and publishes.</div></li><li data-card="lds4jv"><div class="q">On a laptop, where does the tab bar go?</div><div class="a">It becomes a fixed side rail (≥ 1024 px), restyled by <code>responsive.css</code>.</div></li><li data-card="ygpzwb"><div class="q">What is the ranking rule?</div><div class="a">Each player's best attempt; higher score first; ties broken by shorter duration.</div></li></ol></div></details></div></section>
+
+
+
+
+
+
+
+
+<section class="lsec menu-board-sec" id="the-menu-board-one-screen-summary" aria-labelledby="the-menu-board-one-screen-summary-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">13</span><h2 id="the-menu-board-one-screen-summary-h">The menu board (one-screen summary)</h2></div><div class="board wide"><p class="board-title">The menu board</p><p class="board-sub">Everything on one screen</p><div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Live site</strong></td>
+<td><code>psychology-of-learning-nptel.vercel.app</code> (short: <code>psychologyoflearning.vercel.app</code>)</td>
+</tr>
+<tr>
+<td><strong>Stack</strong></td>
+<td>Vite + React 19 + TypeScript · Motion · React Router 7 · Supabase (Auth + Postgres) · Vercel</td>
+</tr>
+<tr>
+<td><strong>Screens</strong></td>
+<td>Home · Study (cards/quiz/list) · Test (intro/run/result) · Ranks · Me</td>
+</tr>
+<tr>
+<td><strong>Trust boundary</strong></td>
+<td>Browser = untrusted. Postgres functions + RLS = trusted.</td>
+</tr>
+<tr>
+<td><strong>Tables</strong></td>
+<td><code>questions</code> (key, unreadable) · <code>profiles</code> · <code>test_attempts</code> (function-written) · <code>card_progress</code></td>
+</tr>
+<tr>
+<td><strong>Functions</strong></td>
+<td><code>start_test</code> · <code>submit_test</code> · <code>get_leaderboard</code> · <code>get_my_stats</code></td>
+</tr>
+<tr>
+<td><strong>Local storage keys</strong></td>
+<td><code>pol.theme</code> · <code>pol.marks</code> · <code>pol.attempt</code> · <code>pol.lastResult</code> · <code>pol.studyMode</code> · <code>pol.shuffle</code> · <code>pol.hideKnown</code></td>
+</tr>
+<tr>
+<td><strong>Deploy</strong></td>
+<td><code>git push</code> → Vercel builds <code>npm run build</code> → <code>dist/</code></td>
+</tr>
+<tr>
+<td><strong>Tests</strong></td>
+<td><code>npm test</code> (= unit + db + e2e) · <code>npm run test:prod</code> against the live site</td>
+</tr>
+</tbody>
+</table></div></div></section>
+
+<section class="lsec" id="glossary" aria-labelledby="glossary-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">14</span><h2 id="glossary-h">Glossary</h2></div><dl class="glossary wide"><div class="term"><dt>Architecture</dt><dd>the parts of a system and how they connect.</dd></div><div class="term"><dt>CDN</dt><dd>servers worldwide that cache your files near users.</dd></div><div class="term"><dt>Front end / back end</dt><dd>browser code / server-side code and data.</dd></div><div class="term"><dt>Leaderboard</dt><dd>ranked list of each player's best attempt.</dd></div><div class="term"><dt>OTP</dt><dd>one-time password sent by email.</dd></div><div class="term"><dt>Publishable key</dt><dd>public project identifier, safe in client code.</dd></div><div class="term"><dt>RLS</dt><dd>row-level security, per-row access rules in Postgres.</dd></div><div class="term"><dt>RPC</dt><dd>remote procedure call, running a named server function.</dd></div><div class="term"><dt>Secret key</dt><dd>unrestricted admin key, server-only.</dd></div><div class="term"><dt>Session</dt><dd>proof of identity the browser sends with requests.</dd></div><div class="term"><dt>SPA</dt><dd>single-page application.</dd></div><div class="term"><dt>Static hosting</dt><dd>serving pre-built files without running code per request.</dd></div></dl></section>
+
+<section class="lsec" id="go-further" aria-labelledby="go-further-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">15</span><h2 id="go-further-h">Go further</h2></div><ul class="resources"><li><span class="r-title"><a href="https://supabase.com/docs/guides/getting-started/architecture" rel="noopener">Supabase: Architecture</a></span><span class="r-type">Docs</span><span class="r-why"></span><span class="r-meta">Read: Whole page · 10 min</span></li><li><span class="r-title"><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works" rel="noopener">MDN: How the web works</a></span><span class="r-type">Article</span><span class="r-why"></span><span class="r-meta">Read: Whole page · 10 min</span></li><li><span class="r-title"><a href="https://web.dev/articles/rendering-on-the-web" rel="noopener">web.dev: Rendering on the web</a></span><span class="r-type">Article</span><span class="r-why"></span><span class="r-meta">Read: "Terminology" and "Client-side rendering" · 15 min</span></li></ul></section>
+
+
+
+
+    <div class="complete-box"><div class="txt"><strong>Finished L1.01?</strong><span>Mark it complete once you have done its blank-page drill. The hub, the menu and the plan all update.</span></div><button class="btn primary complete" type="button" data-complete="l1-01" aria-pressed="false">Mark lesson complete</button></div>
+  </main>
+</div>
+<nav class="pager" aria-label="Lesson pager"><a class="prev" href="index.html"><span class="dir">← Back to</span><span class="t">The hub</span></a><a class="next" href="l1-02-web-platform.html"><span class="dir">Next →</span><span class="t"><span>L1.02</span> Prerequisites I: the web platform</span></a></nav>
+<footer class="site-foot"><p>Coffee aur Code · <a href="index.html">the study series</a> for the <i>Psychology of Learning</i> app · generated 2026-10-17 from build sessions 1 and 2</p></footer>
+<button class="btn sections-fab" type="button" data-open="sections" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg><span>Sections</span></button>
+<div class="drawer" id="sections" role="dialog" aria-modal="true" aria-labelledby="sections-title"><div class="scrim" data-close></div><div class="panel"><header><h2 id="sections-title">L1.01 · sections</h2><button class="icon-btn" type="button" data-close aria-label="Close sections"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header><div class="body"><nav class="toc-drawer" aria-label="Sections"><ol><li><a href="#the-finished-result-first"><span class="n">1</span><span>The finished result first</span></a></li><li><a href="#the-problem-this-solves"><span class="n">2</span><span>The problem this solves</span></a></li><li><a href="#the-map"><span class="n">3</span><span>The map: every part and who talks to whom</span></a></li><li><a href="#one-test-attempt-end-to-end"><span class="n">4</span><span>One test attempt, end to end</span></a></li><li><a href="#the-code-by-folder"><span class="n">5</span><span>The code, by folder</span></a></li><li><a href="#the-build-log-in-the-order-it-happened"><span class="n">6</span><span>The build log, in the order it happened</span></a></li><li><a href="#every-bug-in-this-series-preview"><span class="n">7</span><span>Every bug in this series (preview)</span></a></li><li><a href="#vocabulary-you-will-meet-in-every-lesson"><span class="n">8</span><span>Vocabulary you will meet in every lesson</span></a></li><li><a href="#check-yourself"><span class="n">9</span><span>Check yourself</span></a></li><li><a href="#practice"><span class="n">10</span><span>Practice</span></a></li><li><a href="#from-memory"><span class="n">11</span><span>From memory</span></a></li><li><a href="#flashcards"><span class="n">12</span><span>Flashcards</span></a></li><li><a href="#the-menu-board-one-screen-summary"><span class="n">13</span><span>The menu board (one-screen summary)</span></a></li><li><a href="#glossary"><span class="n">14</span><span>Glossary</span></a></li><li><a href="#go-further"><span class="n">15</span><span>Go further</span></a></li></ol></nav><div class="toc-done"><button class="btn sm complete" type="button" data-complete="l1-01" aria-pressed="false">Mark complete</button></div></div></div></div>
+<div class="drawer" id="menu" role="dialog" aria-modal="true" aria-labelledby="menu-title"><div class="scrim" data-close></div><div class="panel">
+<header><h2 id="menu-title">The menu</h2><button class="icon-btn" type="button" data-close aria-label="Close menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header>
+<div class="body"><input class="menu-search" type="search" placeholder="Find a lesson or concept…" aria-label="Find a lesson or concept">
+<div class="menu-extra"><a class="btn sm" href="index.html">Hub</a><a class="btn sm" href="plan.html">Study plan</a><a class="btn sm" href="mastery.html">Mastery</a></div>
+<div class="menu-level"><h3>Level 1 · Foundations <span>5 lessons · 5 h 35 min</span></h3><ul class="menu-list"><li data-search="l1.01 what we built, the map, and the build log architecture spa supabase build log"><a href="l1-01-what-we-built.html" aria-current="page"><span class="tick" data-done="l1-01"></span><span class="id">L1.01</span><span>What we built, the map, and the build log</span><span class="min">45′</span></a></li><li data-search="l1.02 prerequisites i: the web platform css dom events http history api"><a href="l1-02-web-platform.html"><span class="tick" data-done="l1-02"></span><span class="id">L1.02</span><span>Prerequisites I: the web platform</span><span class="min">70′</span></a></li><li data-search="l1.03 prerequisites ii: typescript and react typescript hooks effects context"><a href="l1-03-typescript-react.html"><span class="tick" data-done="l1-03"></span><span class="id">L1.03</span><span>Prerequisites II: TypeScript and React</span><span class="min">75′</span></a></li><li data-search="l1.04 prerequisites iii: sql, auth, keys and hosting sql rls jwt otp env"><a href="l1-04-data-auth-hosting.html"><span class="tick" data-done="l1-04"></span><span class="id">L1.04</span><span>Prerequisites III: SQL, auth, keys and hosting</span><span class="min">70′</span></a></li><li data-search="l1.05 setup and the first working slice node vite tsconfig checkpoint"><a href="l1-05-setup-first-slice.html"><span class="tick" data-done="l1-05"></span><span class="id">L1.05</span><span>Setup and the first working slice</span><span class="min">75′</span></a></li></ul></div><div class="menu-level"><h3>Level 2 · Build it <span>18 lessons · 21 h 35 min</span></h3><ul class="menu-list"><li data-search="l2.01 from pdfs to 130 questions pdftotext data model sql escaping"><a href="l2-01-data-pipeline.html"><span class="tick" data-done="l2-01"></span><span class="id">L2.01</span><span>From PDFs to 130 questions</span><span class="min">60′</span></a></li><li data-search="l2.02 the database i: tables and rls ddl constraints rls indexes"><a href="l2-02-tables-and-rls.html"><span class="tick" data-done="l2-02"></span><span class="id">L2.02</span><span>The database I: tables and RLS</span><span class="min">70′</span></a></li><li data-search="l2.03 the database ii: server-side grading pl/pgsql security definer rank()"><a href="l2-03-server-grading.html"><span class="tick" data-done="l2-03"></span><span class="id">L2.03</span><span>The database II: server-side grading</span><span class="min">75′</span></a></li><li data-search="l2.04 entry point, config and the small libraries vite seo head fisher–yates"><a href="l2-04-entry-config-libs.html"><span class="tick" data-done="l2-04"></span><span class="id">L2.04</span><span>Entry point, config and the small libraries</span><span class="min">70′</span></a></li><li data-search="l2.05 the app shell react router animatepresence layoutid"><a href="l2-05-app-shell.html"><span class="tick" data-done="l2-05"></span><span class="id">L2.05</span><span>The app shell</span><span class="min">75′</span></a></li><li data-search="l2.06a the ui kit drag springs svg rings raf"><a href="l2-06a-ui-kit.html"><span class="tick" data-done="l2-06a"></span><span class="id">L2.06a</span><span>The UI kit</span><span class="min">75′</span></a></li><li data-search="l2.06b the mug, icons and home svg keyframes stats"><a href="l2-06b-mug-icons-home.html"><span class="tick" data-done="l2-06b"></span><span class="id">L2.06b</span><span>The mug, icons and Home</span><span class="min">70′</span></a></li><li data-search="l2.07a auth state and email-code sign-in otp auth state validation"><a href="l2-07a-auth-sign-in.html"><span class="tick" data-done="l2-07a"></span><span class="id">L2.07a</span><span>Auth state and email-code sign-in</span><span class="min">70′</span></a></li><li data-search="l2.07c google sign-in, line by line oauth redirects pkce dashboards"><a href="l2-07c-google-sign-in.html"><span class="tick" data-done="l2-07c"></span><span class="id">L2.07c</span><span>Google sign-in, line by line</span><span class="min">80′</span></a></li><li data-search="l2.07b names, account and progress sync upsert merge newest wins"><a href="l2-07b-account-progress.html"><span class="tick" data-done="l2-07b"></span><span class="id">L2.07b</span><span>Names, account and progress sync</span><span class="min">75′</span></a></li><li data-search="l2.08a flashcards i: the deck and the flip usemotionvalue drag 3d"><a href="l2-08a-flashcard-deck.html"><span class="tick" data-done="l2-08a"></span><span class="id">L2.08a</span><span>Flashcards I: the deck and the flip</span><span class="min">75′</span></a></li><li data-search="l2.08b flashcards ii: quiz and list state machines search highlight"><a href="l2-08b-quiz-and-list.html"><span class="tick" data-done="l2-08b"></span><span class="id">L2.08b</span><span>Flashcards II: quiz and list</span><span class="min">70′</span></a></li><li data-search="l2.09a the ranked test i: intro and start localstorage routes rpc"><a href="l2-09a-test-intro.html"><span class="tick" data-done="l2-09a"></span><span class="id">L2.09a</span><span>The ranked test I: intro and start</span><span class="min">60′</span></a></li><li data-search="l2.09b the ranked test ii: the runner runner state beforeunload"><a href="l2-09b-test-runner.html"><span class="tick" data-done="l2-09b"></span><span class="id">L2.09b</span><span>The ranked test II: the runner</span><span class="min">75′</span></a></li><li data-search="l2.09c the ranked test iii: results and leaderboard ring maths ties visibilitychange"><a href="l2-09c-results-leaderboard.html"><span class="tick" data-done="l2-09c"></span><span class="id">L2.09c</span><span>The ranked test III: results and leaderboard</span><span class="min">75′</span></a></li><li data-search="l2.10a styling i: tokens, themes and the shell custom properties color-mix clip"><a href="l2-10a-tokens-base-shell.html"><span class="tick" data-done="l2-10a"></span><span class="id">L2.10a</span><span>Styling I: tokens, themes and the shell</span><span class="min">70′</span></a></li><li data-search="l2.10b styling ii: every component grid stacking touch-action"><a href="l2-10b-component-styles.html"><span class="tick" data-done="l2-10b"></span><span class="id">L2.10b</span><span>Styling II: every component</span><span class="min">75′</span></a></li><li data-search="l2.10c styling iii: the responsive layer media queries dvh @supports checkpoint"><a href="l2-10c-responsive.html"><span class="tick" data-done="l2-10c"></span><span class="id">L2.10c</span><span>Styling III: the responsive layer</span><span class="min">75′</span></a></li></ul></div><div class="menu-level"><h3>Level 3 · Under the hood <span>6 lessons · 7 h 05 min</span></h3><ul class="menu-list"><li data-search="l3.01 the security model rls internals grants jwt threat model"><a href="l3-01-security-model.html"><span class="tick" data-done="l3-01"></span><span class="id">L3.01</span><span>The security model</span><span class="min">70′</span></a></li><li data-search="l3.02 ranking maths and sql internals window functions probability explain"><a href="l3-02-ranking-sql.html"><span class="tick" data-done="l3-02"></span><span class="id">L3.02</span><span>Ranking maths and SQL internals</span><span class="min">65′</span></a></li><li data-search="l3.03 gestures, springs, 3d and scrolling pointer events ζ perspective"><a href="l3-03-gestures-3d.html"><span class="tick" data-done="l3-03"></span><span class="id">L3.03</span><span>Gestures, springs, 3D and scrolling</span><span class="min">75′</span></a></li><li data-search="l3.04 viewports, contrast and accessibility dvh luminance compositing axe"><a href="l3-04-viewports-contrast.html"><span class="tick" data-done="l3-04"></span><span class="id">L3.04</span><span>Viewports, contrast and accessibility</span><span class="min">70′</span></a></li><li data-search="l3.05 performance and lighthouse lcp cls caching fonts checkpoint"><a href="l3-05-performance.html"><span class="tick" data-done="l3-05"></span><span class="id">L3.05</span><span>Performance and Lighthouse</span><span class="min">70′</span></a></li><li data-search="l3.06 oauth, pkce, and why sign-up timed out 504 smtp pkce sha-256 psl"><a href="l3-06-oauth-pkce-504.html"><span class="tick" data-done="l3-06"></span><span class="id">L3.06</span><span>OAuth, PKCE, and why sign-up timed out</span><span class="min">75′</span></a></li></ul></div><div class="menu-level"><h3>Level 4 · Test it and ship it <span>9 lessons · 10 h 55 min</span></h3><ul class="menu-list"><li data-search="l4.01 testing strategy and data tests node:test regex mutation"><a href="l4-01-testing-strategy-data.html"><span class="tick" data-done="l4-01"></span><span class="id">L4.01</span><span>Testing strategy and data tests</span><span class="min">70′</span></a></li><li data-search="l4.02 database tests in pglite pglite set role rls matrix"><a href="l4-02-database-tests.html"><span class="tick" data-done="l4-02"></span><span class="id">L4.02</span><span>Database tests in PGlite</span><span class="min">75′</span></a></li><li data-search="l4.03 playwright foundations playwright webserver secrets scan"><a href="l4-03-playwright-foundations.html"><span class="tick" data-done="l4-03"></span><span class="id">L4.03</span><span>Playwright foundations</span><span class="min">75′</span></a></li><li data-search="l4.04 ui tests: navigation, layout, flashcards locators expect.poll cdp touch"><a href="l4-04-ui-tests-nav-cards.html"><span class="tick" data-done="l4-04"></span><span class="id">L4.04</span><span>UI tests: navigation, layout, flashcards</span><span class="min">75′</span></a></li><li data-search="l4.05 ui tests: quiz, list, runner, results state injection transitions"><a href="l4-05-ui-tests-quiz-runner.html"><span class="tick" data-done="l4-05"></span><span class="id">L4.05</span><span>UI tests: quiz, list, runner, results</span><span class="min">70′</span></a></li><li data-search="l4.06 live security and the signed-in journey admin api route mocking cleanup"><a href="l4-06-live-security-auth.html"><span class="tick" data-done="l4-06"></span><span class="id">L4.06</span><span>Live security and the signed-in journey</span><span class="min">75′</span></a></li><li data-search="l4.07 accessibility, lighthouse, flaky tests axe lighthouse forensics"><a href="l4-07-a11y-lighthouse-flaky.html"><span class="tick" data-done="l4-07"></span><span class="id">L4.07</span><span>Accessibility, Lighthouse, flaky tests</span><span class="min">65′</span></a></li><li data-search="l4.08 ship it: deploy from git and operate vercel seo supabase checkpoint"><a href="l4-08-deploy-operate.html"><span class="tick" data-done="l4-08"></span><span class="id">L4.08</span><span>Ship it: deploy from Git and operate</span><span class="min">75′</span></a></li><li data-search="l4.09 a sign-in you can't automate, and a live incident boundary tests route runbook"><a href="l4-09-auth-tests-incident-ops.html"><span class="tick" data-done="l4-09"></span><span class="id">L4.09</span><span>A sign-in you can't automate, and a live incident</span><span class="min">75′</span></a></li></ul></div>
+<div class="menu-level"><h3>Mastery <span>195′</span></h3><ul class="menu-list"><li data-search="mastery checkpoint rebuild from memory"><a href="mastery.html"><span class="tick" data-done="mastery"></span><span class="id">★</span><span>Mastery checkpoint: rebuild from memory</span><span class="min">195′</span></a></li></ul></div>
+</div></div></div>
+<script src="assets/dlm-core.js"></script>
+<script src="assets/series.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

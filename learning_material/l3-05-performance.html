@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="dlm-series" content="psych-learning-build">
+<meta name="description" content="The critical path, the metrics, measured before/after and production; **Level 3 checkpoint**">
+<title>L3.05 Under the hood: performance and Lighthouse (+ Level 3 checkpoint) · Coffee aur Code</title>
+<script>(function(){try{var t=localStorage.getItem('dlm:psych-learning-build:theme');if(t){t=JSON.parse(t);if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+<link rel="stylesheet" href="assets/lib/katex/katex.min.css">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cpath%20d%3D%22M7%2016h22v9a9%209%200%200%201-9%209h-4a9%209%200%200%201-9-9z%22%20fill%3D%22%2317110e%22%2F%3E%3Cpath%20d%3D%22M29%2019h2.5a4%204%200%200%201%200%208H28%22%20fill%3D%22none%22%20stroke%3D%22%2317110e%22%20stroke-width%3D%222.6%22%2F%3E%3Cpath%20d%3D%22M15%204c-2%203%202%205%200%208M21%203c-2%203%202%205%200%208%22%20fill%3D%22none%22%20stroke%3D%22%23d7262f%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
+</head>
+<body data-lesson="l3-05">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="Coffee aur Code study series: home"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M15 4c-2 3 2 5 0 8M21 3c-2 3 2 5 0 8" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round"/><path d="M7 16h22v9a9 9 0 0 1-9 9h-4a9 9 0 0 1-9-9z" fill="var(--ink)"/><path d="M29 19h2.5a4 4 0 0 1 0 8H28" fill="none" stroke="var(--ink)" stroke-width="2.6"/><path d="M12 22.5l-2.5 2.5 2.5 2.5M18 22.5l2.5 2.5-2.5 2.5" fill="none" stroke="var(--bg)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="brand-name">Coffee aur Code<small>Build it from memory</small></span></a>
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Hub</a><span class="sep">/</span><a href="index.html#level-3">Level 3 · Under the hood</a><span class="sep">/</span><span class="here">L3.05 Under the hood: performance and Lighthouse (+ Level 3 checkpoint)</span></nav>
+  <span class="spacer"></span>
+  <div class="actions">
+    <a class="btn ghost sm label-wide" href="plan.html">Plan</a>
+    <button class="btn sm" type="button" data-open="menu" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span class="label-wide">Lessons</span></button>
+    <button class="icon-btn theme-toggle" type="button" aria-label="Switch colour theme"><svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+  </div>
+  <div class="read-progress" aria-hidden="true"></div>
+</header>
+<div class="layout">
+  <aside class="toc" aria-label="On this page">
+    <p class="toc-label">On this page</p>
+    <ol><li><a href="#warm-up"><span class="n">1</span><span>Warm-up: pull it from memory</span></a></li><li><a href="#the-problem-this-solves"><span class="n">2</span><span>The problem this solves</span></a></li><li><a href="#concepts"><span class="n">3</span><span>Concepts</span></a></li><li><a href="#the-math"><span class="n">4</span><span>The math</span></a></li><li><a href="#worked-trace"><span class="n">5</span><span>Worked trace: the measurements</span></a></li><li><a href="#running-and-testing"><span class="n">6</span><span>Running and testing</span></a></li><li><a href="#bug-journal"><span class="n">7</span><span>Bug journal</span></a></li><li><a href="#why-this-design"><span class="n">8</span><span>Why this design</span></a></li><li><a href="#check-yourself"><span class="n">9</span><span>Check yourself</span></a></li><li><a href="#practice"><span class="n">10</span><span>Practice</span></a></li><li><a href="#from-memory"><span class="n">11</span><span>From memory</span></a></li><li><a href="#checkpoint"><span class="n">12</span><span>Level 3 checkpoint</span></a></li><li><a href="#flashcards"><span class="n">13</span><span>Flashcards</span></a></li><li><a href="#the-menu-board"><span class="n">14</span><span>The menu board</span></a></li><li><a href="#glossary"><span class="n">15</span><span>Glossary</span></a></li><li><a href="#go-further"><span class="n">16</span><span>Go further</span></a></li></ol>
+    <div class="toc-done"><button class="btn sm complete" type="button" data-complete="l3-05" aria-pressed="false">Mark complete</button></div>
+  </aside>
+  <main class="lesson" id="main">
+    <div class="eyebrow"><span class="lvl">Level 3 · Under the hood</span><span>Lesson 5 of 6</span><span>70 min</span></div>
+    <div class="lesson-title"><span class="lesson-num">L3.05</span><h1>Under the hood: performance and Lighthouse (+ Level 3 checkpoint)</h1></div>
+    <div class="recipe"><div class="recipe-head"><span class="t">Recipe card</span><span class="time">70 min</span></div><dl><dt>You need</dt><dd>L2.04 (Vite config, <code>manualChunks</code>, fonts in <code>main.tsx</code>), L2.05 (the splash), L1.04 (static hosting and CDNs)</dd><dt>You'll produce</dt><dd>A model of what happens between "Enter" and "I can read the heading", the meaning and maths of each Lighthouse metric, the measured before/after of the session's performance fixes, a production audit, and the Level 3 checkpoint</dd></dl></div>
+    <p class="lede"><strong>In two sentences:</strong> The app is a client-rendered SPA, so the heading a student sees first can't paint until the browser has downloaded and run about 200 KB of compressed JavaScript; everything that competes with that (a third-party font stylesheet, oversized images, layout shifts) shows up directly in Lighthouse's metrics. Measuring first, the session took mobile performance from <strong>81 to 91</strong> locally with three changes, and the deployed site now scores <strong>98</strong> on mobile, for reasons this lesson separates into what the code controls and what the host does.</p>
+    
+
+
+
+
+
+
+<h2 class="objectives-h" id="objectives">By the end, without notes, you can</h2><ol class="objectives">
+<li>Draw the critical rendering path for this SPA and say which resources block first paint and which block the largest paint.</li>
+<li>Define FCP, LCP, CLS, TBT and Speed Index, state Lighthouse's throttling model, and estimate transfer times from bytes and bandwidth.</li>
+<li>Explain each of the three fixes (self-hosted font, right-sized WebP images, explicit image sizes) and its measured effect.</li>
+<li>Read cache headers and explain content-hashed, immutable assets versus revalidated public files.</li>
+<li>Name the remaining opportunities (render delay, unused JS, an off-screen image) and the code change for each.</li>
+</ol><section class="lsec" id="warm-up" aria-labelledby="warm-up-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">1</span><h2 id="warm-up-h">Warm-up: pull it from memory</h2></div><div class="warmup"><p><b>Pull it from memory first.</b> Answer aloud or on paper before you open the answers. Wrong is fine; trying is the point.</p><ol>
+<li><em class="from">L2.04</em> What does <code>manualChunks</code> do in <code>vite.config.ts</code>, and why?</li>
+<li><em class="from">L2.05</em> How long does the splash stay at minimum, and is the app rendered behind it?</li>
+<li><em class="from">L1.04</em> What does a CDN do for a static site?</li>
+</ol><details class="reveal"><summary>Check your answers<span class="rv-hint">reveal</span></summary><div class="rv-body">
+<ol>
+<li>It puts <code>@supabase</code>, <code>motion</code> and <code>react</code> into separate vendor chunks. Vendor code changes rarely, so those files keep their content hash (and cache) across app releases.</li>
+<li>650 ms on the first load of a session (capped at 4 s). Yes: <code>Shell</code> renders the routes underneath the fixed splash, which only covers them.</li>
+<li>Serves the same files from servers near each user, so the round trip is short, and caches them at the edge.</li>
+</ol>
+</div></details></div></section>
+
+
+<section class="lsec" id="the-problem-this-solves" aria-labelledby="the-problem-this-solves-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">2</span><h2 id="the-problem-this-solves-h">The problem this solves</h2></div><p>"It's fast on my laptop" measures the developer's machine: a fast CPU, a fibre connection, a warm cache. The students use mid-range phones on mobile data. Performance work without measurement optimises the wrong thing. So the order is: <strong>measure under realistic conditions, read what the measurement blames, fix that, measure again.</strong></p><figure class="fig wide" id="fig-1"><div class="fig-tools"><button class="btn ghost sm fig-zoom" type="button" aria-label="Open figure 1 full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg><span>Enlarge</span></button></div><div class="fig-frame"><svg class="dg dg-flow" id="fig-l3-05-1" viewBox="0 0 745 520" width="745" height="520" style="--w:745" role="img" aria-labelledby="fig-l3-05-1-title" xmlns="http://www.w3.org/2000/svg"><title id="fig-l3-05-1-title">Figure 1: Only CSS blocks the first paint, but the largest paint waits for the JavaScript that creates the hero. The dashed branch (the third-party font stylesheet) was removed, and that was the biggest single win.</title><defs>
+<marker id="fig-l3-05-1-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-ah" d="M0,1 L9,5 L0,9 z"></path></marker>
+<marker id="fig-l3-05-1-ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-aho" d="M1,1 L9,5 L1,9"></path></marker>
+<marker id="fig-l3-05-1-x" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path class="dg-aho" d="M1,1 L9,9 M9,1 L1,9"></path></marker>
+<marker id="fig-l3-05-1-c" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><circle class="dg-ah" cx="5" cy="5" r="4"></circle></marker>
+<marker id="fig-l3-05-1-one" viewBox="0 0 20 20" refX="19" refY="10" markerWidth="16" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M12,3 V17 M16,3 V17"></path></marker>
+<marker id="fig-l3-05-1-zone" viewBox="0 0 24 20" refX="23" refY="10" markerWidth="19" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M18,3 V17"></path><circle class="dg-hole" cx="9" cy="10" r="4"></circle></marker>
+<marker id="fig-l3-05-1-many" viewBox="0 0 24 20" refX="23" refY="10" markerWidth="19" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M23,3 L14,10 L23,17 M14,10 H23"></path><circle class="dg-hole" cx="8" cy="10" r="4"></circle></marker>
+<marker id="fig-l3-05-1-omany" viewBox="0 0 24 20" refX="23" refY="10" markerWidth="19" markerHeight="16" orient="auto-start-reverse"><path class="dg-aho" d="M23,3 L14,10 L23,17 M10,3 V17"></path></marker>
+</defs><path class="dg-e" d="M384,46 L384,102" marker-end="url(#fig-l3-05-1-a)"></path><path class="dg-e" d="M350,140 L350,153 Q350,162 341,162 L150,162 Q141,162 141,171 L141,205" marker-end="url(#fig-l3-05-1-a)"></path><path class="dg-e" d="M384,140 L384,196" marker-end="url(#fig-l3-05-1-a)"></path><path class="dg-e dg-dash" d="M418,140 L418,153 Q418,162 427,162 L592,162 Q601,162 601,171 L601,326" marker-end="url(#fig-l3-05-1-a)"></path><rect class="dg-el" x="556" y="222" width="88.3" height="22" rx="5"></rect><text class="dg-t dg-elt" x="600.2" y="233" text-anchor="middle" dominant-baseline="central">before the fix</text><path class="dg-e" d="M141,261 L141,326" marker-end="url(#fig-l3-05-1-a)"></path><path class="dg-e" d="M384,270 L384,353" marker-end="url(#fig-l3-05-1-a)"></path><path class="dg-e" d="M344,391 L344,413 Q344,422 335,422 L213,422 Q204,422 204,431 L204,456" marker-end="url(#fig-l3-05-1-a)"></path><path class="dg-e" d="M384,391 L384,456" marker-end="url(#fig-l3-05-1-a)"></path><path class="dg-e" d="M424,391 L424,413 Q424,422 433,422 L595,422 Q604,422 604,431 L604,456" marker-end="url(#fig-l3-05-1-a)"></path><g class="dg-node"><rect class="dg-n" x="353" y="8" width="62.6" height="38" rx="9"></rect><text class="dg-t" x="384.3" y="27" text-anchor="middle" dominant-baseline="central">GET /</text></g><g class="dg-node"><rect class="dg-n" x="316" y="102" width="136.4" height="38" rx="9"></rect><text class="dg-t" x="384.2" y="121" text-anchor="middle" dominant-baseline="central">index.html (2 KB)</text></g><g class="dg-node"><rect class="dg-n" x="59" y="205" width="164" height="56" rx="9"></rect><text class="dg-t" x="141" y="224" text-anchor="middle" dominant-baseline="central">index.css (9 KB gz) —</text><text class="dg-t" x="141" y="242" text-anchor="middle" dominant-baseline="central">render-blocking</text></g><g class="dg-node"><rect class="dg-n" x="267" y="196" width="234" height="74" rx="9"></rect><text class="dg-t" x="384" y="215" text-anchor="middle" dominant-baseline="central">4 module scripts ≈ 205 KB gz —</text><text class="dg-t" x="384" y="233" text-anchor="middle" dominant-baseline="central">deferred, but required to render</text><text class="dg-t" x="384" y="251" text-anchor="middle" dominant-baseline="central">anything</text></g><g class="dg-node dg-bad"><rect class="dg-n dg-bad" x="495" y="326" width="212.6" height="74" rx="9"></rect><text class="dg-t" x="601.3" y="345" text-anchor="middle" dominant-baseline="central">fonts.googleapis.com CSS —</text><text class="dg-t" x="601.3" y="363" text-anchor="middle" dominant-baseline="central">render-blocking, third-party</text><text class="dg-t" x="601.3" y="381" text-anchor="middle" dominant-baseline="central">(removed)</text></g><g class="dg-node"><rect class="dg-n" x="8" y="326" width="265.4" height="38" rx="9"></rect><text class="dg-t" x="140.7" y="345" text-anchor="middle" dominant-baseline="central">First paint: the static fallback in #root</text></g><g class="dg-node"><rect class="dg-n" x="304" y="353" width="160.3" height="38" rx="9"></rect><text class="dg-t" x="384.1" y="372" text-anchor="middle" dominant-baseline="central">React renders routes</text></g><g class="dg-node"><rect class="dg-n" x="112" y="456" width="184.7" height="38" rx="9"></rect><text class="dg-t" x="204.4" y="475" text-anchor="middle" dominant-baseline="central">latin woff2 (90 KB), swap</text></g><g class="dg-node"><rect class="dg-n" x="327" y="456" width="114" height="38" rx="9"></rect><text class="dg-t" x="384" y="475" text-anchor="middle" dominant-baseline="central">logos (WebP)</text></g><g class="dg-node"><rect class="dg-n" x="472" y="456" width="264.5" height="56" rx="9"></rect><text class="dg-t" x="604.2" y="475" text-anchor="middle" dominant-baseline="central">Largest paint: the hero h1 'Brew your</text><text class="dg-t" x="604.2" y="493" text-anchor="middle" dominant-baseline="central">exam prep.'</text></g></svg></div><figcaption><b class="fig-n">Figure 1.</b> Only CSS blocks the first paint, but the largest paint waits for the JavaScript that creates the hero. The dashed branch (the third-party font stylesheet) was removed, and that was the biggest single win.</figcaption></figure></section>
+
+
+
+
+<section class="lsec" id="concepts" aria-labelledby="concepts-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">3</span><h2 id="concepts-h">Concepts</h2></div><h3 id="3-1-the-critical-rendering-path-for-a-client-rendered-spa">3.1 The critical rendering path for a client-rendered SPA</h3><ol>
+<li><strong>HTML arrives.</strong> <code>index.html</code> holds the <code>&lt;head&gt;</code> tags and, inside <code>&lt;div id="root"&gt;</code>, a plain <strong>static fallback</strong> (a heading, a description and the list of weeks, in the system font) that is readable before any JavaScript runs and is replaced by React (L2.04). It's there for search engines and slow networks; it's usually the first contentful paint, but not the largest paint Lighthouse finally reports.</li>
+<li><strong>CSS blocks rendering.</strong> The browser won't paint until every stylesheet in <code>&lt;head&gt;</code> is loaded and parsed (otherwise it would paint unstyled content, then repaint). Vite emits one CSS file, 9 KB compressed.</li>
+<li><strong>Module scripts are deferred.</strong> <code>&lt;script type="module"&gt;</code> downloads in parallel and runs after parsing; it doesn't block the first paint, but <strong>nothing the app shows exists until it runs</strong>: React must download (72 KB), the app chunk (30 KB) must run, and only then are the splash, shell and hero created.</li>
+<li><strong>Fonts load when used.</strong> A <code>@font-face</code> file is fetched only when text using it is laid out. With <code>font-display: swap</code>, text paints immediately in the fallback font and swaps when the web font arrives.</li>
+<li><strong>Images load as <code>&lt;img&gt;</code> elements are created</strong>, including those inside <code>display: none</code> parents (they are in the DOM, so they're fetched unless <code>loading="lazy"</code>).</li>
+</ol><h3 id="3-2-the-metrics">3.2 The metrics</h3><div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>What it measures</th>
+<th>"Good" (Lighthouse/Core Web Vitals)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>FCP</strong> (First Contentful Paint)</td>
+<td>When any text or image first paints</td>
+<td>≤ 1.8 s</td>
+</tr>
+<tr>
+<td><strong>LCP</strong> (Largest Contentful Paint)</td>
+<td>When the largest text block or image in the viewport paints</td>
+<td>≤ 2.5 s</td>
+</tr>
+<tr>
+<td><strong>CLS</strong> (Cumulative Layout Shift)</td>
+<td>How much visible content jumps unexpectedly</td>
+<td>≤ 0.1</td>
+</tr>
+<tr>
+<td><strong>TBT</strong> (Total Blocking Time)</td>
+<td>Sum, over main-thread tasks longer than 50 ms, of the part beyond 50 ms, between FCP and interactive</td>
+<td>≤ 200 ms</td>
+</tr>
+<tr>
+<td><strong>Speed Index</strong></td>
+<td>How quickly the viewport visually fills in</td>
+<td>≤ 3.4 s</td>
+</tr>
+</tbody>
+</table></div><p>Lighthouse 12 weights them into the performance score: <strong>TBT 30%, LCP 25%, CLS 25%, FCP 10%, Speed Index 10%</strong>. Each metric is first mapped to 0–100 on a log-normal curve calibrated from real-world sites, so improving an already-good metric moves the score less.</p><p><strong>Lab vs field.</strong> Lighthouse is a <em>lab</em> test: one simulated load. Real users' experience (the <em>field</em>, collected by Chrome's UX Report or Vercel Speed Insights) also includes INP (Interaction to Next Paint), repeat visits with warm caches, and slower devices than the simulation.</p><h3 id="3-3-lighthouses-throttling-model">3.3 Lighthouse's throttling model</h3><p>The runs in this lesson use the default <strong>simulated</strong> throttling: Lighthouse loads the page at full speed, records the dependency graph, then <em>computes</em> how long it would take under these conditions (read from each report's <code>configSettings</code>):</p><div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th>Form factor</th>
+<th>Round-trip time</th>
+<th>Throughput</th>
+<th>CPU slowdown</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mobile</td>
+<td>150 ms</td>
+<td>1,638.4 kbps (≈ 1.6 Mbps)</td>
+<td>4×</td>
+</tr>
+<tr>
+<td>Desktop</td>
+<td>40 ms</td>
+<td>10,240 kbps</td>
+<td>1×</td>
+</tr>
+</tbody>
+</table></div><h3 id="3-4-caching-hashed-immutable-assets">3.4 Caching: hashed, immutable assets</h3><p>Vite names build outputs by content hash: <code>react-efav6phX.js</code>. If the content changes, the name changes. So these files can be cached <strong>forever</strong>: <code>vercel.json</code> sends <code>Cache-Control: public, max-age=31536000, immutable</code> for <code>/assets/*</code> (one year, and "don't even revalidate"). Files in <code>public/</code> keep their names (<code>/brand/mascot.webp</code>), so they get Vercel's default <code>public, max-age=0, must-revalidate</code>: the browser keeps a copy but asks the server each time ("has it changed?"), and gets a tiny <code>304 Not Modified</code> if not. Measured on production:</p><div class="code" id="code-1" data-lang="text"><div class="code-head"><span class="lang">Text</span><span class="file"></span><span class="sp"></span><span class="lines-n">3 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="Text code, 3 lines"><code><span class="ln" data-n="1">/assets/index-DSGj10eu.js   Cache-Control: public, max-age=31536000, immutable</span><span class="ln" data-n="2">/assets/react-efav6phX.js   Content-Encoding: br   Cache-Control: public, max-age=31536000, immutable</span><span class="ln" data-n="3">/brand/mascot.webp          Cache-Control: public, max-age=0, must-revalidate</span></code></pre><textarea class="copy-src" hidden="">/assets/index-DSGj10eu.js   Cache-Control: public, max-age=31536000, immutable
+/assets/react-efav6phX.js   Content-Encoding: br   Cache-Control: public, max-age=31536000, immutable
+/brand/mascot.webp          Cache-Control: public, max-age=0, must-revalidate</textarea></div><p><code>index.html</code> itself must never be cached long: it's the file that points at the new hashes after a deploy.</p><h3 id="3-5-fonts-subsets-unicode-range-and-swap">3.5 Fonts: subsets, <code>unicode-range</code> and <code>swap</code></h3><p><code>@fontsource-variable/archivo/wdth.css</code> declares the same family three times, for three character ranges: latin (90 KB), latin-ext (86 KB) and vietnamese (34 KB), each with a <code>unicode-range</code>. The browser downloads only the files whose range covers characters on the page. Measured: the Home page requested <strong>only the latin file</strong>. <code>font-display: swap</code> (in all three declarations) means no invisible text while the font loads.</p></section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="lsec" id="the-math" aria-labelledby="the-math-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">4</span><h2 id="the-math-h">The math</h2></div><h3 id="4-1-how-long-do-bytes-take">4.1 How long do bytes take?</h3><p>A first-order model of downloading <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span></span></span></span> bytes over a connection with round-trip time <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">RTT</span></span></span></span></span> and throughput <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span></span></span></span> (bits per second), after <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> round trips of setup:</p><div class="math-display"><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6151em;"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4445em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord text"><span class="mord">RTT</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:2.0463em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div><ul>
+<li><em>Why:</em> each setup step (DNS, TCP, TLS, the request itself) costs a round trip before data flows; then the bytes stream at the link's rate.</li>
+</ul><p>For the app's JavaScript on Lighthouse's mobile profile (<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">1</span><span class="mord"><span class="mpunct">,</span></span><span class="mord">638</span><span class="mord"><span class="mpunct">,</span></span><span class="mord">400</span></span></span></span> bit/s): about 205 KB compressed, so</p><div class="math-display"><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.2019em;vertical-align:-0.8804em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord"><span class="mpunct">,</span></span><span class="mord">638</span><span class="mord"><span class="mpunct">,</span></span><span class="mord">400</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">205</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">1024</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.03</span><span class="mord text"><span class="mord">&nbsp;s</span></span></span></span></span></span></div><p>of pure transfer before React can render, plus round trips and 4× slowed parsing and execution. That's why LCP's breakdown on the local run was <strong>TTFB 457 ms, render delay 2,656 ms (85%)</strong>: the hero heading needed no download of its own; it was waiting for the JavaScript that creates it.</p><h3 id="4-2-the-image-savings-in-bytes-and-seconds">4.2 The image savings, in bytes and seconds</h3><p>The session replaced three PNG logos with WebP files sized for their display:</p><div class="table-wrap wide wide-table" tabindex="0"><table>
+<thead>
+<tr>
+<th>Image</th>
+<th>Drawn at (CSS px)</th>
+<th>Before: PNG</th>
+<th>After: WebP (px, bytes)</th>
+<th>Saved</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Round badge (top bar, crown)</td>
+<td>34 × 34</td>
+<td>80,270 B</td>
+<td>96 × 96, 4,916 B</td>
+<td>−93.9%</td>
+</tr>
+<tr>
+<td>Hex badge (rail, account)</td>
+<td>48 × 68 / 128 × 180</td>
+<td>301,334 B</td>
+<td>256 × 360, 21,276 B</td>
+<td>−92.9%</td>
+</tr>
+<tr>
+<td>Mascot (results, account, deck done)</td>
+<td>74–120 wide</td>
+<td>106,825 B</td>
+<td>240 × 262, 16,644 B</td>
+<td>−84.4%</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+<td><strong>488,429 B</strong></td>
+<td><strong>42,836 B</strong></td>
+<td><strong>445,593 B</strong></td>
+</tr>
+</tbody>
+</table></div><p>At the mobile throughput, <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">8</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">445</span><span class="mord"><span class="mpunct">,</span></span><span class="mord">593/1</span><span class="mord"><span class="mpunct">,</span></span><span class="mord">638</span><span class="mord"><span class="mpunct">,</span></span><span class="mord">400</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2.2</span></span></span></span> s of transfer saved on a page that loads all three. (Lighthouse had flagged the 80 KB round badge specifically: 75,574 of its 80,270 bytes were wasted for a 34 px image.)</p><p><strong>Why 96 px for a 34 px image?</strong> Device pixel ratio: 34 CSS px × 3 (iPhone) ≈ 102 device px. 96 is close enough to look sharp and keeps the file tiny.</p><h3 id="4-3-layout-shift-by-formula">4.3 Layout shift, by formula</h3><p>Each unexpected shift scores</p><div class="math-display"><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord text"><span class="mord">shift</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">impact&nbsp;fraction</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord text"><span class="mord">distance&nbsp;fraction</span></span></span></span></span></span></div><ul>
+<li><strong>Impact fraction</strong>: the area of the viewport touched by the moving elements (their old and new positions combined), divided by the viewport area.</li>
+<li><strong>Distance fraction</strong>: the largest distance any of them moved, divided by the viewport's larger dimension.</li>
+</ul><p>CLS is the largest burst ("session window") of such shifts. <strong>Worked example</strong> (hypothetical, to show why <code>width</code>/<code>height</code> matter): on a 390 × 664 viewport, the account page's 128 × 180 hex badge has no size attributes and loads 300 ms late; the form below it, from y = 200 to the bottom, jumps down 180 px. Impact region: from 200 to 664, so <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1901em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">664</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">464</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.70</span></span></span></span> of the viewport. Distance: <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1901em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">664</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">180</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.27</span></span></span></span>. Shift <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4831em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.70</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.27</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord"><span class="mord mathbf">0.19</span></span></span></span></span>, which on its own fails the 0.1 threshold. With <code>width={128} height={180}</code> the browser reserves the box before the image arrives, and the shift is 0. Measured CLS after the fix: 0.002–0.013.</p></section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="lsec" id="worked-trace" aria-labelledby="worked-trace-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">5</span><h2 id="worked-trace-h">Worked trace: the measurements</h2></div><h3 id="5-1-before-and-after-the-sessions-fixes-local-production-bui">5.1 Before and after the session's fixes (local production build)</h3><p>Lighthouse 12.8.2, simulated throttling, <code>vite preview</code> of the production build:</p><div class="table-wrap wide wide-table" tabindex="0"><table>
+<thead>
+<tr>
+<th>Run</th>
+<th>Perf</th>
+<th>A11y</th>
+<th>Best pr.</th>
+<th>SEO</th>
+<th>FCP</th>
+<th>LCP</th>
+<th>CLS</th>
+<th>TBT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mobile, Home, <strong>before</strong></td>
+<td><strong>81</strong></td>
+<td>100</td>
+<td>96</td>
+<td>100</td>
+<td>3.2 s</td>
+<td>3.9 s</td>
+<td>0</td>
+<td>0 ms</td>
+</tr>
+<tr>
+<td>Mobile, Home, <strong>after</strong></td>
+<td><strong>91</strong></td>
+<td>100</td>
+<td>96</td>
+<td>100</td>
+<td>2.1 s</td>
+<td>3.2 s</td>
+<td>0.006</td>
+<td>60 ms</td>
+</tr>
+<tr>
+<td>Desktop, Home, before</td>
+<td>99</td>
+<td>100</td>
+<td>96</td>
+<td>100</td>
+<td>0.6 s</td>
+<td>0.9 s</td>
+<td>0.003</td>
+<td>0 ms</td>
+</tr>
+<tr>
+<td>Desktop, Home, after</td>
+<td>100</td>
+<td>100</td>
+<td>96</td>
+<td>100</td>
+<td>0.4 s</td>
+<td>0.6 s</td>
+<td>0.003</td>
+<td>0 ms</td>
+</tr>
+<tr>
+<td>Mobile, Home, <strong>re-run for this lesson</strong></td>
+<td>91</td>
+<td>100</td>
+<td>96</td>
+<td>100</td>
+<td>2.1 s</td>
+<td>3.1 s</td>
+<td>0.006</td>
+<td>90 ms</td>
+</tr>
+</tbody>
+</table></div><p>What Lighthouse blamed before, and the fix for each:</p><div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th>Audit (before)</th>
+<th>Detail from the report</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>render-blocking-resources</code></td>
+<td><code>fonts.googleapis.com/css2?family=Archivo…</code>, est. <strong>978 ms</strong> wasted</td>
+<td>Self-host the font with <code>@fontsource-variable/archivo/wdth.css</code> imported in <code>main.tsx</code>; remove the <code>&lt;link&gt;</code>s from <code>index.html</code></td>
+</tr>
+<tr>
+<td><code>uses-responsive-images</code></td>
+<td><code>badge-round.png</code>: 80,270 B, <strong>75,574 B wasted</strong></td>
+<td>WebP files sized for display (§4.2)</td>
+</tr>
+<tr>
+<td><code>unsized-images</code></td>
+<td>Logos without <code>width</code>/<code>height</code></td>
+<td>Explicit <code>width</code>/<code>height</code> on every <code>&lt;img&gt;</code></td>
+</tr>
+<tr>
+<td><code>label-content-name-mismatch</code></td>
+<td>The brand link's <code>aria-label="Home"</code></td>
+<td>Removed (L2.05)</td>
+</tr>
+</tbody>
+</table></div><p><strong>Why the font was the biggest win.</strong> A third-party stylesheet needs a DNS lookup, a TCP and TLS handshake to a <em>second</em> origin, then the CSS, then (for the font file) a third origin. Each is a round trip at 150 ms, and the stylesheet blocks first paint. Self-hosting moves the font onto the same origin and out of the render-blocking path, and Vite gives it a content hash so it's cached for a year.</p><h3 id="5-2-what-production-adds">5.2 What production adds</h3><p>The same Lighthouse version against the deployed site:</p><div class="table-wrap wide wide-table" tabindex="0"><table>
+<thead>
+<tr>
+<th>Run</th>
+<th>Perf</th>
+<th>A11y</th>
+<th>Best pr.</th>
+<th>SEO</th>
+<th>FCP</th>
+<th>LCP</th>
+<th>CLS</th>
+<th>TBT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mobile, <strong>production</strong></td>
+<td><strong>98</strong></td>
+<td>100</td>
+<td><strong>100</strong></td>
+<td>100</td>
+<td>1.2 s</td>
+<td>1.2 s</td>
+<td>0.006</td>
+<td>140 ms</td>
+</tr>
+</tbody>
+</table></div><ul>
+<li><strong>Best practices 96 → 100</strong>: locally, the console shows <code>404 /_vercel/insights/script.js</code> because Vercel Web Analytics only exists on Vercel; in production it loads (§7.2).</li>
+<li><strong>Faster paints</strong>: production serves over <strong>HTTP/2</strong> with <strong>Brotli</strong> compression and short CDN round trips (TTFB 228 ms in the LCP breakdown), while <code>vite preview</code> is a single local HTTP/1.1 server. These host features are the likely reasons for the gap; we didn't isolate each one, so treat local runs as a <em>relative</em> measure (before vs after the same change) and production as the real number.</li>
+</ul><h3 id="5-3-whats-left-current-report">5.3 What's left (current report)</h3><div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th>Opportunity</th>
+<th>Measured</th>
+<th>Code change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Render delay of the LCP heading</td>
+<td>85% of LCP locally</td>
+<td>Make the static fallback in <code>index.html</code> match the Home hero (same markup and classes, styled by the same CSS), so the largest paint happens before the JS runs instead of when React replaces the fallback</td>
+</tr>
+<tr>
+<td><code>unused-javascript</code></td>
+<td>~79–81 KiB, mostly <code>supabase</code> (≈ 37–49 KB unused at load) and part of <code>react</code></td>
+<td>Split routes with <code>React.lazy</code> + <code>Suspense</code>; load the Supabase client only when sign-in or sync is needed</td>
+</tr>
+<tr>
+<td><code>offscreen-images</code></td>
+<td><code>badge-hex.webp</code> (21 KB) downloaded on phones</td>
+<td>It's inside the laptop rail, which is <code>display: none</code> on phones; add <code>loading="lazy"</code> (lazy images that aren't rendered aren't fetched)</td>
+</tr>
+<tr>
+<td>Main-thread work</td>
+<td>2.6 s under 4× CPU, 1.05 s of it style and layout</td>
+<td>Fewer simultaneous entry animations on Home; <code>content-visibility: auto</code> for long lists</td>
+</tr>
+</tbody>
+</table></div></section>
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="lsec" id="running-and-testing" aria-labelledby="running-and-testing-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">6</span><h2 id="running-and-testing-h">Running and testing</h2></div><div class="code terminal" id="code-2" data-lang="bash"><div class="code-head"><span class="lang">Terminal</span><span class="file"></span><span class="sp"></span><span class="lines-n">3 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="Terminal code, 3 lines"><code><span class="ln" data-n="1"><span class="token function">npm</span> run build <span class="token operator">&amp;&amp;</span> npx vite preview <span class="token parameter variable">--port</span> <span class="token number">4174</span> <span class="token parameter variable">--host</span> <span class="token number">127.0</span>.0.1</span><span class="ln" data-n="2">npx <span class="token parameter variable">-y</span> lighthouse@12.8.2 http://127.0.0.1:4174/ <span class="token parameter variable">--quiet</span> <span class="token parameter variable">--output</span><span class="token operator">=</span>json --output-path<span class="token operator">=</span>./lh-mobile.json --chrome-flags<span class="token operator">=</span><span class="token string">"--headless=new"</span></span><span class="ln" data-n="3">npx <span class="token parameter variable">-y</span> lighthouse@12.8.2 http://127.0.0.1:4174/ <span class="token parameter variable">--preset</span><span class="token operator">=</span>desktop <span class="token parameter variable">--quiet</span> <span class="token parameter variable">--output</span><span class="token operator">=</span>html --output-path<span class="token operator">=</span>./lh-desktop.html</span></code></pre><textarea class="copy-src" hidden="">npm run build &amp;&amp; npx vite preview --port 4174 --host 127.0.0.1
+npx -y lighthouse@12.8.2 http://127.0.0.1:4174/ --quiet --output=json --output-path=./lh-mobile.json --chrome-flags="--headless=new"
+npx -y lighthouse@12.8.2 http://127.0.0.1:4174/ --preset=desktop --quiet --output=html --output-path=./lh-desktop.html</textarea></div><ul class="line-notes" data-for="code-2">
+<li class="pairable" data-lines="3" tabindex="0" role="button" aria-label="Highlight line 3 in the code above: --preset=desktop switches to the desktop throttling and screen. The default is m"><span class="pair-hint" aria-hidden="true">L3</span><strong><code>--preset=desktop</code></strong> switches to the desktop throttling and screen. The default is mobile.</li>
+<li class="pairable" data-lines="2" tabindex="0" role="button" aria-label="Highlight line 2 in the code above: --output=json is for scripts (read categories.*.score and audits[...]); html is "><span class="pair-hint" aria-hidden="true">L2</span><strong><code>--output=json</code></strong> is for scripts (read <code>categories.*.score</code> and <code>audits[...]</code>); <code>html</code> is the readable report.</li>
+<li><strong>Run each audit 3 times</strong> and take the median: simulated throttling is stable, but CPU contention on your machine still moves TBT by tens of ms.</li>
+<li><strong>What the test suite checks instead</strong>: <code>tests/e2e/http.spec.ts</code> › "hashed assets are cached forever, HTML is not" asserts, against production (<code>BASE_URL=https://…</code>), that the hashed <code>index-*.js</code> has <code>immutable</code> and <code>/</code> doesn't; "search &amp; sharing files are served correctly" checks that every logo and icon is served with an image content type (<a href="l4-03-playwright-foundations.html">L4.03</a>). Lighthouse itself isn't in CI here (<a href="l4-07-a11y-lighthouse-flaky.html">L4.07</a> explains how it was run and read).</li>
+</ul></section>
+
+
+<section class="lsec" id="bug-journal" aria-labelledby="bug-journal-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">7</span><h2 id="bug-journal-h">Bug journal</h2></div><article class="incident" id="incident-1"><div class="incident-head"><span class="no">Incident ticket · #01</span><h3 id="mobile-performance-81">Mobile performance 81</h3></div><span class="incident-stamp ">Fixed</span><ol class="incident-fields"><li class="f-symptom"><span class="k">Symptom</span><div class="v">The first audit of the production build:<div class="code" id="code-3" data-lang="text"><div class="code-head"><span class="lang">Text</span><span class="file"></span><span class="sp"></span><span class="lines-n">3 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="Text code, 3 lines"><code><span class="ln" data-n="1">mobile-home     perf=81 acce=100 best=96 seo=100 | FCP 3.2 s LCP 3.9 s CLS 0 TBT 0 ms</span><span class="ln" data-n="2">   needs work: first-contentful-paint, largest-contentful-paint, speed-index, …,</span><span class="ln" data-n="3">               render-blocking-resources, unused-javascript, modern-image-formats, uses-responsive-images</span></code></pre><textarea class="copy-src" hidden="">mobile-home     perf=81 acce=100 best=96 seo=100 | FCP 3.2 s LCP 3.9 s CLS 0 TBT 0 ms
+   needs work: first-contentful-paint, largest-contentful-paint, speed-index, …,
+               render-blocking-resources, unused-javascript, modern-image-formats, uses-responsive-images</textarea></div></div></li><li class="f-diagnosis"><span class="k">Diagnosis</span><div class="v">TBT was 0, so the main thread wasn't the problem; the paints were late. The report's details named the culprits: the Google Fonts stylesheet blocking render (978 ms estimated), and the 80 KB round badge drawn at 34 px. LCP's element was the hero heading, text, so no image was the LCP itself; the delays came from what loaded before it.</div></li><li class="f-root"><span class="k">Root cause</span><div class="v">Two defaults of "getting it working": fonts linked from a third-party CDN (one more origin in the critical path) and logos used straight from the designer's export (large PNGs with transparency, no size attributes).</div></li><li class="f-fix"><span class="k">Fix</span><div class="v"><div class="code" id="code-4" data-lang="diff"><div class="code-head"><span class="lang">Diff</span><span class="file"></span><span class="sp"></span><span class="lines-n">3 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="Diff code, 3 lines"><code><span class="ln" data-n="1">// src/main.tsx</span><span class="ln add" data-n="2">import "@fontsource-variable/archivo/wdth.css";   // self-hosted, same origin, hashed, swap</span><span class="ln" data-n="3">import "./styles.css";</span></code></pre><textarea class="copy-src" hidden="">// src/main.tsx
+import "@fontsource-variable/archivo/wdth.css";   // self-hosted, same origin, hashed, swap
+import "./styles.css";</textarea></div>
+<div class="code" id="code-5" data-lang="diff"><div class="code-head"><span class="lang">Diff</span><span class="file"></span><span class="sp"></span><span class="lines-n">4 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="Diff code, 4 lines"><code><span class="ln" data-n="1">&lt;!-- index.html --&gt;</span><span class="ln del" data-n="2">&lt;link rel="preconnect" href="https://fonts.googleapis.com" /&gt;</span><span class="ln del" data-n="3">&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /&gt;</span><span class="ln del" data-n="4">&lt;link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&amp;display=swap" rel="stylesheet" /&gt;</span></code></pre><textarea class="copy-src" hidden="">&lt;!-- index.html --&gt;</textarea></div>
+<div class="code" id="code-6" data-lang="diff"><div class="code-head"><span class="lang">Diff</span><span class="file"></span><span class="sp"></span><span class="lines-n">2 lines</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="Diff code, 2 lines"><code><span class="ln del" data-n="1">&lt;motion.img src="/brand/badge-round.png" alt="" … /&gt;</span><span class="ln add" data-n="2">&lt;motion.img src="/brand/badge-round.webp" width={34} height={34} alt="" … /&gt;</span></code></pre><textarea class="copy-src" hidden="">&lt;motion.img src="/brand/badge-round.webp" width={34} height={34} alt="" … /&gt;</textarea></div>
+and the token <code>--font: "Archivo Variable", "Archivo", system-ui, …</code>. Result: <strong>81 → 91</strong> mobile, <strong>99 → 100</strong> desktop.</div></li><li class="f-lesson"><span class="k">Lesson</span><div class="v">Measure on the <em>mobile</em> profile, read the report's details (not only the score), and fix in order of estimated savings. Keep the first-paint path on your own origin.</div></li></ol></article><article class="incident" id="incident-2"><div class="incident-head"><span class="no">Incident ticket · #02</span><h3 id="known-failure-mode-a-404-you-shouldnt-fix">Known failure mode · A 404 you shouldn't fix</h3></div><span class="incident-stamp ">Fixed</span><ol class="incident-fields"><li class="f-symptom"><span class="k">Symptom</span><div class="v">Best practices stays at 96 locally: <code>errors-in-console: Failed to load resource: the server responded with a status of 404 (Not Found)</code>.</div></li><li class="f-diagnosis"><span class="k">Diagnosis</span><div class="v">The network list shows the request: <code>404 /_vercel/insights/script.js</code>. That path is served by Vercel's edge when Web Analytics is enabled for the project; <code>vite preview</code> doesn't have it.</div></li><li class="f-root"><span class="k">Root cause</span><div class="v">An environment difference, not a bug. In production the same request returns 200 (and <code>/_vercel/insights/view</code> records the page view), and best practices is 100.</div></li><li class="f-fix"><span class="k">Fix</span><div class="v">None in code. Optionally, render <code>&lt;Analytics /&gt;</code> only when <code>import.meta.env.PROD</code> <em>and</em> on a Vercel host, to keep local consoles clean.</div></li><li class="f-lesson"><span class="k">Lesson</span><div class="v">Before fixing an audit, check whether it describes your code or your test environment. Compare with production.</div></li></ol></article></section>
+
+
+
+
+<section class="lsec" id="why-this-design" aria-labelledby="why-this-design-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">8</span><h2 id="why-this-design-h">Why this design</h2></div><div class="table-wrap wide wide-table" tabindex="0"><table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Alternatives</th>
+<th>Why this one</th>
+<th>Trade-off</th>
+<th>Choose differently when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Client-side rendered SPA (Vite + React)</td>
+<td>Static pre-rendering (SSG); server rendering (Next.js)</td>
+<td>Simplest hosting; the app is interactive throughout</td>
+<td>LCP waits for JS (§4.1)</td>
+<td>Content-heavy or SEO-critical first paint → SSG for the landing page</td>
+</tr>
+<tr>
+<td>Vendor <code>manualChunks</code></td>
+<td>One bundle; automatic splitting</td>
+<td>Long cache life for rarely changing libraries</td>
+<td>All four chunks load on every page</td>
+<td>Many routes with heavy, separate dependencies → route-level <code>lazy</code></td>
+</tr>
+<tr>
+<td>Self-hosted variable font</td>
+<td>Google Fonts; system fonts only</td>
+<td>Same origin, cached, one file for all weights and widths</td>
+<td>90 KB for latin</td>
+<td>Every kilobyte matters → system font stack</td>
+</tr>
+<tr>
+<td>WebP at ~3× display size</td>
+<td>PNG; SVG; AVIF; <code>srcset</code></td>
+<td>Tiny, sharp on 3× screens, wide support</td>
+<td>One size for all screens</td>
+<td>Large photos → <code>srcset</code> + AVIF</td>
+</tr>
+<tr>
+<td>Immutable hashed assets, revalidated public files</td>
+<td>Short cache for everything; hash public files too</td>
+<td>Safe and fast; deploys take effect immediately</td>
+<td>Public images revalidate each visit (a 304)</td>
+<td>Many public images → move them into <code>src</code> so Vite hashes them</td>
+</tr>
+</tbody>
+</table></div></section>
+
+<section class="lsec" id="check-yourself" aria-labelledby="check-yourself-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">9</span><h2 id="check-yourself-h">Check yourself</h2></div><p class="quiz-intro">Answer each one before you look. Multiple-choice questions mark your pick and let you try again; for open questions, answer aloud, then reveal and grade yourself honestly.</p><div class="quiz free" data-quiz="l3-05:q1"><div class="quiz-q"><span class="qn">Q1</span><div class="qt">TBT is 0 ms but LCP is 3.9 s. Where do you look first, the JavaScript execution profile or the network waterfall?</div></div>
+<div class="quiz-actions"><button type="button" class="btn sm" data-reveal="" aria-expanded="false">Reveal the answer</button><span class="self" hidden="">Did you have it? <button type="button" class="btn sm" data-self="good">Yes</button><button type="button" class="btn sm" data-self="bad">Not yet</button></span></div>
+<div class="quiz-answer" hidden="">The network waterfall and render-blocking resources. TBT 0 means no long main-thread tasks; the time is going into waiting for resources (here, a third-party font stylesheet and JS downloads).</div></div><div class="quiz free" data-quiz="l3-05:q2"><div class="quiz-q"><span class="qn">Q2</span><div class="qt">Why may a file named <code>react-efav6phX.js</code> be cached for a year, but <code>index.html</code> must not?</div></div>
+<div class="quiz-actions"><button type="button" class="btn sm" data-reveal="" aria-expanded="false">Reveal the answer</button><span class="self" hidden="">Did you have it? <button type="button" class="btn sm" data-self="good">Yes</button><button type="button" class="btn sm" data-self="bad">Not yet</button></span></div>
+<div class="quiz-answer" hidden="">The hashed name changes whenever its content changes, so a cached copy is never stale. <code>index.html</code> keeps its name and holds the references to the current hashes; caching it would keep users on an old release.</div></div><div class="quiz free" data-quiz="l3-05:q3"><div class="quiz-q"><span class="qn">Q3</span><div class="qt">Predict: you add <code>loading="lazy"</code> to the rail's hex badge. On a phone, is it downloaded?</div></div>
+<div class="quiz-actions"><button type="button" class="btn sm" data-reveal="" aria-expanded="false">Reveal the answer</button><span class="self" hidden="">Did you have it? <button type="button" class="btn sm" data-self="good">Yes</button><button type="button" class="btn sm" data-self="bad">Not yet</button></span></div>
+<div class="quiz-answer" hidden="">No. Lazy images load when they are near the viewport, and an image inside a <code>display: none</code> parent never is. On laptops, where the rail is visible, it loads as normal.</div></div><div class="quiz free" data-quiz="l3-05:q4"><div class="quiz-q"><span class="qn">Q4</span><div class="qt">An element 300 px tall moves down 100 px in an 800 px viewport; it was at y = 100. Compute the layout shift score (assume full width).</div></div>
+<div class="quiz-actions"><button type="button" class="btn sm" data-reveal="" aria-expanded="false">Reveal the answer</button><span class="self" hidden="">Did you have it? <button type="button" class="btn sm" data-self="good">Yes</button><button type="button" class="btn sm" data-self="bad">Not yet</button></span></div>
+<div class="quiz-answer" hidden="">Its old and new positions span y = 100 to 500: impact fraction <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1901em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">800</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">400</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.5</span></span></span></span>. Distance fraction <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1901em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">800</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">100</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.125</span></span></span></span>. Score <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.5</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.125</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord"><span class="mord mathbf">0.0625</span></span></span></span></span>.</div></div><div class="quiz free" data-quiz="l3-05:q5"><div class="quiz-q"><span class="qn">Q5</span><div class="qt">At 1.6 Mbps, how long does the 90 KB latin font file take to transfer (ignoring round trips)?</div></div>
+<div class="quiz-actions"><button type="button" class="btn sm" data-reveal="" aria-expanded="false">Reveal the answer</button><span class="self" hidden="">Did you have it? <button type="button" class="btn sm" data-self="good">Yes</button><button type="button" class="btn sm" data-self="bad">Not yet</button></span></div>
+<div class="quiz-answer" hidden=""><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.2019em;vertical-align:-0.8804em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord"><span class="mpunct">,</span></span><span class="mord">638</span><span class="mord"><span class="mpunct">,</span></span><span class="mord">400</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">90</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">1024</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord"><span class="mord mathbf">0.45</span></span></span></span></span> s. With <code>font-display: swap</code> the text is readable before it arrives.</div></div><div class="quiz free" data-quiz="l3-05:q6"><div class="quiz-q"><span class="qn">Q6</span><div class="qt">The local mobile run says 91, production says 98, with the same code. Which number do you report, and what are local runs good for?</div></div>
+<div class="quiz-actions"><button type="button" class="btn sm" data-reveal="" aria-expanded="false">Reveal the answer</button><span class="self" hidden="">Did you have it? <button type="button" class="btn sm" data-self="good">Yes</button><button type="button" class="btn sm" data-self="bad">Not yet</button></span></div>
+<div class="quiz-answer" hidden="">Report production (it's what users get, with HTTP/2, Brotli and CDN). Local runs are for <i>comparing</i> a change against the previous build under identical conditions.</div></div><div class="quiz-score"><span>Right so far: <strong class="qs-right">0</strong> of <strong>6</strong></span><button type="button" class="btn sm ghost" data-quiz-reset="">Reset these questions</button></div></section>
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="lsec" id="practice" aria-labelledby="practice-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">10</span><h2 id="practice-h">Practice</h2></div><div class="practice"><div class="practice-head"><span class="level-chip easy">Easy</span><span class="mins">10 min</span></div><p> Add <code>loading="lazy"</code> to the rail's hex badge in <code>App.tsx</code>, rebuild, and confirm with Lighthouse (mobile) that <code>offscreen-images</code> no longer lists it.</p></div><div class="practice"><div class="practice-head"><span class="level-chip medium">Medium</span><span class="mins">20 min</span></div><p> Lazy-load the five pages with <code>React.lazy(() =&gt; import("./pages/Study"))</code> and a <code>Suspense</code> fallback of <code>&lt;Loader /&gt;</code>. Rebuild and compare the <code>index-*.js</code> chunk size and Lighthouse's <code>unused-javascript</code>.
+<strong>Done when</strong> each page is its own chunk and all UI tests still pass (they wait for content, so they should).</p><details class="reveal"><summary>Watch out<span class="rv-hint">reveal</span></summary><div class="rv-body">The page transition's <code>AnimatePresence</code> wraps the routes; a lazy page suspends on first visit, so the fallback appears inside the animated <code>main</code>. Test that the slide still looks right on a slow connection (DevTools → Network → Slow 4G).</div></details></div><div class="practice"><div class="practice-head"><span class="level-chip hard">Hard</span><span class="mins">40 min</span></div><p> Pre-render the Home hero: today <code>&lt;div id="root"&gt;</code> in <code>index.html</code> holds a plain system-font fallback (heading, description, week list). Replace it with the hero's static HTML (<code>section.hero</code> with its heading, paragraph and button) using the same classes, so it's styled by the real CSS and paints before JavaScript; React's <code>createRoot</code> replaces it when it renders. Keep the week list for search engines (for example below the hero).
+<strong>Done when</strong> Lighthouse mobile shows LCP render delay well under 50% of LCP and CLS stays ≤ 0.01.</p><details class="reveal"><summary>Key insight<span class="rv-hint">reveal</span></summary><div class="rv-body">The pre-rendered hero must occupy exactly the same box as React's, or the swap is a layout shift. Match the markup, and don't pre-render anything personalised (the greeting with the user's name).</div></details></div></section>
+
+
+
+
+
+<section class="lsec" id="from-memory" aria-labelledby="from-memory-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">11</span><h2 id="from-memory-h">From memory</h2></div><p class="rung"><span class="rn">Rung 1</span>Cloze</p><div class="cloze wide" data-cloze="l3-05:cloze1"><div class="math-display"><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6151em;"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4445em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord text"><span class="mord">RTT</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:2.0993em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.4133em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.73em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><input class="cloze-in" data-n="1" data-answer="8" size="3" aria-label="Blank ①" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div><div class="math-display"><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord text"><span class="mord">shift</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">impact&nbsp;fraction</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0344em;vertical-align:-0.34em;"></span><input class="cloze-in" data-n="2" data-answer="distance" size="9" aria-label="Blank ②" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="mspace">&nbsp;</span><span class="mord text"><span class="mord">fraction</span></span></span></span></span></span></div><p>Lighthouse weights: TBT <input class="cloze-in" data-n="3" data-answer="30" size="3" aria-label="Blank ③" autocomplete="off" autocapitalize="off" spellcheck="false"> %, LCP 25 %, CLS <input class="cloze-in" data-n="4" data-answer="25" size="3" aria-label="Blank ④" autocomplete="off" autocapitalize="off" spellcheck="false"> %, FCP 10 %, SI 10 %. Mobile throttling: RTT <input class="cloze-in" data-n="5" data-answer="150" size="4" aria-label="Blank ⑤" autocomplete="off" autocapitalize="off" spellcheck="false"> ms, ≈ 1.6 Mbps, CPU <input class="cloze-in" data-n="6" data-answer="4" size="3" aria-label="Blank ⑥" autocomplete="off" autocapitalize="off" spellcheck="false">×. Good LCP ≤ <input class="cloze-in" data-n="7" data-answer="2.5" size="4" aria-label="Blank ⑦" autocomplete="off" autocapitalize="off" spellcheck="false"> s; good CLS ≤ <input class="cloze-in" data-n="8" data-answer="0.1" size="4" aria-label="Blank ⑧" autocomplete="off" autocapitalize="off" spellcheck="false">.</p><div class="code" id="code-7" data-lang="json"><div class="code-head"><span class="lang">JSON</span><span class="file"></span><span class="sp"></span><span class="lines-n">1 line</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div><pre tabindex="0" aria-label="JSON code, 1 lines"><code><span class="ln" data-n="1"><span class="token punctuation">{</span> <span class="token property">"source"</span><span class="token operator">:</span> <span class="token string">"/assets/(.*)"</span><span class="token punctuation">,</span> <span class="token property">"headers"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> <span class="token property">"key"</span><span class="token operator">:</span> <span class="token string">"Cache-Control"</span><span class="token punctuation">,</span> <span class="token property">"value"</span><span class="token operator">:</span> <span class="token string">"public, max-age=<input class="cloze-in" data-n="9" data-answer="31536000" size="9" aria-label="Blank ⑨" autocomplete="off" autocapitalize="off" spellcheck="false">, <input class="cloze-in" data-n="10" data-answer="immutable" size="10" aria-label="Blank ⑩" autocomplete="off" autocapitalize="off" spellcheck="false">"</span> <span class="token punctuation">}</span><span class="token punctuation">]</span> <span class="token punctuation">}</span></span></code></pre><textarea class="copy-src" hidden="">{ "source": "/assets/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=&lt;input class="cloze-in" data-n="9" data-answer="31536000" size="9" aria-label="Blank ⑨" autocomplete="off" autocapitalize="off" spellcheck="false"&gt;, &lt;input class="cloze-in" data-n="10" data-answer="immutable" size="10" aria-label="Blank ⑩" autocomplete="off" autocapitalize="off" spellcheck="false"&gt;" }] }</textarea></div><div class="cloze-bar"><button type="button" class="btn sm primary" data-cz="check">Check</button><button type="button" class="btn sm" data-cz="show">Show answers</button><button type="button" class="btn sm ghost" data-cz="clear">Clear</button><span class="score" aria-live="polite"></span></div><p class="cloze-legend">Fill every blank from memory; <kbd>Tab</kbd> moves to the next. Spacing and capitals don’t matter.</p></div><details class="reveal cloze-answers"><summary>Answers<span class="rv-hint">reveal</span></summary><div class="rv-body">① 8 ② distance ③ 30 ④ 25 ⑤ 150 ⑥ 4 ⑦ 2.5 ⑧ 0.1 ⑨ <code>31536000</code> ⑩ <code>immutable</code></div></details><p class="rung"><span class="rn">Rung 2</span>Blank page (15 min). No scrolling up</p><div class="drill" data-drill="l3-05:drill1"><div class="drill-task"><span class="drill-rule">No scrolling up</span><p>Draw the critical rendering path of this app, mark what blocks FCP and what delays LCP, then list the three fixes with their measured effect and the three remaining opportunities with their code changes.</p></div><label class="visually-hidden" for="l3-05-drill1">Your blank page</label><textarea id="l3-05-drill1" spellcheck="false" placeholder="Write it here from memory…"></textarea><div class="drill-bar"><button type="button" class="btn sm ghost" data-drill-clear="">Clear and retry</button><span class="saved" aria-live="polite">Saved on this device as you type</span></div><div class="selfcheck"><details class="reveal"><summary>Done? Compare with the self-check list<span class="rv-hint">reveal</span></summary><div class="rv-body">
+<ul class="checklist" data-list="l3-05:c1"><li><label><input type="checkbox" data-check="l3-05:c1:0"><span>CSS blocks first paint; module scripts are deferred but create all content; fonts load on use with swap; images load when <code>&lt;img&gt;</code> exists (even under <code>display: none</code>)</span></label></li><li><label><input type="checkbox" data-check="l3-05:c1:1"><span>LCP = the hero heading; its delay is mostly JS (render delay 85%)</span></label></li><li><label><input type="checkbox" data-check="l3-05:c1:2"><span>Fixes: self-hosted font (978 ms render-blocking removed), WebP at display size (445,593 B saved), <code>width</code>/<code>height</code> on images; 81 → 91 mobile</span></label></li><li><label><input type="checkbox" data-check="l3-05:c1:3"><span>Remaining: pre-render the hero; lazy routes / lazy Supabase; <code>loading="lazy"</code> on the rail badge</span></label></li><li><label><input type="checkbox" data-check="l3-05:c1:4"><span>Production 98: HTTP/2, Brotli, CDN, analytics script present</span></label></li></ul>
+</div></details></div></div></section>
+
+
+
+
+
+
+
+
+
+<section class="lsec" id="checkpoint" aria-labelledby="checkpoint-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">12</span><h2 id="checkpoint-h">Level 3 checkpoint</h2></div><h3 id="12-1-mixed-quiz-interleaved-across-l3-01-l3-05">12.1 Mixed quiz (interleaved across L3.01–L3.05)</h3><p><strong>C1.</strong> <em>(L3.01)</em> A student calls <code>rpc("submit_test")</code> with their own attempt and all correct answers 50 ms after <code>start_test</code>. Which checks pass, and what does the server <em>not</em> know?</p><details class="reveal"><summary>Answer<span class="rv-hint">reveal</span></summary><div class="rv-body">All checks pass: own attempt, not submitted, not expired, right length; the score is computed by the server and the time is server-measured (≈ 50 ms). The server doesn't know whether a human answered; the answer key is public study material. The proposed fix is a minimum-duration rule.</div></details><p><strong>C2.</strong> <em>(L3.02)</em> Three players finish with 95 in 20:00, 95 in 20:00 and 94 in 15:00. What are their ranks?</p><details class="reveal"><summary>Answer<span class="rv-hint">reveal</span></summary><div class="rv-body">1, 1, 3. Score comes first, so the 94 is behind both 95s regardless of time; the two identical results share first place.</div></details><p><strong>C3.</strong> <em>(L3.03)</em> A Playwright swipe with <code>steps: 12</code> passes in Chromium and does nothing in WebKit. What's the mechanism?</p><details class="reveal"><summary>Answer<span class="rv-hint">reveal</span></summary><div class="rv-body">All moves and the pointerup landed before an animation frame. Motion starts a drag only in its frame callback, so <code>startEvent</code> was null and <code>onDragEnd</code> was skipped. Space the moves out (16 ms apart).</div></details><p><strong>C4.</strong> <em>(L3.04)</em> Tab labels pass contrast on the cream page but fail on some phones. Why, and how was the background colour axe reported explained?</p><details class="reveal"><summary>Answer<span class="rv-hint">reveal</span></summary><div class="rv-body">The tab bar was 86% opaque, and on those layouts the dark hero card scrolled under it. Solving the compositing equation for <code>#dfdcd8</code> gives a behind colour of ≈ <code>#1a110d</code>, the hero. Fix: 95% opacity and a darker <code>--tab-ink</code>.</div></details><p><strong>C5.</strong> <em>(L3.05)</em> Lighthouse shows TBT 0 ms and LCP 3.9 s on mobile. Name the two biggest causes found in the session.</p><details class="reveal"><summary>Answer<span class="rv-hint">reveal</span></summary><div class="rv-body">The render-blocking third-party Google Fonts stylesheet (≈ 978 ms) and oversized PNG logos (an 80 KB image drawn at 34 px), together with the general cost of client-side rendering.</div></details><p><strong>C6.</strong> <em>(L3.02 + L3.05)</em> <code>get_my_stats</code> takes 75 ms on 10,000 attempts. What's the fix, and what did it measure?</p><details class="reveal"><summary>Answer<span class="rv-hint">reveal</span></summary><div class="rv-body">Compute <code>get_leaderboard</code> once in a CTE instead of four times: same JSON, 22 ms.</div></details><h3 id="12-2-explain-a-trade-off-and-an-edge-case-25-min-written">12.2 Explain a trade-off and an edge case (25 min, written)</h3><p>Pick <strong>one</strong> trade-off and <strong>one</strong> edge case below and write a half-page explanation for a peer, with numbers.</p><p><strong>Trade-offs:</strong> (a) shipping the answer key to the browser for offline flashcards vs keeping the ranked test fair; (b) <code>distinct on</code> + <code>rank()</code> computed per call vs a maintained <code>best_attempts</code> table; (c) <code>dvh</code> vs <code>svh</code> for the deck; (d) a client-rendered SPA vs pre-rendering the landing page.</p><p><strong>Edge cases:</strong> (e) a question deleted between <code>start_test</code> and <code>submit_test</code>; (f) a flip spring with damping 5; (g) a translucent bar over dark content; (h) a synthetic swipe faster than one frame.</p><details class="reveal"><summary>Rubric (self-grade)<span class="rv-hint">reveal</span></summary><div class="rv-body">
+<ul class="checklist" data-list="l3-05:c2"><li><label><input type="checkbox" data-check="l3-05:c2:0"><span>States the two options and what each optimises</span></label></li><li><label><input type="checkbox" data-check="l3-05:c2:1"><span>Gives at least one concrete number from the series (ms, KB, ratio, probability, ζ)</span></label></li><li><label><input type="checkbox" data-check="l3-05:c2:2"><span>Names who is affected and when the choice would flip</span></label></li><li><label><input type="checkbox" data-check="l3-05:c2:3"><span>For the edge case: the exact mechanism, the visible symptom, the fix, and the test that would catch it</span></label></li><li><label><input type="checkbox" data-check="l3-05:c2:4"><span>Uses no term without defining it for the reader</span></label></li></ul>
+</div></details></section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="lsec" id="flashcards" aria-labelledby="flashcards-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">13</span><h2 id="flashcards-h">Flashcards</h2></div><div class="deck" data-deck="deck-l3-05"><div class="deck-ui"></div><details class="reveal deck-list"><summary>See all 12 cards as a list<span class="rv-hint">for a quick scan</span></summary><div class="rv-body"><ol class="deck-src"><li data-card="ox3vsc"><div class="q">What blocks first paint in this app?</div><div class="a">The CSS (and, before the fix, the third-party font stylesheet). Module scripts are deferred.</div></li><li data-card="p60uz7"><div class="q">Why does LCP wait for JavaScript here?</div><div class="a">It's client-rendered: the hero heading doesn't exist until React runs.</div></li><li data-card="o6gau"><div class="q">Lighthouse 12 weights?</div><div class="a">TBT 30, LCP 25, CLS 25, FCP 10, Speed Index 10.</div></li><li data-card="dxrrso"><div class="q">Mobile throttling settings?</div><div class="a">150 ms RTT, ≈ 1.6 Mbps, 4× CPU slowdown (simulated).</div></li><li data-card="p5d632"><div class="q">Transfer-time model?</div><div class="a"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6151em;"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4445em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord text"><span class="mord">RTT</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:2.0463em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></div></li><li data-card="g4axe6"><div class="q">Layout shift formula?</div><div class="a">impact fraction <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord">×</span></span></span></span> distance fraction; CLS is the worst burst.</div></li><li data-card="jludo7"><div class="q">Why can hashed assets be <code>immutable</code>?</div><div class="a">New content means a new file name, so a cached copy is never stale.</div></li><li data-card="evsu1y"><div class="q">What does <code>unicode-range</code> do for fonts?</div><div class="a">The browser downloads only the subsets whose characters appear on the page (here, only latin).</div></li><li data-card="1ebbqeq"><div class="q">Why did self-hosting the font help so much?</div><div class="a">It removed a render-blocking request to a third-party origin (DNS + TLS + CSS + font on extra origins).</div></li><li data-card="kx19jp"><div class="q">Why give images <code>width</code> and <code>height</code>?</div><div class="a">The browser reserves their box, so nothing shifts when they load.</div></li><li data-card="18phxmt"><div class="q">Is an image in a <code>display: none</code> parent downloaded?</div><div class="a">Yes, unless it has <code>loading="lazy"</code>.</div></li><li data-card="m1ije1"><div class="q">Why does best practices show 96 locally but 100 in production?</div><div class="a">Locally <code>/_vercel/insights/script.js</code> is a 404; Vercel serves it in production.</div></li></ol></div></details></div></section>
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="lsec menu-board-sec" id="the-menu-board" aria-labelledby="the-menu-board-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">14</span><h2 id="the-menu-board-h">The menu board</h2></div><div class="board wide"><p class="board-title">The menu board</p><p class="board-sub">Everything on one screen</p><div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Path</td>
+<td>HTML → CSS (blocks paint) → module JS (deferred, creates everything) → font on use (swap) → images</td>
+</tr>
+<tr>
+<td>Metrics</td>
+<td>FCP ≤ 1.8 · LCP ≤ 2.5 · CLS ≤ 0.1 · TBT ≤ 200 ms · SI ≤ 3.4 · weights 30/25/25/10/10</td>
+</tr>
+<tr>
+<td>Throttling</td>
+<td>mobile 150 ms · 1.6 Mbps · 4× CPU; desktop 40 ms · 10 Mbps · 1×</td>
+</tr>
+<tr>
+<td>Bytes</td>
+<td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6151em;"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4445em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord text"><span class="mord">RTT</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">8</span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mord">/</span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span></span></span></span>; 205 KB JS ≈ 1 s at 1.6 Mbps</td>
+</tr>
+<tr>
+<td>Fixes</td>
+<td>self-host font · WebP at ~3× display · width/height → 81 → 91 (local mobile), 98 production</td>
+</tr>
+<tr>
+<td>Images</td>
+<td>488,429 → 42,836 B; round badge 80 KB → 4.9 KB</td>
+</tr>
+<tr>
+<td>Cache</td>
+<td><code>/assets/*</code> 1 year immutable; public files revalidate (304); <code>index.html</code> never long-cached</td>
+</tr>
+<tr>
+<td>Left</td>
+<td>pre-render hero · lazy routes / Supabase · lazy rail badge · fewer simultaneous animations</td>
+</tr>
+</tbody>
+</table></div></div></section>
+
+<section class="lsec" id="glossary" aria-labelledby="glossary-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">15</span><h2 id="glossary-h">Glossary</h2></div><dl class="glossary wide"><div class="term"><dt>Brotli</dt><dd>a compression format, usually smaller than gzip for text.</dd></div><div class="term"><dt>CDN</dt><dd>servers near users that cache and deliver files.</dd></div><div class="term"><dt>Client-side rendering</dt><dd>the browser builds the page with JavaScript.</dd></div><div class="term"><dt>Content hash</dt><dd>a short fingerprint of a file's bytes, used in its name.</dd></div><div class="term"><dt>Critical rendering path</dt><dd>the steps and resources needed before content can paint.</dd></div><div class="term"><dt>Field data</dt><dd>measurements from real users.</dd></div><div class="term"><dt>HTTP/2</dt><dd>a protocol version that multiplexes many requests over one connection.</dd></div><div class="term"><dt>Lab data</dt><dd>measurements from a controlled test run.</dd></div><div class="term"><dt>Log-normal scoring</dt><dd>Lighthouse's curve from a metric value to a 0–100 score.</dd></div><div class="term"><dt>Pre-rendering</dt><dd>generating a page's HTML ahead of time.</dd></div><div class="term"><dt>Render-blocking</dt><dd>a resource the browser must load before painting.</dd></div><div class="term"><dt>Revalidation</dt><dd>asking the server whether a cached file changed (answered with 304).</dd></div><div class="term"><dt>TTFB</dt><dd>time to first byte of the response.</dd></div><div class="term"><dt><code>unicode-range</code></dt><dd>a <code>@font-face</code> descriptor naming which characters a font file covers.</dd></div></dl></section>
+
+<section class="lsec" id="go-further" aria-labelledby="go-further-h"><div class="sec-h"><span class="sec-n" aria-hidden="true">16</span><h2 id="go-further-h">Go further</h2></div><ul class="resources"><li><span class="r-title"><a href="https://web.dev/articles/lcp" rel="noopener">web.dev: Largest Contentful Paint</a></span><span class="r-type">Article</span><span class="r-why">What counts as LCP and its sub-parts</span><span class="r-meta">Read: "What elements are considered", "How to improve" · 20 min</span></li><li><span class="r-title"><a href="https://web.dev/articles/cls" rel="noopener">web.dev: Cumulative Layout Shift</a></span><span class="r-type">Article</span><span class="r-why">The shift formula and session windows</span><span class="r-meta">Read: "Layout shift score" · 15 min</span></li><li><span class="r-title"><a href="https://developer.chrome.com/docs/lighthouse/performance/performance-scoring" rel="noopener">Chrome developers: Lighthouse performance scoring</a></span><span class="r-type">Docs</span><span class="r-why">Metric weights and the scoring curves</span><span class="r-meta">Read: "Weightings", "How metric scores are determined" · 10 min</span></li><li><span class="r-title"><a href="https://web.dev/learn/performance/optimize-web-fonts" rel="noopener">web.dev: Optimize web fonts</a></span><span class="r-type">Course</span><span class="r-why">Self-hosting, subsetting, <code>font-display</code></span><span class="r-meta">Read: Whole module · 25 min</span></li><li><span class="r-title"><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching" rel="noopener">MDN: HTTP caching</a></span><span class="r-type">Docs</span><span class="r-why"><code>max-age</code>, <code>immutable</code>, revalidation</span><span class="r-meta">Read: "Fresh and stale", "Cache busting" · 20 min</span></li><li><span class="r-title"><a href="https://vite.dev/guide/build" rel="noopener">Vite: Building for production</a></span><span class="r-type">Docs</span><span class="r-why">Hashing, chunking and <code>manualChunks</code></span><span class="r-meta">Read: "Chunking strategy" · 10 min</span></li></ul></section>
+
+
+
+
+    <div class="complete-box"><div class="txt"><strong>Finished L3.05?</strong><span>Mark it complete once you have done its blank-page drill. The hub, the menu and the plan all update.</span></div><button class="btn primary complete" type="button" data-complete="l3-05" aria-pressed="false">Mark lesson complete</button></div>
+  </main>
+</div>
+<nav class="pager" aria-label="Lesson pager"><a class="prev" href="l3-04-viewports-contrast.html"><span class="dir">← Previous</span><span class="t">L3.04 Viewports, contrast and accessibility</span></a><a class="next" href="l3-06-oauth-pkce-504.html"><span class="dir">Next →</span><span class="t"><span>L3.06</span> OAuth, PKCE, and why sign-up timed out</span></a></nav>
+<footer class="site-foot"><p>Coffee aur Code · <a href="index.html">the study series</a> for the <i>Psychology of Learning</i> app · generated 2026-10-17 from build sessions 1 and 2</p></footer>
+<button class="btn sections-fab" type="button" data-open="sections" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg><span>Sections</span></button>
+<div class="drawer" id="sections" role="dialog" aria-modal="true" aria-labelledby="sections-title"><div class="scrim" data-close></div><div class="panel"><header><h2 id="sections-title">L3.05 · sections</h2><button class="icon-btn" type="button" data-close aria-label="Close sections"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header><div class="body"><nav class="toc-drawer" aria-label="Sections"><ol><li><a href="#warm-up"><span class="n">1</span><span>Warm-up: pull it from memory</span></a></li><li><a href="#the-problem-this-solves"><span class="n">2</span><span>The problem this solves</span></a></li><li><a href="#concepts"><span class="n">3</span><span>Concepts</span></a></li><li><a href="#the-math"><span class="n">4</span><span>The math</span></a></li><li><a href="#worked-trace"><span class="n">5</span><span>Worked trace: the measurements</span></a></li><li><a href="#running-and-testing"><span class="n">6</span><span>Running and testing</span></a></li><li><a href="#bug-journal"><span class="n">7</span><span>Bug journal</span></a></li><li><a href="#why-this-design"><span class="n">8</span><span>Why this design</span></a></li><li><a href="#check-yourself"><span class="n">9</span><span>Check yourself</span></a></li><li><a href="#practice"><span class="n">10</span><span>Practice</span></a></li><li><a href="#from-memory"><span class="n">11</span><span>From memory</span></a></li><li><a href="#checkpoint"><span class="n">12</span><span>Level 3 checkpoint</span></a></li><li><a href="#flashcards"><span class="n">13</span><span>Flashcards</span></a></li><li><a href="#the-menu-board"><span class="n">14</span><span>The menu board</span></a></li><li><a href="#glossary"><span class="n">15</span><span>Glossary</span></a></li><li><a href="#go-further"><span class="n">16</span><span>Go further</span></a></li></ol></nav><div class="toc-done"><button class="btn sm complete" type="button" data-complete="l3-05" aria-pressed="false">Mark complete</button></div></div></div></div>
+<div class="drawer" id="menu" role="dialog" aria-modal="true" aria-labelledby="menu-title"><div class="scrim" data-close></div><div class="panel">
+<header><h2 id="menu-title">The menu</h2><button class="icon-btn" type="button" data-close aria-label="Close menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header>
+<div class="body"><input class="menu-search" type="search" placeholder="Find a lesson or concept…" aria-label="Find a lesson or concept">
+<div class="menu-extra"><a class="btn sm" href="index.html">Hub</a><a class="btn sm" href="plan.html">Study plan</a><a class="btn sm" href="mastery.html">Mastery</a></div>
+<div class="menu-level"><h3>Level 1 · Foundations <span>5 lessons · 5 h 35 min</span></h3><ul class="menu-list"><li data-search="l1.01 what we built, the map, and the build log architecture spa supabase build log"><a href="l1-01-what-we-built.html"><span class="tick" data-done="l1-01"></span><span class="id">L1.01</span><span>What we built, the map, and the build log</span><span class="min">45′</span></a></li><li data-search="l1.02 prerequisites i: the web platform css dom events http history api"><a href="l1-02-web-platform.html"><span class="tick" data-done="l1-02"></span><span class="id">L1.02</span><span>Prerequisites I: the web platform</span><span class="min">70′</span></a></li><li data-search="l1.03 prerequisites ii: typescript and react typescript hooks effects context"><a href="l1-03-typescript-react.html"><span class="tick" data-done="l1-03"></span><span class="id">L1.03</span><span>Prerequisites II: TypeScript and React</span><span class="min">75′</span></a></li><li data-search="l1.04 prerequisites iii: sql, auth, keys and hosting sql rls jwt otp env"><a href="l1-04-data-auth-hosting.html"><span class="tick" data-done="l1-04"></span><span class="id">L1.04</span><span>Prerequisites III: SQL, auth, keys and hosting</span><span class="min">70′</span></a></li><li data-search="l1.05 setup and the first working slice node vite tsconfig checkpoint"><a href="l1-05-setup-first-slice.html"><span class="tick" data-done="l1-05"></span><span class="id">L1.05</span><span>Setup and the first working slice</span><span class="min">75′</span></a></li></ul></div><div class="menu-level"><h3>Level 2 · Build it <span>18 lessons · 21 h 35 min</span></h3><ul class="menu-list"><li data-search="l2.01 from pdfs to 130 questions pdftotext data model sql escaping"><a href="l2-01-data-pipeline.html"><span class="tick" data-done="l2-01"></span><span class="id">L2.01</span><span>From PDFs to 130 questions</span><span class="min">60′</span></a></li><li data-search="l2.02 the database i: tables and rls ddl constraints rls indexes"><a href="l2-02-tables-and-rls.html"><span class="tick" data-done="l2-02"></span><span class="id">L2.02</span><span>The database I: tables and RLS</span><span class="min">70′</span></a></li><li data-search="l2.03 the database ii: server-side grading pl/pgsql security definer rank()"><a href="l2-03-server-grading.html"><span class="tick" data-done="l2-03"></span><span class="id">L2.03</span><span>The database II: server-side grading</span><span class="min">75′</span></a></li><li data-search="l2.04 entry point, config and the small libraries vite seo head fisher–yates"><a href="l2-04-entry-config-libs.html"><span class="tick" data-done="l2-04"></span><span class="id">L2.04</span><span>Entry point, config and the small libraries</span><span class="min">70′</span></a></li><li data-search="l2.05 the app shell react router animatepresence layoutid"><a href="l2-05-app-shell.html"><span class="tick" data-done="l2-05"></span><span class="id">L2.05</span><span>The app shell</span><span class="min">75′</span></a></li><li data-search="l2.06a the ui kit drag springs svg rings raf"><a href="l2-06a-ui-kit.html"><span class="tick" data-done="l2-06a"></span><span class="id">L2.06a</span><span>The UI kit</span><span class="min">75′</span></a></li><li data-search="l2.06b the mug, icons and home svg keyframes stats"><a href="l2-06b-mug-icons-home.html"><span class="tick" data-done="l2-06b"></span><span class="id">L2.06b</span><span>The mug, icons and Home</span><span class="min">70′</span></a></li><li data-search="l2.07a auth state and email-code sign-in otp auth state validation"><a href="l2-07a-auth-sign-in.html"><span class="tick" data-done="l2-07a"></span><span class="id">L2.07a</span><span>Auth state and email-code sign-in</span><span class="min">70′</span></a></li><li data-search="l2.07c google sign-in, line by line oauth redirects pkce dashboards"><a href="l2-07c-google-sign-in.html"><span class="tick" data-done="l2-07c"></span><span class="id">L2.07c</span><span>Google sign-in, line by line</span><span class="min">80′</span></a></li><li data-search="l2.07b names, account and progress sync upsert merge newest wins"><a href="l2-07b-account-progress.html"><span class="tick" data-done="l2-07b"></span><span class="id">L2.07b</span><span>Names, account and progress sync</span><span class="min">75′</span></a></li><li data-search="l2.08a flashcards i: the deck and the flip usemotionvalue drag 3d"><a href="l2-08a-flashcard-deck.html"><span class="tick" data-done="l2-08a"></span><span class="id">L2.08a</span><span>Flashcards I: the deck and the flip</span><span class="min">75′</span></a></li><li data-search="l2.08b flashcards ii: quiz and list state machines search highlight"><a href="l2-08b-quiz-and-list.html"><span class="tick" data-done="l2-08b"></span><span class="id">L2.08b</span><span>Flashcards II: quiz and list</span><span class="min">70′</span></a></li><li data-search="l2.09a the ranked test i: intro and start localstorage routes rpc"><a href="l2-09a-test-intro.html"><span class="tick" data-done="l2-09a"></span><span class="id">L2.09a</span><span>The ranked test I: intro and start</span><span class="min">60′</span></a></li><li data-search="l2.09b the ranked test ii: the runner runner state beforeunload"><a href="l2-09b-test-runner.html"><span class="tick" data-done="l2-09b"></span><span class="id">L2.09b</span><span>The ranked test II: the runner</span><span class="min">75′</span></a></li><li data-search="l2.09c the ranked test iii: results and leaderboard ring maths ties visibilitychange"><a href="l2-09c-results-leaderboard.html"><span class="tick" data-done="l2-09c"></span><span class="id">L2.09c</span><span>The ranked test III: results and leaderboard</span><span class="min">75′</span></a></li><li data-search="l2.10a styling i: tokens, themes and the shell custom properties color-mix clip"><a href="l2-10a-tokens-base-shell.html"><span class="tick" data-done="l2-10a"></span><span class="id">L2.10a</span><span>Styling I: tokens, themes and the shell</span><span class="min">70′</span></a></li><li data-search="l2.10b styling ii: every component grid stacking touch-action"><a href="l2-10b-component-styles.html"><span class="tick" data-done="l2-10b"></span><span class="id">L2.10b</span><span>Styling II: every component</span><span class="min">75′</span></a></li><li data-search="l2.10c styling iii: the responsive layer media queries dvh @supports checkpoint"><a href="l2-10c-responsive.html"><span class="tick" data-done="l2-10c"></span><span class="id">L2.10c</span><span>Styling III: the responsive layer</span><span class="min">75′</span></a></li></ul></div><div class="menu-level"><h3>Level 3 · Under the hood <span>6 lessons · 7 h 05 min</span></h3><ul class="menu-list"><li data-search="l3.01 the security model rls internals grants jwt threat model"><a href="l3-01-security-model.html"><span class="tick" data-done="l3-01"></span><span class="id">L3.01</span><span>The security model</span><span class="min">70′</span></a></li><li data-search="l3.02 ranking maths and sql internals window functions probability explain"><a href="l3-02-ranking-sql.html"><span class="tick" data-done="l3-02"></span><span class="id">L3.02</span><span>Ranking maths and SQL internals</span><span class="min">65′</span></a></li><li data-search="l3.03 gestures, springs, 3d and scrolling pointer events ζ perspective"><a href="l3-03-gestures-3d.html"><span class="tick" data-done="l3-03"></span><span class="id">L3.03</span><span>Gestures, springs, 3D and scrolling</span><span class="min">75′</span></a></li><li data-search="l3.04 viewports, contrast and accessibility dvh luminance compositing axe"><a href="l3-04-viewports-contrast.html"><span class="tick" data-done="l3-04"></span><span class="id">L3.04</span><span>Viewports, contrast and accessibility</span><span class="min">70′</span></a></li><li data-search="l3.05 performance and lighthouse lcp cls caching fonts checkpoint"><a href="l3-05-performance.html" aria-current="page"><span class="tick" data-done="l3-05"></span><span class="id">L3.05</span><span>Performance and Lighthouse</span><span class="min">70′</span></a></li><li data-search="l3.06 oauth, pkce, and why sign-up timed out 504 smtp pkce sha-256 psl"><a href="l3-06-oauth-pkce-504.html"><span class="tick" data-done="l3-06"></span><span class="id">L3.06</span><span>OAuth, PKCE, and why sign-up timed out</span><span class="min">75′</span></a></li></ul></div><div class="menu-level"><h3>Level 4 · Test it and ship it <span>9 lessons · 10 h 55 min</span></h3><ul class="menu-list"><li data-search="l4.01 testing strategy and data tests node:test regex mutation"><a href="l4-01-testing-strategy-data.html"><span class="tick" data-done="l4-01"></span><span class="id">L4.01</span><span>Testing strategy and data tests</span><span class="min">70′</span></a></li><li data-search="l4.02 database tests in pglite pglite set role rls matrix"><a href="l4-02-database-tests.html"><span class="tick" data-done="l4-02"></span><span class="id">L4.02</span><span>Database tests in PGlite</span><span class="min">75′</span></a></li><li data-search="l4.03 playwright foundations playwright webserver secrets scan"><a href="l4-03-playwright-foundations.html"><span class="tick" data-done="l4-03"></span><span class="id">L4.03</span><span>Playwright foundations</span><span class="min">75′</span></a></li><li data-search="l4.04 ui tests: navigation, layout, flashcards locators expect.poll cdp touch"><a href="l4-04-ui-tests-nav-cards.html"><span class="tick" data-done="l4-04"></span><span class="id">L4.04</span><span>UI tests: navigation, layout, flashcards</span><span class="min">75′</span></a></li><li data-search="l4.05 ui tests: quiz, list, runner, results state injection transitions"><a href="l4-05-ui-tests-quiz-runner.html"><span class="tick" data-done="l4-05"></span><span class="id">L4.05</span><span>UI tests: quiz, list, runner, results</span><span class="min">70′</span></a></li><li data-search="l4.06 live security and the signed-in journey admin api route mocking cleanup"><a href="l4-06-live-security-auth.html"><span class="tick" data-done="l4-06"></span><span class="id">L4.06</span><span>Live security and the signed-in journey</span><span class="min">75′</span></a></li><li data-search="l4.07 accessibility, lighthouse, flaky tests axe lighthouse forensics"><a href="l4-07-a11y-lighthouse-flaky.html"><span class="tick" data-done="l4-07"></span><span class="id">L4.07</span><span>Accessibility, Lighthouse, flaky tests</span><span class="min">65′</span></a></li><li data-search="l4.08 ship it: deploy from git and operate vercel seo supabase checkpoint"><a href="l4-08-deploy-operate.html"><span class="tick" data-done="l4-08"></span><span class="id">L4.08</span><span>Ship it: deploy from Git and operate</span><span class="min">75′</span></a></li><li data-search="l4.09 a sign-in you can't automate, and a live incident boundary tests route runbook"><a href="l4-09-auth-tests-incident-ops.html"><span class="tick" data-done="l4-09"></span><span class="id">L4.09</span><span>A sign-in you can't automate, and a live incident</span><span class="min">75′</span></a></li></ul></div>
+<div class="menu-level"><h3>Mastery <span>195′</span></h3><ul class="menu-list"><li data-search="mastery checkpoint rebuild from memory"><a href="mastery.html"><span class="tick" data-done="mastery"></span><span class="id">★</span><span>Mastery checkpoint: rebuild from memory</span><span class="min">195′</span></a></li></ul></div>
+</div></div></div>
+<script src="assets/dlm-core.js"></script>
+<script src="assets/series.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # L2.10a · Styling I: tokens, themes, base and the shell
 
-> **Level 2 · Build it** · Lesson 15 of 17
+> **Level 2 · Build it** · Lesson 16 of 18
 
 | Recipe card | |
 |---|---|

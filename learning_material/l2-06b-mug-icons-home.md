@@ -1,6 +1,6 @@
 # L2.06b · The animated mug, the icon set and the Home page
 
-> **Level 2 · Build it** · Lesson 7 of 17
+> **Level 2 · Build it** · Lesson 7 of 18
 
 | Recipe card | |
 |---|---|

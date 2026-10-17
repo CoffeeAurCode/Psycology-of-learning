@@ -1,6 +1,6 @@
 # L2.06a · The UI kit: sheets, switches, segmented control, rings, confetti
 
-> **Level 2 · Build it** · Lesson 6 of 17
+> **Level 2 · Build it** · Lesson 6 of 18
 
 | Recipe card | |
 |---|---|

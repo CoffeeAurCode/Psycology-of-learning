@@ -10,6 +10,8 @@
 
 **In two sentences:** First you install the tools and run the real app on your machine. Then you build the smallest end-to-end version of it by hand, with no project generator, so that every config file in Level 2 is already familiar.
 
+> **Session 2 update (2026-10-16).** In the checkpoint map, "Supabase Auth (OTP)" is now "Supabase Auth (Google provider, PKCE)" ([L2.07c](l2-07c-google-sign-in.md)).
+
 ### Objectives
 1. Install Node and Git, clone the repo, configure `.env.local`, and run `npm run dev`, `npm run build` and `npm run preview`, saying what each does.
 2. Write `package.json`, `tsconfig.json`, `vite.config.ts`, `index.html` and `src/main.tsx` from memory for a React + TS app.

@@ -1,6 +1,6 @@
 # L4.02 · Test it II: database tests in PGlite with simulated Supabase roles
 
-> **Level 4 · Test it and ship it** · Lesson 2 of 8
+> **Level 4 · Test it and ship it** · Lesson 2 of 9
 
 | Recipe card | |
 |---|---|
@@ -9,6 +9,8 @@
 | **You'll produce** | `tests/db/schema.test.mjs` (190 lines, 19 tests) from a blank file: an in-memory Postgres with Supabase-like roles, a role-switching helper, and tests for every policy, grant, constraint and function |
 
 **In two sentences:** The security model of L3.01 is only a claim until something tries to break it, and the fastest place to try is a real Postgres running in-process: PGlite is Postgres compiled to WebAssembly, so `npm run test:db` boots a database, loads the exact `setup.sql` users run in Supabase, and attacks it as `anon` and as three signed-in users in about 1.5 seconds. This lesson builds the emulation line by line, shows which single line makes the tests test *RLS* rather than privileges, and proves with two SQL mutations that the suite catches broken rules.
+
+> **Session 2 update (2026-10-16).** "Email OTP length" is no longer a live setting (email sign-in is off), but the point stands: dashboard settings are outside what PGlite can test.
 
 ### Objectives
 1. Build the Supabase emulation from memory: roles, the `auth` schema, an `auth.uid()` stand-in, schema and table grants.
@@ -44,7 +46,7 @@ sequenceDiagram
   participant H as as(role, uid, sql)
   participant P as PGlite (Postgres in WASM)
   T->>H: as("authenticated", A, "select start_test()")
-  H->>P: reset role; select set_config('test.uid', A, false); set role authenticated;
+  H->>P: reset role, select set_config('test.uid', A, false), set role authenticated,
   H->>P: select start_test()
   P->>P: grant check → function runs as owner → auth.uid() = current_setting('test.uid') = A
   P-->>H: rows

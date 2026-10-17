@@ -1,6 +1,6 @@
 # L2.08b · Flashcards II: the Study page, deck finished, quiz mode and the searchable list
 
-> **Level 2 · Build it** · Lesson 11 of 17
+> **Level 2 · Build it** · Lesson 12 of 18
 
 | Recipe card | |
 |---|---|
@@ -38,7 +38,7 @@ All three filtered by week. And the chosen week should be shareable and bookmark
 ```mermaid
 stateDiagram-v2
   [*] --> question: order = shuffle(pool), pos 0
-  question --> revealed: pick(i): correct → score+1 · wrong → missed+=q, mark 'again'
+  question --> revealed: pick(i)#58; correct → score+1 · wrong → missed+=q, mark 'again'
   revealed --> question: Next (pos+1)
   revealed --> scoreScreen: Next on the last question
   scoreScreen --> question: Retry missed (order = shuffle(missed))

@@ -1,10 +1,10 @@
 # Mastery checkpoint · Rebuild it from memory
 
-> **The final checkpoint** · 180 min in three sittings · then retake after 7 days
+> **The final checkpoint** · 195 min in three sittings · then retake after 7 days
 
 | Recipe card | |
 |---|---|
-| **Time** | 180 min (three 60-minute sittings), plus the optional full rebuild |
+| **Time** | 195 min (three sittings of 60, 70 and 65 minutes), plus the optional full rebuild |
 | **You need** | All four levels done, an editor, a terminal, Node, and the course PDFs. **Nothing else**: no notes, no lesson pages, no docs, no AI |
 | **You'll produce** | Proof that you can build, secure, test and ship the app unaided |
 
@@ -21,8 +21,8 @@
 | Sitting | Task (from the mastery spec in `_outline.md`) | Passing bar |
 |---|---|---|
 | **A · Data and database** (60 min) | 1. Write the extraction plan for the PDFs and the shape of `questions.json` (ids `week*100 + n`, 0-based answers), and `scripts/gen-seed.mjs` that writes `seed.sql`/`setup.sql`. 2. Write `supabase/schema.sql` from a blank file: 4 tables, RLS on all, the 8 policies, the 4 functions with `security definer`, `search_path` and grants. | The original repository's `npm run test:unit` and `npm run test:db` pass when your `schema.sql` (concatenated with the real `seed.sql` as `setup.sql`) replaces theirs. Explain in one paragraph why a student can't forge a score. |
-| **B · The app** (60 min) | 3. Scaffold Vite + React + TypeScript by hand. 4. Write the shell (providers, router, transitions, tab bar/rail, splash, error boundary). 5. Write email-code sign-in with 6–10 digit codes and the name step. 6. Write the `SwipeCard` with swipe thresholds and the angle-driven flip. 7. Write the runner's state: attempt in storage, auto-advance, flags, resume, submit. 8. Write the token block, the deck's height formula and the side-rail override. | `npx tsc -p . --noEmit` passes on what you wrote. The self-check lists in §2 for B are all ticked. |
-| **C · Test and ship** (60 min) | 9. Write `playwright.config.ts`, the support helpers, one test from each of: data, DB, UI (with a transition), live security, a11y. 10. Write `vercel.json`, the ignore files, and the Supabase checklist. 11. Diagnose the 16 symptoms in §4 without looking anything up. | Your config lists all 12 projects with the right `testMatch`; your UI test waits for a state, never a fixed sleep for state; ≥ 14 of 16 diagnoses correct. |
+| **B · The app** (70 min) | 3. Scaffold Vite + React + TypeScript by hand. 4. Write the shell (providers, router, transitions, tab bar/rail, splash, error boundary). 5. Write Google sign-in (`SignIn`, the two client options) and the name step, and list the nine dashboard settings in order. 6. Write the `SwipeCard` with swipe thresholds and the angle-driven flip. 7. Write the runner's state: attempt in storage, auto-advance, flags, resume, submit. 8. Write the token block, the deck's height formula and the side-rail override. | `npx tsc -p . --noEmit` passes on what you wrote. The self-check lists in §2 for B are all ticked. |
+| **C · Test and ship** (65 min) | 9. Write `playwright.config.ts`, the support helpers, one test from each of: data, DB, UI (with a transition), live security, a11y. 10. Write `vercel.json`, the ignore files, and the Supabase checklist. 11. Diagnose the 21 symptoms in §4 without looking anything up. 12. Write the Google hand-off test and the five incident probes. | Your config lists all 12 projects with the right `testMatch`; your UI test waits for a state, never a fixed sleep for state; ≥ 18 of 21 diagnoses correct; your hand-off test intercepts `/auth/v1/authorize` before the click. |
 
 **The full rebuild's acceptance test.** Copy the original repository's `tests/` folder into your rebuild. Your rebuild passes: `npm run test:unit` (17), `npm run test:db` (19), and `npx playwright test --project=api --project=pixel-7 --project=iphone-se --project=laptop-chrome-1366`. Class names, accessible names and storage keys are part of the contract the tests check, which is exactly why you had to learn them.
 
@@ -63,10 +63,11 @@ Each drill: blank file, no scrolling back, then tick the list honestly. If you m
 - [ ] Tab bar from one array; pill with `layoutId`; hidden on `/test/run`; splash 3-phase state machine with a 4 s cap; error boundary keyed by path
 </details>
 
-<details><summary><b>Drill 5 · Sign-in and sync (L2.07a–b) · 15 min</b></summary>
+<details><summary><b>Drill 5 · Sign-in and sync (L2.07a–c) · 15 min</b></summary>
 
-- [ ] `signInWithOtp` → code step → `verifyOtp({ type: "email" })`; codes 6–10 digits; auto-submit at `VITE_OTP_LENGTH`
-- [ ] App-side email validation with `noValidate`; 60 s resend cooldown
+- [ ] `AuthProvider`: `ready`, deferred profile fetch in `onAuthStateChange`, `signOut` clears both
+- [ ] `signInWithOAuth({ provider: "google", options: { redirectTo } })`, `redirectTo` = origin + `/me` + encoded `next`; busy first, never un-busy on success
+- [ ] Client options `detectSessionInUrl: true`, `flowType: "pkce"`; `?error` return → fixed message, delete the three keys, keep `next`, `replace: true`
 - [ ] Name step with the DB's rules; `?next=` redirect; duplicate → "That name is taken"
 - [ ] Progress: local first, fire-and-forget upsert; merge newest wins on sign-in; sign-out resets without crashing
 </details>
@@ -100,6 +101,24 @@ Each drill: blank file, no scrolling back, then tick the list honestly. If you m
 - [ ] Helpers: `goto` waits for the splash; `currentQuestion` waits for one card; users via admin API, OTP via `generateLink`; per-file deletion
 - [ ] PGlite emulation with roles, `auth.uid()` and the table grants
 - [ ] `vercel.json` redirect, rewrite, immutable assets; `.gitignore` with `!.env.example` last
+</details>
+
+<details><summary><b>Drill 10 · Google sign-in settings and the redirect chain (L2.07c, L3.06) · 15 min</b></summary>
+
+- [ ] Google Cloud: Branding without a logo; authorised domains = the two full hostnames; External + In production; Web client with redirect URI `https://<ref>.supabase.co/auth/v1/callback`
+- [ ] Supabase: Google on (ID + secret); Site URL; Redirect URLs `…/**` + localhost; Email off; SMTP off
+- [ ] The six hops drawn, the two codes labelled, and who redeems each with what (client secret; PKCE verifier)
+- [ ] $c = \operatorname{BASE64URL}(\operatorname{SHA256}(v))$; 43 characters; 56 × 8 = 448 bits; where the verifier is stored
+- [ ] What `redirect_uri`, `state`, the client secret, the allow-list and the verifier each stop
+</details>
+
+<details><summary><b>Drill 11 · Testing sign-in and running an incident (L4.09) · 15 min</b></summary>
+
+- [ ] `signInPage`: storage key from the hostname, session JSON via `page.evaluate`, reload, wait for ready
+- [ ] Hand-off test: route before the click, `fulfill`, `expect.poll`, `redirect_to` = `/me?next=%2Ftest`, `code_challenge`; error half with `unroute`
+- [ ] Absence with `toHaveCount(0)`
+- [ ] The five probes and what each result means; timeout vs refused vs `220`
+- [ ] Bundle fingerprint; the auth runbook; allow-list redaction; `< /dev/null` + `timeout`
 </details>
 
 ---
@@ -148,6 +167,16 @@ Write each explanation for a classmate who knows JavaScript but nothing about th
 - [ ] Reading skips and flakes as bugs (the 12 skipped PDF checks, the cleanup race)
 </details>
 
+**E5. "Why did sign-up fail with a 504, and why is Google sign-in safe when it all runs in a browser?"**
+<details><summary>Rubric</summary>
+
+- [ ] A 504 is a gateway reporting a slow upstream; fast probes ruled out "down" and "paused"
+- [ ] The SMTP host was the website: dropped packets on port 465 → GoTrue hangs → the gateway times out (contrast with "refused")
+- [ ] Removing email removed the dependency; switching the Email provider off enforces it on the server
+- [ ] Two nested flows: Supabase ↔ Google protected by the client secret; app ↔ Supabase protected by PKCE
+- [ ] What a stolen code can't do, and what `state` and the redirect allow-lists stop
+</details>
+
 ---
 
 ## 4 · Debug from memory
@@ -157,7 +186,7 @@ Each symptom is real (from this build) or a verified failure mode of the stack. 
 **D1.** First run in the browser: a blank page and `TypeError: destroy is not a function`.
 <details><summary>Cause</summary>An effect written as a concise arrow returned <code>window.scrollTo(...)</code>'s Promise; React called it as cleanup. Use braces (L2.05).</details>
 
-**D2.** Nobody can sign in: every real email code is rejected.
+**D2.** *(session 1, email codes)* Nobody can sign in: every real email code is rejected.
 <details><summary>Cause</summary>The project sends 8-digit codes; the app cut input to 6. Accept 6–10 (L2.07a).</details>
 
 **D3.** On iPhones the card shows the answer mirrored before you flip it.
@@ -202,13 +231,28 @@ Each symptom is real (from this build) or a verified failure mode of the stack. 
 **D16.** `git status` stopped showing `.env.example` after linking the Vercel project.
 <details><summary>Cause</summary><code>vercel link</code> appended <code>.env*</code> after <code>!.env.example</code>; the last pattern wins (L4.08).</details>
 
+**D17.** A friend's sign-up shows HTTP 504. Health, settings and REST all answer 200 in under a second.
+<details><summary>Cause</summary>Custom SMTP pointed at the website (<code>…vercel.app:465</code>); the connection hangs because packets are dropped, so the gateway times out. Fix SMTP with a real provider, or remove email sign-in (L3.06).</details>
+
+**D18.** Google Cloud rejects `vercel.app` in Authorised domains: "Invalid domain: must be a top private domain".
+<details><summary>Cause</summary><code>vercel.app</code> (like <code>supabase.co</code>) is on the Public Suffix List. Add the full hostnames <code>psychology-of-learning-nptel.vercel.app</code> and <code>&lt;ref&gt;.supabase.co</code> (L2.07c, L3.06).</details>
+
+**D19.** Back from Google on `/me?next=%2Ftest&code=…`, the student still sees "Continue with Google".
+<details><summary>Cause</summary>Nothing exchanged the code: <code>detectSessionInUrl</code> is <code>false</code>. If it's <code>true</code>, the flow finished in a different browser or tab whose storage lacks the matching verifier (L2.07c, L3.06).</details>
+
+**D20.** Google sign-in works, but every student lands on the home page instead of the test.
+<details><summary>Cause</summary><code>redirect_to</code> isn't in the Supabase Redirect URLs allow-list, so Supabase falls back to the Site URL. Add <code>https://…vercel.app/**</code> (L2.07c).</details>
+
+**D21.** The Email provider was just switched off. A teammate starts rewriting the test helpers "because admin-minted codes won't work now". What do you do first, and what happens?
+<details><summary>Cause</summary>Run <code>api-security.spec.ts</code> first. It passes (13/13): the switch closes the public email path (<code>422 email_provider_disabled</code>), but admin-minted codes still verify. No rewrite needed (L4.09).</details>
+
 ---
 
 ## 5 · Master deck
 
 Every flashcard from every lesson, in course order. Go through all of them in one sitting the first time (≈ 3 minutes per lesson); afterwards, review only the ones you missed. Keep this deck's schedule separate from the lessons' (it's your exam deck).
 
-**327 cards from 35 lessons.** Open a lesson's group, answer each card aloud before opening it.
+**366 cards from 38 lessons.** Open a lesson's group, answer each card aloud before opening it.
 
 <details><summary><b>L1.01 · What we built, the map, and the build log</b> · 8 cards · <a href="l1-01-what-we-built.md">lesson</a></summary>
 
@@ -378,6 +422,23 @@ Every flashcard from every lesson, in course order. Go through all of them in on
 <details><summary><b>Q:</b> What does <code>autoComplete="one-time-code"</code> give users?</summary><b>A:</b> One-tap fill of the code from Mail/Messages above the keyboard.</details>
 <details><summary><b>Q:</b> Why <code>noValidate</code> on the email form?</summary><b>A:</b> So the app's own message shows consistently instead of each browser's native popup.</details>
 <details><summary><b>Q:</b> What does <code>?next=/test</code> do?</summary><b>A:</b> After session + profile exist, Account navigates there with <code>replace: true</code>.</details>
+
+</details>
+
+<details><summary><b>L2.07c · Google sign-in, line by line (session 2)</b> · 13 cards · <a href="l2-07c-google-sign-in.md">lesson</a></summary>
+<details><summary><b>Q:</b> What finally caused the 504 on sign-up?</summary><b>A:</b> Custom SMTP pointed at the website (<code>psychology-of-learning-nptel.vercel.app:465</code>), which has no mail server, so sending the code email hung until the gateway timed out.</details>
+<details><summary><b>Q:</b> In "Sign in with Google" through Supabase, who receives Google's authorisation code?</summary><b>A:</b> Supabase (at <code>/auth/v1/callback</code>). The app only ever receives Supabase's own code.</details>
+<details><summary><b>Q:</b> What does <code>detectSessionInUrl: true</code> do?</summary><b>A:</b> On start-up, supabase-js exchanges a <code>?code=</code> in the URL for a session and removes it from the address bar.</details>
+<details><summary><b>Q:</b> What does the PKCE verifier prove?</summary><b>A:</b> That whoever exchanges the code is the same browser that started the sign-in; only that tab has the verifier.</details>
+<details><summary><b>Q:</b> Which URL is the Google client's authorised redirect URI?</summary><b>A:</b> <code>https://kehcsupmruaskpgdvzaj.supabase.co/auth/v1/callback</code>.</details>
+<details><summary><b>Q:</b> What happens when <code>redirect_to</code> isn't in Supabase's allow-list?</summary><b>A:</b> Sign-in works, but the user lands on the Site URL instead.</details>
+<details><summary><b>Q:</b> Why can't you authorise <code>vercel.app</code> in Google Cloud?</summary><b>A:</b> It's a public suffix; only a top private domain (suffix + one label) like <code>psychology-of-learning-nptel.vercel.app</code> can be authorised.</details>
+<details><summary><b>Q:</b> Why is <code>?next</code> passed through <code>encodeURIComponent</code>?</summary><b>A:</b> It's a URL inside another URL's query; encoding keeps characters like <code>/</code>, <code>&amp;</code>, <code>#</code> from breaking the outer URL.</details>
+<details><summary><b>Q:</b> Why does the error cleanup use <code>replace: true</code>?</summary><b>A:</b> So Back doesn't return to the error URL and show the message again.</details>
+<details><summary><b>Q:</b> Why a fixed error message, not <code>error_description</code>?</summary><b>A:</b> URL text is attacker-controlled; displaying it would let anyone put words on your page.</details>
+<details><summary><b>Q:</b> Where does the Google client secret live?</summary><b>A:</b> Only in the Supabase dashboard (Providers → Google). Never in the repo or a <code>VITE_</code> variable.</details>
+<details><summary><b>Q:</b> How do you turn email sign-in off where it's enforced?</summary><b>A:</b> Supabase → Sign In / Providers → Email off; the API then answers <code>422 email_provider_disabled</code>.</details>
+<details><summary><b>Q:</b> What's the first diagnostic for "Access blocked" on one account?</summary><b>A:</b> Check whether others can sign in (users table, your own curl of the chain), then get Google's "error details" for that account.</details>
 
 </details>
 
@@ -590,6 +651,24 @@ Every flashcard from every lesson, in course order. Go through all of them in on
 
 </details>
 
+<details><summary><b>L3.06 · Under the hood: OAuth, PKCE, and why sign-up timed out (session 2)</b> · 14 cards · <a href="l3-06-oauth-pkce-504.md">lesson</a></summary>
+<details><summary><b>Q:</b> Who writes a 504, and about whom?</summary><b>A:</b> A gateway or proxy, about its upstream, which accepted the request but didn't answer in time.</details>
+<details><summary><b>Q:</b> 502 vs 504?</summary><b>A:</b> 502: the upstream answered badly or the connection broke. 504: the upstream didn't answer in time.</details>
+<details><summary><b>Q:</b> Why did SMTP to the website time out rather than fail fast?</summary><b>A:</b> Vercel's edge drops packets to non-web ports; no reset comes back, so the client waits until its timeout.</details>
+<details><summary><b>Q:</b> Ports for email submission and their TLS modes?</summary><b>A:</b> 465 implicit TLS; 587 STARTTLS. (25 is server-to-server relay.)</details>
+<details><summary><b>Q:</b> Why can't you send as <code>noreply@…vercel.app</code>?</summary><b>A:</b> You don't control <code>vercel.app</code>'s DNS, so you can't publish SPF/DKIM/DMARC for it; receivers reject or junk it.</details>
+<details><summary><b>Q:</b> The PKCE S256 formula?</summary><b>A:</b> challenge = BASE64URL(SHA256(ASCII(verifier))).</details>
+<details><summary><b>Q:</b> Why is an S256 challenge 43 characters?</summary><b>A:</b> 256 bits ÷ 6 bits per base64 character = 42.67 → 43 (44 with one <code>=</code>, which base64url drops).</details>
+<details><summary><b>Q:</b> Entropy of supabase-js's verifier?</summary><b>A:</b> 56 random bytes (low byte of each Uint32) = 448 bits, written as 112 hex characters.</details>
+<details><summary><b>Q:</b> What attack does PKCE stop?</summary><b>A:</b> Authorisation code interception: a stolen code can't be exchanged without the verifier.</details>
+<details><summary><b>Q:</b> What does <code>state</code> stop?</summary><b>A:</b> Forged callbacks (login CSRF): completing a sign-in your browser never started.</details>
+<details><summary><b>Q:</b> Public vs confidential client?</summary><b>A:</b> A public client (browser app) can't keep a secret; a confidential client (a server like Supabase Auth) can.</details>
+<details><summary><b>Q:</b> What is a top private domain?</summary><b>A:</b> A public suffix plus one label, e.g. <code>psychology-of-learning-nptel.vercel.app</code>.</details>
+<details><summary><b>Q:</b> Flow started in Chrome, finished in another browser: result?</summary><b>A:</b> No verifier there → exchange fails → signed out, though Supabase may already have created the user.</details>
+<details><summary><b>Q:</b> Why does Google refuse sign-in inside WhatsApp's browser?</summary><b>A:</b> Embedded webviews are blocked by Google's OAuth policy (<code>disallowed_useragent</code>), because the host app could read input.</details>
+
+</details>
+
 <details><summary><b>L4.01 · Test it I: testing strategy and the data-integrity tests</b> · 10 cards · <a href="l4-01-testing-strategy-data.md">lesson</a></summary>
 
 <details><summary><b>Q:</b> What does each test layer prove?</summary><b>A:</b> Data: content correct and consistent. DB: RLS, grants, grading, ranking. Browser: what users see and do, on 11 devices, plus live security and accessibility.</details>
@@ -623,7 +702,7 @@ Every flashcard from every lesson, in course order. Go through all of them in on
 <details><summary><b>L4.03 · Test it III: Playwright foundations: config, helpers, teardown, HTTP checks</b> · 11 cards · <a href="l4-03-playwright-foundations.md">lesson</a></summary>
 
 <details><summary><b>Q:</b> What is a Playwright project?</summary><b>A:</b> A named configuration (device, spec files); every matching test runs once per project.</details>
-<details><summary><b>Q:</b> Why 253 tests?</summary><b>A:</b> 20 api + 16 ui × 11 + 6 a11y × 9 + 1 auth × 3.</details>
+<details><summary><b>Q:</b> Why 264 Playwright tests (253 before session 2)?</summary><b>A:</b> 20 api + 17 ui × 11 + 6 a11y × 9 + 1 auth × 3. Session 2 added one UI test (the Google hand-off).</details>
 <details><summary><b>Q:</b> What does <code>webServer</code> do?</summary><b>A:</b> Builds and serves the production build on 4174, waits for it, reuses one already running.</details>
 <details><summary><b>Q:</b> What does <code>retries: 1</code> report when a retry passes?</summary><b>A:</b> "Flaky".</details>
 <details><summary><b>Q:</b> How are test users created without emails?</summary><b>A:</b> Admin <code>createUser({ email_confirm: true })</code>; the code comes from <code>generateLink(...).properties.email_otp</code>.</details>
@@ -713,6 +792,22 @@ Every flashcard from every lesson, in course order. Go through all of them in on
 </details>
 
 
+<details><summary><b>L4.09 · Test it and run it: a sign-in you can't automate, and a live incident (session 2)</b> · 12 cards · <a href="l4-09-auth-tests-incident-ops.md">lesson</a></summary>
+<details><summary><b>Q:</b> Why can't the tests drive Google's login page?</summary><b>A:</b> Bot detection, real credentials and 2-step verification in CI, and Google's terms. Test your side of the boundary instead.</details>
+<details><summary><b>Q:</b> What does the hand-off test assert?</summary><b>A:</b> The authorize request has <code>provider=google</code>, <code>redirect_to</code> = <code>/me?next=%2Ftest</code>, and a PKCE <code>code_challenge</code>; and the error return shows the message and keeps <code>next</code>.</details>
+<details><summary><b>Q:</b> supabase-js's session storage key?</summary><b>A:</b> <code>sb-${hostname.split(".")[0]}-auth-token</code>, e.g. <code>sb-kehcsupmruaskpgdvzaj-auth-token</code>.</details>
+<details><summary><b>Q:</b> Why reload after writing the session to storage?</summary><b>A:</b> The client reads storage only at start-up.</details>
+<details><summary><b>Q:</b> What does session injection not prove?</summary><b>A:</b> The Google redirect chain and the PKCE exchange.</details>
+<details><summary><b>Q:</b> How do you assert an element is absent from the page?</summary><b>A:</b> <code>expect(locator).toHaveCount(0)</code>.</details>
+<details><summary><b>Q:</b> Why do admin-minted codes still work with the Email provider off?</summary><b>A:</b> The switch closes public email sign-in; minting via the admin API (secret key) and verifying still issue a session.</details>
+<details><summary><b>Q:</b> The five probes, in order?</summary><b>A:</b> Timed health/settings/REST; settings flags; the failing endpoint with a throwaway address; masked user listing; the dependency's port.</details>
+<details><summary><b>Q:</b> Deny-list vs allow-list redaction?</summary><b>A:</b> Deny-list hides names you predicted (and leaks the rest); allow-list shows only what you know is safe.</details>
+<details><summary><b>Q:</b> Two habits that stop automation from hanging?</summary><b>A:</b> <code>&lt; /dev/null</code> (no stdin) and <code>timeout N</code> (a deadline).</details>
+<details><summary><b>Q:</b> How do you prove a deploy is what users get?</summary><b>A:</b> Fetch the live HTML, find the hashed entry chunk, grep it for a user-visible string unique to the new version.</details>
+<details><summary><b>Q:</b> First move on a flaky test after your change?</summary><b>A:</b> Read where it failed (<code>error-context.md</code>, screenshot, trace) before assuming your change caused it.</details>
+
+</details>
+
 ---
 
 ## 6 · Readiness checklist
@@ -722,13 +817,15 @@ Tick only what you could do **today, without notes**.
 - [ ] I can extract the 130 questions and regenerate the seed, and prove every answer against the PDFs.
 - [ ] I can write `schema.sql` with RLS on all four tables, the 8 policies and the 4 functions, and explain why scores can't be forged, and what the server doesn't guarantee.
 - [ ] I can scaffold Vite + React + TypeScript by hand and write the shell with providers, routes, transitions, the tab bar/rail, the splash and an error boundary.
-- [ ] I can build email-code sign-in for 6–10 digit codes with a name step, and progress sync with "newest wins".
+- [ ] I can set up Google-only sign-in (Google Cloud and Supabase settings) and build `SignIn` with the right client options, a name step, and progress sync with "newest wins".
+- [ ] I can explain the session-2 504 hop by hop, derive a PKCE challenge, and say what each OAuth guard stops.
 - [ ] I can build the swipe deck with a Safari-safe flip, undo, hide-mastered, shuffle, quiz and search.
 - [ ] I can build the ranked test with a server start time, auto-advance, flags, a grid, resume, a submit sheet, results and the podium.
 - [ ] I can style it with tokens for light and dark, from a 280 px fold to 1920 px, with safe areas and `dvh`, and pass axe.
 - [ ] I can write the data, PGlite, Playwright (11 devices), live security, signed-in journey and a11y tests, and read Lighthouse.
 - [ ] I can deploy from Git to Vercel with the right `vercel.json`, env vars and Supabase settings, and verify production.
-- [ ] I can diagnose all 16 symptoms in §4 from the symptom alone.
+- [ ] I can test a sign-in I can't automate, run the five incident probes, and prove a deploy is live.
+- [ ] I can diagnose all 21 symptoms in §4 from the symptom alone.
 
 ## 7 · Done?
 
@@ -737,4 +834,4 @@ Tick only what you could do **today, without notes**.
 - [ ] **Optional**: the full rebuild against the original tests.
 
 ---
-← [L4.08 Ship it: deploy from Git and operate](l4-08-deploy-operate.md) · [Hub](README.md) · [Study plan](plan.md)
+← [L4.09 A sign-in you can't automate, and a live incident](l4-09-auth-tests-incident-ops.md) · [Hub](README.md) · [Study plan](plan.md)

@@ -1,6 +1,6 @@
 # L2.05 · The app shell: providers, routes, navigation, splash, error boundary
 
-> **Level 2 · Build it** · Lesson 5 of 17
+> **Level 2 · Build it** · Lesson 5 of 18
 
 | Recipe card | |
 |---|---|

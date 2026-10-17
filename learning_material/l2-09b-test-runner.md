@@ -1,6 +1,6 @@
 # L2.09b · The ranked test II: the runner
 
-> **Level 2 · Build it** · Lesson 13 of 17
+> **Level 2 · Build it** · Lesson 14 of 18
 
 | Recipe card | |
 |---|---|
@@ -40,7 +40,7 @@ stateDiagram-v2
   grid --> answering: tap a number (go(i))
   answering --> submitSheet: Submit (top) or "Submit test" on the last question
   submitSheet --> answering: "Go to first unanswered"
-  submitSheet --> grading: "Submit at 12:39"
+  submitSheet --> grading: "Submit at 12#58;39"
   grading --> submitSheet: error (banner shown, stay)
   grading --> [*]: ok → save result, clear attempt → /test/result (replace)
   answering --> leaveSheet: Exit
@@ -451,7 +451,7 @@ sequenceDiagram
   participant U as User
   participant R as Run
   U->>R: choose(i) on question p
-  R->>R: answers[p] = i; schedule timeout(320 ms, captures p)
+  R->>R: answers[p] = i, schedule timeout(320 ms, captures p)
   alt user stays on p
     R->>R: timeout fires: cur.pos === p → pos = p+1
   else user taps Next within 320 ms

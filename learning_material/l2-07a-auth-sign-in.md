@@ -1,6 +1,6 @@
 # L2.07a · Auth state and email-code sign-in
 
-> **Level 2 · Build it** · Lesson 8 of 17
+> **Level 2 · Build it** · Lesson 8 of 18
 
 | Recipe card | |
 |---|---|
@@ -9,6 +9,8 @@
 | **You'll produce** | `src/lib/auth.tsx` (69 lines) and lines 1–203 of `src/pages/Account.tsx` (constants, the `Account` router component, `SignIn`) |
 
 **In two sentences:** `AuthProvider` turns Supabase's session into React state that every page can read, and the sign-in screen turns an email plus a one-time code into that session. This lesson also tells the story of the session's most serious bug: for a while **nobody could sign in**, because the app cut 8-digit codes down to 6.
+
+> **Session 2 update (2026-10-16).** `AuthProvider` (§4.1) and the `Account` screen router are **still current**. The email-code `SignIn` (§4.3 onwards) was **replaced by Google sign-in** after a sign-up returned HTTP 504; it is kept here as history and for its two bug stories. The current `SignIn` is in [L2.07c](l2-07c-google-sign-in.md).
 
 ### Objectives
 1. Write `AuthProvider`: initial session, `onAuthStateChange` subscription, profile fetch, `ready` flag, `signOut`.
@@ -575,4 +577,4 @@ const digits = v.replace(/___⑥___/g, "").slice(0, ___⑦___);
 | [web.dev: SMS OTP form best practices](https://web.dev/articles/sms-otp-form) | Article | `inputmode`, `autocomplete="one-time-code"` | Whole page | 10 min |
 
 ---
-← [L2.06b The mug, icons & Home](l2-06b-mug-icons-home.md) · [Hub](README.md) · [L2.07b Account & progress sync →](l2-07b-account-progress.md)
+← [L2.06b The mug, icons & Home](l2-06b-mug-icons-home.md) · [Hub](README.md) · [L2.07c Google sign-in →](l2-07c-google-sign-in.md)

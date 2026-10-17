@@ -1,6 +1,6 @@
 # L2.10b · Styling II: every component
 
-> **Level 2 · Build it** · Lesson 16 of 17
+> **Level 2 · Build it** · Lesson 17 of 18
 
 | Recipe card | |
 |---|---|
@@ -9,6 +9,8 @@
 | **You'll produce** | Lines 317–1749 of `src/styles.css`: surfaces, buttons, chips, the segmented control, progress bars, Home, the flashcard deck, MCQ options, the test runner chrome, results, leaderboard, forms, the sheet, the list view, splash, toast, the CSS animations and reduced motion |
 
 **In two sentences:** About 1,400 lines of CSS look intimidating, but they are built from a dozen patterns repeated with different tokens: a rounded surface with a border, a centred icon box, an absolutely positioned layer filling its parent, a sticky frosted header, and a grid whose columns adapt to the space. Learn the patterns once, then each component is "which pattern, which tokens, which one special trick".
+
+> **Session 2 update (2026-10-16).** The `.otp` rule (and its centring trick) was deleted with email sign-in. The trick is still worth knowing for any letter-spaced, centred text; the app no longer ships it ([L2.07c](l2-07c-google-sign-in.md) §5.4).
 
 ### Objectives
 1. Name the ten layout patterns this stylesheet repeats and write each from memory.

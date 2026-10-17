@@ -1,6 +1,6 @@
 # L4.08 · Ship it: deploy from Git and operate (+ Level 4 checkpoint)
 
-> **Level 4 · Test it and ship it** · Lesson 8 of 8
+> **Level 4 · Test it and ship it** · Lesson 8 of 9
 
 | Recipe card | |
 |---|---|
@@ -9,6 +9,8 @@
 | **You'll produce** | `vercel.json`, `.gitignore`, `.vercelignore`, `.env.example`, the SEO head of `index.html`, `robots.txt`, `sitemap.xml`, `manifest.webmanifest`, the Supabase dashboard settings, and the Level 4 checkpoint |
 
 **In two sentences:** Shipping this app means three systems agreeing: GitHub holds the code (and never the secrets), Vercel builds every push to `main` with the Vite preset and serves `dist/` from its CDN with the right redirects, rewrites and cache headers, and Supabase holds the database and auth settings that no file in the repo can set by itself. This lesson walks every deployment file, the dashboard checklist, how to operate the site afterwards, and the two deploy bugs, both of which were silent misconfigurations rather than errors.
+
+> **Session 2 update (2026-10-16).** In §4.7, the email rows (code templates, OTP length, SMTP) are history: email sign-in is off. The current Supabase and Google Cloud settings are in [L2.07c](l2-07c-google-sign-in.md) §4, and the operating runbook for auth is in [L4.09](l4-09-auth-tests-incident-ops.md) §6.
 
 ### Objectives
 1. Write `vercel.json` from memory and explain the redirect, the SPA rewrite and the cache header.
@@ -591,4 +593,4 @@ Score yourself: **all boxes ticked** → do the mastery checkpoint ([mastery.md]
 | [git: gitignore documentation](https://git-scm.com/docs/gitignore) | Docs | Pattern order and negation | "PATTERN FORMAT" | 10 min |
 
 ---
-← [L4.07 Test it VII: accessibility, Lighthouse and flaky tests](l4-07-a11y-lighthouse-flaky.md) · [Hub](README.md) · [Mastery checkpoint →](mastery.md)
+← [L4.07 Test it VII: accessibility, Lighthouse and flaky tests](l4-07-a11y-lighthouse-flaky.md) · [Hub](README.md) · [L4.09 A sign-in you can't automate →](l4-09-auth-tests-incident-ops.md)

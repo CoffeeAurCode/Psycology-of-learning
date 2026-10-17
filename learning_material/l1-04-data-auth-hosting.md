@@ -10,6 +10,8 @@
 
 **In two sentences:** The back end is a Postgres database (with Supabase Auth in front of it) and the front end is static files on Vercel. To write the schema and deploy safely you need SQL tables and constraints, the idea of database roles and row-level security, how sessions and email codes work, which keys are public, and how Git and environment variables keep secrets out of the repo.
 
+> **Session 2 update (2026-10-16).** The app no longer signs in with email codes; it uses **Google sign-in** through Supabase. §5.1 (JWTs) and §5.3 (keys) are unchanged and still essential. §5.2 (email codes) is now history: the same session and JWT come out of a Google sign-in instead, taught from zero in [L2.07c](l2-07c-google-sign-in.md) §3.
+
 ### Objectives
 1. Write a `create table` with a primary key, a foreign key with `on delete cascade`, a `check` constraint and a case-insensitive unique index.
 2. Explain what RLS does, the difference between `using` and `with check`, and why "RLS on with no policy" means "nobody".
@@ -36,11 +38,39 @@ erDiagram
   AUTH_USERS ||--o{ TEST_ATTEMPTS : "makes many"
   AUTH_USERS ||--o{ CARD_PROGRESS : "marks many"
   QUESTIONS ||--o{ CARD_PROGRESS : "is marked in"
-  AUTH_USERS { uuid id PK  text email }
-  PROFILES { uuid id PK_FK  text display_name  timestamptz created_at }
-  TEST_ATTEMPTS { uuid id PK  uuid user_id FK  int_array question_ids  timestamptz started_at  timestamptz submitted_at  int_array answers  int score  int total  int duration_ms }
-  CARD_PROGRESS { uuid user_id PK_FK  int question_id PK  text status  timestamptz updated_at }
-  QUESTIONS { int id PK  int week  text prompt  jsonb options  int answer }
+  AUTH_USERS {
+    uuid id PK
+    text email
+  }
+  PROFILES {
+    uuid id PK, FK
+    text display_name
+    timestamptz created_at
+  }
+  TEST_ATTEMPTS {
+    uuid id PK
+    uuid user_id FK
+    int_array question_ids
+    timestamptz started_at
+    timestamptz submitted_at
+    int_array answers
+    int score
+    int total
+    int duration_ms
+  }
+  CARD_PROGRESS {
+    uuid user_id PK, FK
+    int question_id PK
+    text status
+    timestamptz updated_at
+  }
+  QUESTIONS {
+    int id PK
+    int week
+    text prompt
+    jsonb options
+    int answer
+  }
 ```
 
 *Takeaway: four tables of our own, plus Supabase's `auth.users`. Everything private hangs off a user id.*
@@ -232,7 +262,7 @@ sequenceDiagram
   U->>A: types code
   A->>SA: verifyOtp({ email, token, type: "email" })
   SA-->>A: session { access_token (JWT), refresh_token }
-  A->>A: supabase-js stores session in localStorage; onAuthStateChange fires
+  A->>A: supabase-js stores session in localStorage, onAuthStateChange fires
   Note over A,SA: every later request sends Authorization: Bearer <access_token>
 ```
 

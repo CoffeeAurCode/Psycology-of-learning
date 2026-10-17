@@ -10,6 +10,8 @@
 
 **In two sentences:** We turned 13 weeks of NPTEL assignment PDFs into a phone-first web app where students study flashcards, take a timed 100-question test and appear on a live leaderboard. This lesson shows the finished thing, draws the map of its parts and lists every step we took, so the rest of the series has a skeleton to hang on.
 
+> **Session 2 update (2026-10-16).** Sign-in is now **Google-only**: a sign-up returned HTTP 504 because email delivery was misconfigured, so email codes were removed and the Supabase Email provider switched off. Where this lesson says "email one-time codes", read "Google sign-in"; the build log (§6) and the bug list (§7) now include session 2. New lessons: [L2.07c](l2-07c-google-sign-in.md), [L3.06](l3-06-oauth-pkce-504.md), [L4.09](l4-09-auth-tests-incident-ops.md).
+
 ### Objectives (you can do these without notes at the end)
 1. Name the five screens of the app and what each one is for.
 2. Draw the architecture: browser app, Vercel, Supabase Auth, Supabase Postgres, and which talks to which.
@@ -59,7 +61,7 @@ flowchart LR
     VA["Web Analytics"]
   end
   subgraph Supabase["Supabase project"]
-    Auth["Auth<br/>email one-time codes"]
+    Auth["Auth<br/>Google sign-in (PKCE)<br/>(email codes until session 2)"]
     DB[("Postgres<br/>questions · profiles · test_attempts · card_progress")]
     RPC["SQL functions<br/>start_test · submit_test · get_leaderboard · get_my_stats"]
     RPC --> DB
@@ -97,7 +99,7 @@ sequenceDiagram
   S->>A: taps "Start test"
   A->>F: rpc("start_test") + user token
   F->>F: auth.uid() → who is calling? has a profile?
-  F->>T: delete my unsubmitted attempts; insert new row (100 random ids, started_at = now())
+  F->>T: delete my unsubmitted attempts, then insert a new row (100 random ids, started_at = now())
   F-->>A: { attempt_id, question_ids[100], started_at }
   A->>L: save attempt (answers all null, pos 0)
   loop 100 questions
@@ -107,7 +109,7 @@ sequenceDiagram
   S->>A: "Submit at 12:39"
   A->>F: rpc("submit_test", attempt_id, answers[100] with -1 = skipped)
   F->>T: lock row (for update), check owner, not submitted, < 3 h, 100 answers
-  F->>F: score = count(answers[i] = questions.answer); duration = now() - started_at
+  F->>F: score = count(answers[i] = questions.answer), duration = now() - started_at
   F->>T: save submitted_at, answers, score, duration
   F-->>A: { score, total, duration_ms, correct[], rank, players }
   A->>L: save result, clear attempt
@@ -140,7 +142,7 @@ flowchart TB
   src --> comp["components/ Ui · CoffeeMug · Icon · ErrorBoundary"]
   src --> pages["pages/ Home · Study · Test · Leaderboard · Account"]
   src --> css["styles.css (design system) + responsive.css (every screen size)"]
-  sb --> schema["schema.sql · seed.sql · setup.sql (= schema + seed) · email-otp-template.html"]
+  sb --> schema["schema.sql · seed.sql · setup.sql (= schema + seed)<br/>(email-otp-template.html deleted in session 2)"]
   tests --> unit["unit/data.test.mjs: answers vs PDFs"]
   tests --> db["db/schema.test.mjs: SQL in PGlite"]
   tests --> e2e["e2e/*.spec.ts: Playwright on 11 devices"]
@@ -169,6 +171,12 @@ A session is chronological; this series is conceptual. Here is the chronological
 | 13 | Switched deploys to **Git** (`vercel git connect`, deploy from `main` via the API, set framework = Vite) | Easy to maintain: push = deploy | [L4.08](l4-08-deploy-operate.md) |
 | 14 | Thorough testing: data, DB, live security, Playwright on 11 devices, axe, Lighthouse. It found **9 real bugs**, including "nobody can sign in" (8-digit codes) | Untested code is unknown code | Level 4 |
 | 15 | Added Vercel Web Analytics and a "what we store" privacy note | User request | [L4.08](l4-08-deploy-operate.md) |
+| | ***Session 2 · 2026-10-16*** | | |
+| 16 | "what http 504": a friend's sign-up timed out. Probed every hop: Supabase fast and up, sign-up `429` (email limit), 0 users, then the SMTP host turned out to be the website; ports 465/587 timed out | Find which box waits on whom before changing anything | [L3.06](l3-06-oauth-pkce-504.md) |
+| 17 | Weighed fixing SMTP (Brevo, Gmail) against Google sign-in; the user chose Google. Set up the Google Cloud client and the Supabase provider; wrote `SignIn` with `signInWithOAuth`, `detectSessionInUrl: true`, PKCE; email kept as a fallback | Remove the dependency that broke | [L2.07c](l2-07c-google-sign-in.md) |
+| 18 | The fallback still failed ("Sign-in is having trouble right now"), so email was removed everywhere, and the Email provider switched off in Supabase | Only ship paths you've seen work | [L2.07c](l2-07c-google-sign-in.md) |
+| 19 | Tests reworked: a Google hand-off test at the Supabase boundary, session injection for the journey; full suite 246 passed, 1 flaky | Test what's ours; inject what isn't | [L4.09](l4-09-auth-tests-incident-ops.md) |
+| 20 | "Access blocked" for one friend; authorised domains rejected `supabase.co` and `vercel.app` (public suffixes) and took the full hostnames; the friend retried and got in; 8 Google users that day | Compare with users it works for; get the provider's error details | [L2.07c](l2-07c-google-sign-in.md), [L4.09](l4-09-auth-tests-incident-ops.md) |
 
 ## 7 · Every bug in this series (preview)
 
@@ -193,6 +201,10 @@ Bugs are the best teachers, so each gets a full incident ticket in the lesson wh
 | 11 contrast failures (axe) | L3.04 |
 | Vercel built from Git with no framework set | L4.08 |
 | `vercel link` silently git-ignored `.env.example` | L4.08 |
+| *Session 2:* sign-up returned **HTTP 504** (SMTP host was the website) | L3.06 |
+| *Session 2:* the email fallback kept failing behind a friendlier message | L2.07c |
+| *Session 2:* "Access blocked: Error 400: invalid_request" for one account | L2.07c |
+| *Session 2:* "Invalid domain: must be a top private domain" | L2.07c |
 
 | Test bugs (bugs in the tests themselves) | Lesson |
 |---|---|
@@ -206,6 +218,8 @@ Bugs are the best teachers, so each gets a full incident ticket in the lesson wh
 | One worker's cleanup deleted another worker's user mid-test | L4.06 |
 | An extra "Next" click skipped a question on slow WebKit | L4.06 |
 | Vite's reload loop plus background-tab throttling looked like a frozen app | L4.07 |
+| *Session 2:* a scripted edit silently did nothing (CRLF line endings) | L2.07c |
+| *Session 2:* a probe command hung on stdin; a redaction filter leaked a token; a flaky iPhone run; a predicted breakage that didn't happen | L4.09 |
 
 ## 8 · Vocabulary you will meet in every lesson
 

@@ -1,6 +1,6 @@
 # L4.06 · Test it VI: live security tests and the signed-in journey
 
-> **Level 4 · Test it and ship it** · Lesson 6 of 8
+> **Level 4 · Test it and ship it** · Lesson 6 of 9
 
 | Recipe card | |
 |---|---|
@@ -9,6 +9,8 @@
 | **You'll produce** | `tests/e2e/api-security.spec.ts` (140 lines, 13 tests) and `tests/e2e/auth.spec.ts` (120 lines, one long journey) from blank files |
 
 **In two sentences:** The PGlite tests prove the SQL is right; these tests prove the **deployed project** is right, by attacking the real Supabase API with the publishable key and two throwaway users, and by walking a real user through the real UI from email-code sign-in to a 100-question test, the leaderboard, a rename, flashcard sync and sign-out. They create users without sending a single email, clean up only what they created, and caught three app bugs (including "nobody can sign in") and two test bugs (a cleanup race between workers and an extra click that skipped a question).
+
+> **Session 2 update (2026-10-16).** The API security tests (§4.1–4.2) are unchanged. The journey's **sign-in step** (§4.3) no longer types an emailed code: it checks the Google button and injects a real session with `signInPage`. The new step, the Google hand-off test, and why the helpers survived the Email provider being switched off are in [L4.09](l4-09-auth-tests-incident-ops.md).
 
 ### Objectives
 1. Write the live security spec: anonymous reads, calls and writes; signed-in profile rules, grading, forgery, ownership and cross-user isolation; the ranking check; the key check.

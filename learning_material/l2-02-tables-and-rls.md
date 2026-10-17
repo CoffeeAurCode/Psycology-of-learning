@@ -1,6 +1,6 @@
 # L2.02 · The database I: tables, constraints and row-level security
 
-> **Level 2 · Build it** · Lesson 2 of 17
+> **Level 2 · Build it** · Lesson 2 of 18
 
 | Recipe card | |
 |---|---|

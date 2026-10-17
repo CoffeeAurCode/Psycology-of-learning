@@ -1,6 +1,6 @@
 # L4.03 · Test it III: Playwright foundations: config, helpers, teardown, HTTP checks
 
-> **Level 4 · Test it and ship it** · Lesson 3 of 8
+> **Level 4 · Test it and ship it** · Lesson 3 of 9
 
 | Recipe card | |
 |---|---|
@@ -9,6 +9,8 @@
 | **You'll produce** | `playwright.config.ts` (46 lines), `tests/e2e/support.ts` (146 lines), `tests/e2e/teardown.ts` (8 lines) and `tests/e2e/http.spec.ts` (87 lines) from blank files |
 
 **In two sentences:** Playwright drives real browser engines (Chromium, WebKit, Firefox) against a production build of the app, and one config file decides which build, which 12 projects (an API-only one plus 11 device profiles), which spec files each runs, how failures are recorded, and what is cleaned up afterwards. The shared helpers read credentials safely, create and delete throwaway users without sending emails, and wait for the app the way a person would; the HTTP spec checks routing, caching, SEO files and that no secret is ever served, and its three bugs teach three ways a test can quietly test the wrong thing.
+
+> **Session 2 update (2026-10-16).** The helpers here are unchanged and still used, with a new one, `signInPage`, that puts a real session in the browser for the UI journey ([L4.09](l4-09-auth-tests-incident-ops.md) §4.1). `otpFor` still mints codes through the admin API, which keeps working with the Email provider off. The Playwright count is now 264 (one more UI test × 11 projects).
 
 ### Objectives
 1. Write `playwright.config.ts` from memory and explain every option: `webServer`, `baseURL`, `projects`, `testMatch`, `workers`, `retries`, `trace`, `globalTeardown`.

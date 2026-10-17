@@ -1,6 +1,6 @@
 # L4.01 · Test it I: testing strategy and the data-integrity tests
 
-> **Level 4 · Test it and ship it** · Lesson 1 of 8
+> **Level 4 · Test it and ship it** · Lesson 1 of 9
 
 | Recipe card | |
 |---|---|
@@ -485,4 +485,4 @@ const letters = [...html.matchAll(/Accepted answer is\s*\n\s*([A-D])\./g)].map((
 | [Poppler utilities](https://poppler.freedesktop.org/) | Tool | Where `pdftotext` comes from | Downloads / packages | 5 min |
 
 ---
-← [L3.05 Performance and Lighthouse](l3-05-performance.md) · [Hub](README.md) · [L4.02 Test it II: database tests →](l4-02-database-tests.md)
+← [L3.06 OAuth, PKCE, and why sign-up timed out](l3-06-oauth-pkce-504.md) · [Hub](README.md) · [L4.02 Test it II: database tests →](l4-02-database-tests.md)

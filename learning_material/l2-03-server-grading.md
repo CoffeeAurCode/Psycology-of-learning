@@ -1,6 +1,6 @@
 # L2.03 · The database II: server-side grading and the leaderboard
 
-> **Level 2 · Build it** · Lesson 3 of 17
+> **Level 2 · Build it** · Lesson 3 of 18
 
 | Recipe card | |
 |---|---|

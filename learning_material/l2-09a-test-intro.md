@@ -1,6 +1,6 @@
 # L2.09a · The ranked test I: intro, attempt storage and starting a test
 
-> **Level 2 · Build it** · Lesson 12 of 17
+> **Level 2 · Build it** · Lesson 13 of 18
 
 | Recipe card | |
 |---|---|
@@ -9,6 +9,8 @@
 | **You'll produce** | Lines 1–190 of `src/pages/Test.tsx`: the `Attempt`/`Result` types, storage keys, `loadAttempt`, the nested routes, and the `Intro` screen with `start()` |
 
 **In two sentences:** Before the runner exists, we need a durable record of the attempt in the browser (so a reload doesn't lose 50 answers) and an intro screen that walks every kind of user to the right next step. This lesson builds both and wires the "Start test" button to `start_test`.
+
+> **Session 2 update (2026-10-16).** The intro's sign-in link now reads "Sign in to start" with "One tap with Google. No password." underneath ([L2.07c](l2-07c-google-sign-in.md) §5.3).
 
 ### Objectives
 1. Explain why the attempt stores **two** start times, and which one ranks you.

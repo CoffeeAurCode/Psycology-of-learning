@@ -1,6 +1,6 @@
 # L3.01 · Under the hood: the security model
 
-> **Level 3 · Under the hood** · Lesson 1 of 5
+> **Level 3 · Under the hood** · Lesson 1 of 6
 
 | Recipe card | |
 |---|---|
@@ -9,6 +9,8 @@
 | **You'll produce** | A threat model for the app, a request-by-request explanation of how Postgres decides what each caller may do, three verified foot-guns, and one real weakness with a proposed fix |
 
 **In two sentences:** The browser is hostile territory: anyone can open DevTools, copy the public key and call the database API directly, so every rule that matters lives in Postgres, as row-level security policies and `security definer` functions. This lesson follows a request from the browser to the row, attacks the app the way a curious student would, proves which attacks fail and why, and is honest about the one that still works.
+
+> **Session 2 update (2026-10-16).** Sign-in is now Google via Supabase (OAuth with PKCE), so §4.2's guessing maths for 8-digit email codes no longer applies to the live app. Everything after sign-in (JWT, `auth.uid()`, RLS, definer functions) is unchanged. The new sign-in's threat model is in [L3.06](l3-06-oauth-pkce-504.md).
 
 ### Objectives
 1. Draw the path of an API request from supabase-js to a Postgres row, naming where the role, the user id and each policy are applied.
@@ -70,11 +72,11 @@ sequenceDiagram
   participant D as Postgres
   B->>G: GET /rest/v1/card_progress?select=* · apikey: publishable · Authorization: Bearer <user JWT>
   G->>P: forward (apikey is valid for this project)
-  P->>P: verify JWT signature and exp; read claim role = "authenticated"
-  P->>D: BEGIN; SET LOCAL ROLE authenticated; set request.jwt.claims = '{"sub":"a1…","role":"authenticated",…}'
+  P->>P: verify JWT signature and exp, read claim role = "authenticated"
+  P->>D: BEGIN, SET LOCAL ROLE authenticated, set request.jwt.claims = '{"sub":"a1…","role":"authenticated",…}'
   P->>D: SELECT * FROM card_progress
   D->>D: grant check: may "authenticated" SELECT this table? yes
-  D->>D: RLS: append policy USING (auth.uid() = user_id); auth.uid() reads sub from the claims
+  D->>D: RLS: append policy USING (auth.uid() = user_id), auth.uid() reads sub from the claims
   D-->>P: only rows where user_id = a1…
   P-->>B: 200 JSON array
 ```

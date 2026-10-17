@@ -1,6 +1,6 @@
 # L3.02 · Under the hood: ranking maths and SQL internals
 
-> **Level 3 · Under the hood** · Lesson 2 of 5
+> **Level 3 · Under the hood** · Lesson 2 of 6
 
 | Recipe card | |
 |---|---|

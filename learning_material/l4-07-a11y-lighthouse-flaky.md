@@ -1,6 +1,6 @@
 # L4.07 · Test it VII: accessibility audits, Lighthouse and flaky-test forensics
 
-> **Level 4 · Test it and ship it** · Lesson 7 of 8
+> **Level 4 · Test it and ship it** · Lesson 7 of 9
 
 | Recipe card | |
 |---|---|

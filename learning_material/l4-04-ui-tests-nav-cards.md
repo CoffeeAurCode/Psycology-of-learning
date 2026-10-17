@@ -1,6 +1,6 @@
 # L4.04 · Test it IV: UI tests for navigation, layout and flashcards
 
-> **Level 4 · Test it and ship it** · Lesson 4 of 8
+> **Level 4 · Test it and ship it** · Lesson 4 of 9
 
 | Recipe card | |
 |---|---|

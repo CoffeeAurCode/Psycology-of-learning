@@ -1,6 +1,6 @@
 # L3.03 · Under the hood: gestures, springs, 3D and scrolling
 
-> **Level 3 · Under the hood** · Lesson 3 of 5
+> **Level 3 · Under the hood** · Lesson 3 of 6
 
 | Recipe card | |
 |---|---|
@@ -230,10 +230,10 @@ The back face is pre-rotated `rotateY(180deg)`, so at 180° it faces you the rig
 
 ```mermaid
 stateDiagram-v2
-  [*] --> Present: card key 130:0 mounts (initial → animate)
-  Present --> Exiting: decide() → setDir(±1), pos++ → key 130:0 removed from children
-  Exiting --> Removed: exit variant finishes (0.36 s: x = dir·520, rotate dir·24°, opacity 0)
-  Present --> Present2: same render: key 131:1 mounts and enters (scale 0.94 → 1, y 14 → 0)
+  [*] --> Present: card key 130#58;0 mounts (initial → animate)
+  Present --> Exiting: decide() → setDir(±1), pos++ → key 130#58;0 removed from children
+  Exiting --> Removed: exit variant finishes (0.36 s#58; x = dir·520, rotate dir·24°, opacity 0)
+  Present --> Present2: same render#58; key 131#58;1 mounts and enters (scale 0.94 → 1, y 14 → 0)
   Removed --> [*]
 ```
 - **For 0.36 s two cards exist** in the DOM: the exiting one and the entering one. Code (and tests) that query "the card" must pick the right one; the tests use `.fc` `.last()` (the newest), and the quiz test bug of [L4.05](l4-05-ui-tests-quiz-runner.md) came from reading the card sliding out.

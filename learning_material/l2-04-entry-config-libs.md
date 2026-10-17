@@ -1,6 +1,6 @@
 # L2.04 · Entry point, config and the small libraries
 
-> **Level 2 · Build it** · Lesson 4 of 17
+> **Level 2 · Build it** · Lesson 4 of 18
 
 | Recipe card | |
 |---|---|
@@ -9,6 +9,8 @@
 | **You'll produce** | `index.html`, `vite.config.ts`, `tsconfig.json`, `src/main.tsx`, `src/lib/storage.ts`, `src/lib/theme.tsx`, `src/lib/supabase.ts`, `src/lib/format.ts`, `public/manifest.webmanifest`, `.env.example` |
 
 **In two sentences:** These files are the plumbing every screen depends on: how the page boots, how the theme is chosen before the first paint, how storage never crashes, how Supabase is configured, and four small helpers. They are short, so the line notes go deep.
+
+> **Session 2 update (2026-10-16).** Two lines of `supabase.ts` changed: the client now uses `detectSessionInUrl: true` and `flowType: "pkce"` (to finish Google sign-in), and `friendlyError` lost its "wrong or expired code" rule and gained a 5xx rule. The current file, line by line, is in [L2.07c](l2-07c-google-sign-in.md) §5.1. Everything else in this lesson is current.
 
 ### Objectives
 1. Explain every block of the real `index.html`: SEO meta, Open Graph, JSON-LD, the theme-before-paint script and the no-JS fallback inside `#root`.

@@ -1,6 +1,6 @@
 # L3.04 · Under the hood: viewports, contrast maths and accessibility
 
-> **Level 3 · Under the hood** · Lesson 4 of 5
+> **Level 3 · Under the hood** · Lesson 4 of 6
 
 | Recipe card | |
 |---|---|

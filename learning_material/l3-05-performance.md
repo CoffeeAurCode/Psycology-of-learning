@@ -1,6 +1,6 @@
 # L3.05 · Under the hood: performance and Lighthouse (+ Level 3 checkpoint)
 
-> **Level 3 · Under the hood** · Lesson 5 of 5
+> **Level 3 · Under the hood** · Lesson 5 of 6
 
 | Recipe card | |
 |---|---|
@@ -394,4 +394,4 @@ Pick **one** trade-off and **one** edge case below and write a half-page explana
 | [Vite: Building for production](https://vite.dev/guide/build) | Docs | Hashing, chunking and `manualChunks` | "Chunking strategy" | 10 min |
 
 ---
-← [L3.04 Viewports, contrast and accessibility](l3-04-viewports-contrast.md) · [Hub](README.md) · [L4.01 Test it I: strategy and data tests →](l4-01-testing-strategy-data.md)
+← [L3.04 Viewports, contrast and accessibility](l3-04-viewports-contrast.md) · [Hub](README.md) · [L3.06 OAuth, PKCE, and why sign-up timed out →](l3-06-oauth-pkce-504.md)

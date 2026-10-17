@@ -1,6 +1,6 @@
 # L4.05 · Test it V: UI tests for quiz, list, theme, test runner and results
 
-> **Level 4 · Test it and ship it** · Lesson 5 of 8
+> **Level 4 · Test it and ship it** · Lesson 5 of 9
 
 | Recipe card | |
 |---|---|
@@ -9,6 +9,8 @@
 | **You'll produce** | Lines 165–304 of `tests/e2e/ui.spec.ts`: the remaining 7 UI tests, including a 100-question runner test that needs no server, and a results test driven entirely by injected state |
 
 **In two sentences:** The second half of the UI suite tests screens whose content is random (the quiz order), remote (the leaderboard), or long and stateful (a 100-question test with a clock, flags, a grid and resume), so it leans on two techniques: identifying what's on screen from the data instead of assuming an order, and **injecting state into `localStorage`** so a screen can be tested without the steps or the server that normally produce it. Its bug story is a two-layer one: a real app bug (the quiz shuffling twice) hid behind a test bug (reading the card that was sliding out), and both had to be found.
+
+> **Session 2 update (2026-10-16).** The "real OTP sign-in" in the diagram is now a real session injected for a throwaway user ([L4.09](l4-09-auth-tests-incident-ops.md)).
 
 ### Objectives
 1. Test a randomised quiz by reading the question from the screen and choosing right or wrong answers deliberately.

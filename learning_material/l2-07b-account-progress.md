@@ -1,6 +1,6 @@
 # L2.07b · Leaderboard names, the account page and progress sync
 
-> **Level 2 · Build it** · Lesson 9 of 17
+> **Level 2 · Build it** · Lesson 10 of 18
 
 | Recipe card | |
 |---|---|
@@ -39,7 +39,7 @@ sequenceDiagram
   Note over D,C: user signs in → uid changes → merge effect
   D->>C: select question_id, status, updated_at (own rows, RLS)
   C-->>D: rows from other devices
-  D->>D: merged = local; for each remote row: keep the NEWER timestamp
+  D->>D: merged = local, for each remote row: keep the NEWER timestamp
   D->>C: upsert local entries newer than the cloud's
   D->>D: setMarks(merged)
   Note over D,C: while signed in: every mark → state + storage + upsert (fire-and-forget)
@@ -587,4 +587,4 @@ if (!session || !___⑦___) return null;
 | [Martin Kleppmann: Designing Data-Intensive Applications, ch. 5](https://dataintensive.net/) | Book | Last-write-wins, clocks, conflict resolution | "Detecting Concurrent Writes" | 30 min |
 
 ---
-← [L2.07a Auth & sign-in](l2-07a-auth-sign-in.md) · [Hub](README.md) · [L2.08a The flashcard deck →](l2-08a-flashcard-deck.md)
+← [L2.07c Google sign-in](l2-07c-google-sign-in.md) · [Hub](README.md) · [L2.08a The flashcard deck →](l2-08a-flashcard-deck.md)

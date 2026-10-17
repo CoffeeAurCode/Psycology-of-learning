@@ -1,6 +1,6 @@
 # L2.10c · Styling III: the responsive layer (+ Level 2 checkpoint)
 
-> **Level 2 · Build it** · Lesson 17 of 17
+> **Level 2 · Build it** · Lesson 18 of 18
 
 | Recipe card | |
 |---|---|
@@ -9,6 +9,8 @@
 | **You'll produce** | All 674 lines of `src/responsive.css`, a measured derivation of the deck height, and the Level 2 checkpoint |
 
 **In two sentences:** `styles.css` describes the app on a typical phone; `responsive.css` loads after it and *only overrides* what must change on other screens: tighter spacing on 320 px Androids, a shorter card on short phones, a slim bar in landscape, a wider column on tablets, and a full side rail on laptops. Every number in it was measured on one of 11 device profiles, and two of its rules exist because the tests or a screenshot sweep caught content hiding under the tab bar or a heading running into the mug.
+
+> **Session 2 update (2026-10-16).** The `.otp` override at ≤ 360 px was deleted with email sign-in ([L2.07c](l2-07c-google-sign-in.md) §5.4).
 
 ### Objectives
 1. Draw the breakpoint map (which media query fires on which device) and explain why the order of the blocks in the file matters.

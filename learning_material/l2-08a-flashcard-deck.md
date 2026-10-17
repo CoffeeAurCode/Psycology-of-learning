@@ -1,6 +1,6 @@
 # L2.08a · Flashcards I: the deck, the swipe card and the flip
 
-> **Level 2 · Build it** · Lesson 10 of 17
+> **Level 2 · Build it** · Lesson 11 of 18
 
 | Recipe card | |
 |---|---|

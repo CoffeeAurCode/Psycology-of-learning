@@ -1,6 +1,6 @@
 # L2.09c · The ranked test III: results and the leaderboard
 
-> **Level 2 · Build it** · Lesson 14 of 17
+> **Level 2 · Build it** · Lesson 15 of 18
 
 | Recipe card | |
 |---|---|

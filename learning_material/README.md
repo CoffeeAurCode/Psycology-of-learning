@@ -52,5 +52,6 @@ If you only read through the lessons once, without the reviews, the readings or 
 | [`plan.html`](plan.html) | The day-by-day study plan with built-in spaced review; set your own pace |
 | `l1-…` to `l4-…` | The 38 lessons, in order |
 | [`mastery.html`](mastery.html) | The final checkpoint: rebuild it from memory |
+| [`field-report.html`](field-report.html) | Field report: how the live site did over 16–17 October, and what running it taught me |
 | [`outline.html`](outline.html) | The curriculum blueprint: what you'll be able to do, every concept and where it's taught |
 | `assets/` | Styles, scripts, fonts and KaTeX used by every page |
